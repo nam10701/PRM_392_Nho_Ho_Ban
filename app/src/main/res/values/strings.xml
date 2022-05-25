@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">PRM_392_Nho_Ho_Ban</string>
+    <string name="app_name">Nhớ Hộ Bạn!</string>
+    <string name="label_lich">Lịch</string>
+    <string name="label_ghi_chu">Ghi chú</string>
+    <string name="label_hen">Hẹn</string>
+    <string name="label_ngay">Ngày</string>
+    <string name="label_thang">Tháng</string>
+    <string name="label_nam">Năm</string>
+    <string name="label_sap_toi">Sắp tới</string>
+    <string name="label_truoc_day">Trước đây</string>
+    <string name="label_thung_rac">Thùng rác</string>
+    <string name="label_cai_dat">Cài đặt</string>
+    <string name="label_thong_tin">Thông tin</string>
+
 </resources>
