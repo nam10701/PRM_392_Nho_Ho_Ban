@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+
+        <item android:title="@string/label_lich"
+            android:id="@+id/itemCalendar"
+            android:icon="@drawable/calendar_24">
+
+        </item>
+        <item android:title="@string/label_sap_toi"
+            android:id="@+id/itemUpcoming"
+            android:icon="@drawable/follow_the_signs_24">
+        </item>
+        <item android:title="@string/label_truoc_day"
+            android:id="@+id/itemHistory"
+            android:icon="@drawable/history_24">
+        </item>
+        <item android:title="@string/label_storage"
+            android:id="@+id/itemStorage"
+            android:icon="@drawable/ic_baseline_storage_24">
+        </item>
+    </group>
+    <item android:title="@string/label_system">
+        <menu>
+            <item android:title="@string/label_cai_dat"
+                android:id="@+id/itemSetting"
+                android:icon="@drawable/ic_baseline_settings_24">
+            </item>
+            <item android:title="@string/label_account"
+                android:id="@+id/itemAccount"
+                android:icon="@drawable/ic_baseline_account_circle_24">
+            </item>
+            <item android:title="@string/label_thong_tin"
+                android:id="@+id/itemInformation"
+                android:icon="@drawable/ic_baseline_info_24">
+            </item>
+            <item android:title="@string/label_logout"
+                android:id="@+id/itemLogout"
+                android:icon="@drawable/ic_baseline_logout_24">
+            </item>
+
+        </menu>
+    </item>
+
+</menu>

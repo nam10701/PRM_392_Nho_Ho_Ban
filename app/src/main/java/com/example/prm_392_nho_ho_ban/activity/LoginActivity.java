@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
            @Override
            public void onComplete(@NonNull Task<AuthResult> task) {
                if(task.isSuccessful()){
-                  startActivity(new Intent(getApplicationContext(),DayDetailActivity.class));
+                  startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
                }else{
                    Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_LONG).show();
                }
@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
     private void authorize() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
-            Intent intent = new Intent(this,DayDetailActivity.class);
+            Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
         }
     }
