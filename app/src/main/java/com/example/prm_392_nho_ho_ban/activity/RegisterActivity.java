@@ -55,10 +55,12 @@ public class RegisterActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         startActivity(new Intent(getApplicationContext(),LoginActivity.class));
                     }else{
-                        Toast.makeText(getApplicationContext(),"Register failed",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Register failed, email exist",Toast.LENGTH_LONG).show();
                     }
                 }
             });
+        }else{
+            progressDialog.dismiss();
         }
     }
 

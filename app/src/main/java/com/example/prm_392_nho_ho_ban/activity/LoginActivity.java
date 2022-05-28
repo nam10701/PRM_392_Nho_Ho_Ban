@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,18 +33,25 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     EditText edtEmail;
     EditText edtPassword;
+    TextView tvForgot;
     Button btnLogin;
     Button btnRegister;
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        tvForgot = findViewById(R.id.tvForgot);
         btnRegister = findViewById(R.id.btnRegister);
         progressDialog = new ProgressDialog(this);
     }
     private void bindingAction(){
         btnLogin.setOnClickListener(this::login);
         btnRegister.setOnClickListener(this::startRegisterIntent);
+        tvForgot.setOnClickListener(this::forgot);
+    }
+
+    private void forgot(View view) {
+        startActivity(new Intent(this,ResetPasswordActivity.class));
     }
 
     private void startRegisterIntent(View view) {
@@ -54,11 +62,12 @@ public class LoginActivity extends AppCompatActivity {
     private void login(View view) {
        String email = edtEmail.getText().toString();
        String password = edtPassword.getText().toString();
-
+        progressDialog.show();
        if(validate(email,password)){
        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
            @Override
            public void onComplete(@NonNull Task<AuthResult> task) {
+               progressDialog.dismiss();
                if(task.isSuccessful()){
                   startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
                }else{
@@ -66,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
                }
            }
        });
+       }else{
+           progressDialog.dismiss();
        }
     }
 
@@ -91,9 +102,15 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        authorize();
+
         bindingUI();
         bindingAction();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        authorize();
     }
 
     private void authorize() {

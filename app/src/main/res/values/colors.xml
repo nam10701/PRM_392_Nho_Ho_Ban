@@ -8,9 +8,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="dark_blue">#2B2D42</color>
-    <color name="light_blue">#445574</color>
-    <color name="light_light_blue">#8D99AE</color>
-    <color name="light">#EDF2F4</color>
+    <color name="Mustard">#FFE45C</color>
+    <color name="Cherub">#F6DAE4</color>
+    <color name="Tropical_Blue">#B8CFEC</color>
+    <color name="Lavender">#F8F9FF</color>
+    <color name="Summer_Sky">#2ECBE9</color>
+    <color name="Pacific_Blue">#128FC8</color>
+    <color name="Smalt">#00468B</color>
+    <color name="Deep_Sky_Blue">#29C5F6</color>
+    <color name="Havelock_Blue">#5579C6</color>
+    <color name="Denim">#1260CC</color>
+
 
 </resources>

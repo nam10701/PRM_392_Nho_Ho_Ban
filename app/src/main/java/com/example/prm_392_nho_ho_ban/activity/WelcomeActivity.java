@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.prm_392_nho_ho_ban.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,25 +17,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WelcomeActivity extends AppCompatActivity {
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private TextView tvEmail;
+
+    private TextView tvEmailDisplay;
     private ImageView imgAvatar;
-    private MenuItem iLogout;
     private DrawerLayout mdrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
 
     private void bindingUI(){
-        tvEmail = findViewById(R.id.tvEmail);
+        nvDrawer = findViewById(R.id.nvView);
+
         toolbar = findViewById(R.id.toolbar);
-        iLogout = findViewById(R.id.itemLogout);
         imgAvatar = findViewById(R.id.imgAvatar);
         mdrawer = findViewById(R.id.layoutDrawer);
-        nvDrawer = findViewById(R.id.nvView);
+        tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
-
+        setupDrawerContent(nvDrawer);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -45,15 +45,31 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void bindingAction(){
-    iLogout.setOnMenuItemClickListener(this::logout);
+
+    public void setupDrawerContent(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(this::selectDrawerItem);
+    }
+    public boolean selectDrawerItem(MenuItem menuItem){
+switch (menuItem.getItemId()){
+    case R.id.itemLogout:
+        logout();
+        return true;
+    case R.id.itemAccount:
+        return true;
+
+}
+return true;
     }
 
-    private boolean logout(MenuItem menuItem) {
-        firebaseAuth.signOut();
-        startActivity(new Intent(this,LoginActivity.class));
-        return true;
+    private void bindingAction(){
+
     }
+
+    private boolean logout() {
+        startActivity(new Intent(this, LogoutActivity.class));
+        return false;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,5 +77,13 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.welcome_activity);
         bindingUI();
         bindingAction();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            tvEmailDisplay.setText(user.getEmail());}
     }
 }
