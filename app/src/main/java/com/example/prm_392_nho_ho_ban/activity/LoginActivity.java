@@ -28,14 +28,13 @@ public class LoginActivity extends AppCompatActivity {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    ProgressDialog progressDialog;
-    EditText edtEmail;
-    EditText edtPassword;
-    TextView tvForgot;
-    Button btnLogin;
-    Button btnRegister;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private ProgressDialog progressDialog;
+    private EditText edtEmail;
+    private EditText edtPassword;
+    private TextView tvForgot;
+    private Button btnLogin;
+    private Button btnRegister;
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);

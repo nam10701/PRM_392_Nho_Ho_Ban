@@ -22,13 +22,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 
 public class RegisterActivity extends AppCompatActivity {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private ProgressDialog progressDialog;
-    EditText edtEmail;
-    EditText edtPassword;
-    EditText edtRePassword;
-    Button btnRegister;
+    private EditText edtEmail;
+    private EditText edtPassword;
+    private EditText edtRePassword;
+    private Button btnRegister;
 
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
