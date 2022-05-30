@@ -33,15 +33,6 @@ public class NoteDAO {
                 });
     }
 
-    public ArrayList<Note> getAllNote(){
-        getAllNoteCallBack(new FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-                notes = noteList;
-            }
-        });
-    return notes;
-    }
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
     }

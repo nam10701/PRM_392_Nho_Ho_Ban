@@ -9,7 +9,9 @@
         android:roundIcon="@drawable/logo_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM_392_Nho_Ho_Ban">
-
+        <activity
+            android:name=".OptionsMenuActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />

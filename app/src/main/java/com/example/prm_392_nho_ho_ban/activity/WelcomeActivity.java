@@ -31,31 +31,19 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends OptionsMenuActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<Note> notes = new ArrayList<>();
-    private TextView tvEmailDisplay;
     private ImageView imgAvatar;
-    private DrawerLayout mdrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
+
+
+
     private RecyclerView noteRecyclerView;
     private NoteListAdapter noteListAdapter;
 
     private void bindingUI(){
-        nvDrawer = findViewById(R.id.nvView);
-        toolbar = findViewById(R.id.toolbar);
-        imgAvatar = findViewById(R.id.imgAvatar);
-        mdrawer = findViewById(R.id.layoutDrawer);
-        tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         noteRecyclerView = findViewById(R.id.noteListRecyclerView);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
-        setupDrawerContent(nvDrawer);
         showAllNote();
-
-
     }
 
     public void showAllNote(){
@@ -72,38 +60,9 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case android.R.id.home:
-                mdrawer.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void setupDrawerContent(NavigationView navigationView){
-        navigationView.setNavigationItemSelectedListener(this::selectDrawerItem);
-    }
-    @SuppressLint("NonConstantResourceId")
-    public boolean selectDrawerItem(MenuItem menuItem){
-switch (menuItem.getItemId()){
-    case R.id.itemLogout:
-        logout();
-        return true;
-    case R.id.itemAccount:
-        return true;
-}
-return true;
-    }
 
     private void bindingAction(){
     }
-
-    private void logout() {
-        startActivity(new Intent(this, LogoutActivity.class));
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,13 +75,6 @@ return true;
 
     @Override
     protected void onStart() {
-
         super.onStart();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            tvEmailDisplay.setText(user.getEmail());}
-//        ArrayList<Note> noteList = db.collection("Note")
-
     }
 }
