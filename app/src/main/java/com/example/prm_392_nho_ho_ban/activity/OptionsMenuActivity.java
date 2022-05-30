@@ -21,20 +21,18 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class OptionsMenuActivity extends AppCompatActivity {
     private DrawerLayout mdrawer;
-    private NavigationView nvDrawer;
-    private Toolbar toolbar;
-    private TextView tvEmailDisplay;
     @Override
 
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mdrawer = findViewById(R.id.layoutDrawer);
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_drawer,menu);
+        menuInflater.inflate(R.menu.menu_drawer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 mdrawer.openDrawer(GravityCompat.START);
                 return true;
@@ -42,13 +40,13 @@ public class OptionsMenuActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setupDrawerContent(NavigationView navigationView){
+    public void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(this::selectDrawerItem);
     }
 
     @SuppressLint("NonConstantResourceId")
-    public boolean selectDrawerItem(MenuItem menuItem){
-        switch (menuItem.getItemId()){
+    public boolean selectDrawerItem(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
             case R.id.itemLogout:
                 logout();
                 return true;
@@ -67,16 +65,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        nvDrawer = findViewById(R.id.nvView);
-        toolbar = findViewById(R.id.toolbar);
-        mdrawer = findViewById(R.id.layoutDrawer);
-        tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
-        setupDrawerContent(nvDrawer);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            tvEmailDisplay.setText(user.getEmail());}
+
+
     }
 }

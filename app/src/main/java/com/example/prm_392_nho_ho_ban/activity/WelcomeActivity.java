@@ -32,16 +32,26 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class WelcomeActivity extends OptionsMenuActivity {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    ArrayList<Note> notes = new ArrayList<>();
-    private ImageView imgAvatar;
 
+    private DrawerLayout mdrawer;
+    private NavigationView nvDrawer;
+    private Toolbar toolbar;
+    private TextView tvEmailDisplay;
 
 
     private RecyclerView noteRecyclerView;
     private NoteListAdapter noteListAdapter;
 
     private void bindingUI(){
+        nvDrawer = findViewById(R.id.nvView);
+        toolbar = findViewById(R.id.toolbar);
+        mdrawer = findViewById(R.id.layoutDrawer);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
+        setupDrawerContent(nvDrawer);
+        tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
+
         noteRecyclerView = findViewById(R.id.noteListRecyclerView);
         showAllNote();
     }
@@ -68,6 +78,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_activity);
+
         bindingUI();
         bindingAction();
 
@@ -76,5 +87,8 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            tvEmailDisplay.setText(user.getEmail());}
     }
-}
+    }
