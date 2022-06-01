@@ -1,20 +1,16 @@
 package com.example.prm_392_nho_ho_ban.bean;
 
-import com.google.firebase.Timestamp;
-
 import java.util.Date;
 
-public class Note {
+public class Promise {
     private int id;
     private String title;
     private String content;
-    private Timestamp time;
-
-
-    public Note() {
+    private Date time;
+    public Promise() {
     }
 
-    public Note(int id, String title, String content, Timestamp time) {
+    public Promise(int id, String title, String content, Date time) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -45,11 +41,11 @@ public class Note {
         this.content = content;
     }
 
-    public Timestamp getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.adapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.google.firebase.Timestamp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordViewHolder> {
 
     private final ArrayList<Note> noteList;
     LayoutInflater mInflater;
     Context context;
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm");
+
 
     public NoteListAdapter(Context context, ArrayList<Note> noteList) {
         this.context = context;
@@ -38,9 +46,11 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
     @Override
     public void onBindViewHolder(@NonNull NoteListAdapter.WordViewHolder holder, int position) {
         Note mCurrent = noteList.get(position);
-        String content = mCurrent.getTitle();
-        holder.tvNoteTitle.setText(content);
+
+        holder.tvNoteTitle.setText(mCurrent.getContent());
         holder.tvNoteContent.setText(mCurrent.getContent());
+        holder.tvDate.setText(sdf.format(new Date(mCurrent.getTime().getSeconds()*1000)));
+
     }
 
     @Override
@@ -53,10 +63,12 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         private final NoteListAdapter mAdapter;
         protected TextView tvNoteTitle;
         protected TextView tvNoteContent;
+        protected TextView tvDate;
         public WordViewHolder(@NonNull View itemView, NoteListAdapter adapter) {
             super(itemView);
             tvNoteTitle = itemView.findViewById(R.id.tvNoteTitle);
             tvNoteContent = itemView.findViewById(R.id.tvNoteContent);
+            tvDate = itemView.findViewById(R.id.tvDate);
             this.mAdapter = adapter;
             itemView.setOnClickListener(this);
         }

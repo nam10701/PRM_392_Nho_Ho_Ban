@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NoteDAO {
     private final FirebaseFirestore db =  FirebaseFirestore.getInstance();
@@ -23,8 +25,11 @@ public class NoteDAO {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Log.i("=====", document.getId() + " => " + document.toObject(Note.class).getContent());
+                            Timestamp ts = document.getTimestamp("date");
+//                            Date date = new Date(document.toObject(Note.class).getTime().getSeconds());
+//                            Log.i("=====", document.getId() + " => " + date);
                             Note n = document.toObject(Note.class);
+                            n.setTime(ts);
                             noteList.add(n);
                             Log.i("========after",noteList.size()+"");
                         }

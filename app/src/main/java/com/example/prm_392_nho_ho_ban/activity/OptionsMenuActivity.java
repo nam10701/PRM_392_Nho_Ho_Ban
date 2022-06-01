@@ -15,18 +15,17 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class OptionsMenuActivity extends AppCompatActivity {
     private DrawerLayout mdrawer;
-    @Override
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         mdrawer = findViewById(R.id.layoutDrawer);
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_drawer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -42,6 +41,21 @@ public class OptionsMenuActivity extends AppCompatActivity {
 
     public void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(this::selectDrawerItem);
+    }
+    public void setupBottomNavContent(BottomNavigationView bottomNavigationView) {
+        bottomNavigationView.setOnItemSelectedListener(this::selectBottomItem);
+    }
+
+    private boolean selectBottomItem(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.itemLogout:
+                logout();
+                return true;
+            case R.id.itemAccount:
+                return true;
+        }
+        return true;
+
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -63,9 +77,6 @@ public class OptionsMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-
     }
 }

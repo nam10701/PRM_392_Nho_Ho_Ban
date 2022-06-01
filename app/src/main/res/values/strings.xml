@@ -28,6 +28,9 @@
     <string name="label_reset_password">Reset Password</string>
     <string name="send_resetpassword_email">Send Email</string>
     <string name="today">Today</string>
-    <string name="notes_and_promies">NOTES AND PROMIES</string>
+    <string name="notes_and_promies">NOTES AND PROMISES</string>
+    <string name="draw">Draw</string>
+    <string name="record">Record</string>
+    <string name="text">Text</string>
 
 </resources>
