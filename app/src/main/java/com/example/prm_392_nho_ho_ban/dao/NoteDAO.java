@@ -85,10 +85,20 @@ public class NoteDAO {
         });
     }
 
+    public void createNote(FirebaseCallBack firebaseCallBack, Note note) {
+        db.collection("note").add(note).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                firebaseCallBack.onCallBack();
+            }
+        });
+    }
+
 
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
         void onCallBack();
+
     }
 
 }

@@ -53,9 +53,16 @@ public class OptionsMenuActivity extends AppCompatActivity {
                 return true;
             case R.id.itemAccount:
                 return true;
+            case R.id.itemText:
+                createNote();
+                break;
         }
         return true;
 
+    }
+
+    private void createNote() {
+        startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
     }
 
     @SuppressLint("NonConstantResourceId")

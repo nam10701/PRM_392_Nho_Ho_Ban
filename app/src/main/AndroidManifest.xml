@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM_392_Nho_Ho_Ban">
         <activity
+            android:name=".activity.AddNoteActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.OptionsMenuActivity"
             android:exported="false" />
         <activity
