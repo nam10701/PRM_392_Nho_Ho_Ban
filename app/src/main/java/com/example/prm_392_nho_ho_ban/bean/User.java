@@ -2,15 +2,11 @@ package com.example.prm_392_nho_ho_ban.bean;
 
 public class User {
     private int id;
-    private String username;
-    private String password;
-    private boolean isActive;
+    private String email;
 
-    public User(int id, String username, String password, boolean isActive) {
+    public User(int id, String email) {
         this.id = id;
-        this.username = username;
-        this.password = password;
-        this.isActive = isActive;
+        this.email = email;
     }
 
     public int getId() {
@@ -21,27 +17,11 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

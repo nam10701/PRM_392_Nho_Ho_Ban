@@ -1,11 +1,13 @@
 package com.example.prm_392_nho_ho_ban.dao;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,13 +38,10 @@ public class NoteDAO {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Timestamp ts = document.getTimestamp("date");
-//                            Date date = new Date(document.toObject(Note.class).getTime().getSeconds());
-//                            Log.i("=====", document.getId() + " => " + date);
-                            Note n = document.toObject(Note.class);
-                            n.setDate(ts);
-                            noteList.add(n);
-                            Log.i("========after",noteList.size()+"");
+                            Note note = document.toObject(Note.class);
+                            note.setDateCreate(document.getTimestamp("dateCreate"));
+                            note.setDateRemind(document.getTimestamp("dateRemind"));
+                            noteList.add(note);
                         }
                         firebaseCallBack.onCallBack(noteList);
                     }
@@ -51,6 +50,7 @@ public class NoteDAO {
 
     public void getAllNoteByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd) {
         ArrayList<Note> noteList = new ArrayList<>();
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         final long MILLI_SECOND_IN_DAY = 86400000;
         long timeDateEnd = dateEnd.getTime() + MILLI_SECOND_IN_DAY;
@@ -58,17 +58,16 @@ public class NoteDAO {
         Timestamp dateEndTimestamp;
         dateEndTimestamp = new Timestamp(new Date(timeDateEnd));
 
-        db.collection("note").whereGreaterThanOrEqualTo("date",dateStartTimestamp).whereLessThanOrEqualTo("date",dateEndTimestamp)
+        db.collection("note").whereGreaterThanOrEqualTo("dateRemind",dateStartTimestamp).whereLessThanOrEqualTo("dateRemind",dateEndTimestamp)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Timestamp ts = document.getTimestamp("date");
-                            Note n = document.toObject(Note.class);
-                            n.setId(document.getId());
-                            n.setDate(ts);
-                            noteList.add(n);
+                            Note note = document.toObject(Note.class);
+                            note.setDateCreate(document.getTimestamp("dateCreate"));
+                            note.setDateRemind(document.getTimestamp("dateRemind"));
+                            noteList.add(note);
                             Log.i("========after",noteList.size()+"");
                         }
                         firebaseCallBack.onCallBack(noteList);
@@ -81,7 +80,6 @@ public class NoteDAO {
         db.collection("note").add(note).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-
                 firebaseCallBack.onCallBack();
             }
         });
@@ -91,8 +89,6 @@ public class NoteDAO {
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
         void onCallBack();
-
-
     }
 
 }

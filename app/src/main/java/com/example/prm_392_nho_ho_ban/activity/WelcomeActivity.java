@@ -14,6 +14,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.auth.User;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -29,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class WelcomeActivity extends OptionsMenuActivity {
+
+    private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    public final static FirebaseUser USER = firebaseAuth.getCurrentUser();
+
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
     private DrawerLayout mdrawer;
@@ -62,7 +67,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
     private void addNote(View view) {
-        Note note = new Note("","test add ne","test add ne",new Timestamp(new Date()));
+        Note note = new Note("1","test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid());
         addNoteCallBack(note);
     }
 

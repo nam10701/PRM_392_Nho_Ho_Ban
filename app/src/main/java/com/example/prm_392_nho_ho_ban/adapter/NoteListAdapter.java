@@ -59,7 +59,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
 
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);
-        holder.tvDate.setText(sdf.format(new Date(mCurrent.getDate().getSeconds()*1000)));
+        holder.tvDate.setText(sdf.format(new Date(mCurrent.getDateRemind().getSeconds()*1000)));
 
     }
 
