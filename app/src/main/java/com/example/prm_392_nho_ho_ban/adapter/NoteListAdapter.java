@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
-import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +31,15 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         this.context = context;
         mInflater = LayoutInflater.from(context);
         this.noteList = noteList;
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void update(ArrayList<Note> datas){
+        noteList.clear();
+        noteList.addAll(datas);
+        notifyDataSetChanged();
+        Log.i("update","updateNe");
     }
 
     @NonNull
@@ -46,10 +54,12 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
     @Override
     public void onBindViewHolder(@NonNull NoteListAdapter.WordViewHolder holder, int position) {
         Note mCurrent = noteList.get(position);
+        String title = mCurrent.getTitle();
+        String content = mCurrent.getContent();
 
-        holder.tvNoteTitle.setText(mCurrent.getContent());
-        holder.tvNoteContent.setText(mCurrent.getContent());
-        holder.tvDate.setText(sdf.format(new Date(mCurrent.getTime().getSeconds()*1000)));
+        holder.tvNoteTitle.setText(title);
+        holder.tvNoteContent.setText(content);
+        holder.tvDate.setText(sdf.format(new Date(mCurrent.getDate().getSeconds()*1000)));
 
     }
 

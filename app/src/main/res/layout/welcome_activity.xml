@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/layoutDrawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.WelcomeActivity"
-        android:id="@+id/layoutDrawer">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal">
-            <include
-                layout="@layout/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-        </LinearLayout>
+        tools:context=".activity.WelcomeActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/display"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/nvBottom"
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/displayBottomNav"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:itemBackground="@color/Smalt"
-                app:itemIconTint="@color/white"
-                app:itemTextColor="@color/white"
-
+                android:background="@color/Smalt"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:menu="@menu/menu">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-            </com.google.android.material.bottomnavigation.BottomNavigationView>
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/nvBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:itemBackground="@color/Smalt"
+                    app:itemIconTint="@color/white"
+                    app:itemTextColor="@color/white"
+                    app:menu="@menu/menu">
+
+                </com.google.android.material.bottomnavigation.BottomNavigationView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/textView4"
@@ -46,29 +50,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/beamin"
-                android:text="@string/today"
+                android:text="@string/today_note_and_promises"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.098" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/beamin"
-                android:text="@string/notes_and_promies"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.151" />
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:layout_constraintVertical_bias="0.024" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/noteListRecyclerView"
@@ -76,20 +65,20 @@
                 android:layout_height="0dp"
                 android:layout_marginEnd="2dp"
                 android:padding="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/nvBottom"
+                app:layout_constraintBottom_toTopOf="@+id/displayBottomNav"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nvView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/nvView"
             android:layout_gravity="start"
-            app:menu="@menu/menu_drawer"
-            app:headerLayout="@layout/header_sidenav">
+            app:headerLayout="@layout/header_sidenav"
+            app:menu="@menu/menu_drawer">
 
         </com.google.android.material.navigation.NavigationView>
 

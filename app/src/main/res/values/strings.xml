@@ -32,5 +32,6 @@
     <string name="draw">Draw</string>
     <string name="record">Record</string>
     <string name="text">Text</string>
+    <string name="today_note_and_promises">Today note and promises</string>
 
 </resources>

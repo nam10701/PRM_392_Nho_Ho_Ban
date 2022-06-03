@@ -5,27 +5,29 @@ import com.google.firebase.Timestamp;
 import java.util.Date;
 
 public class Note {
-    private int id;
+    private String id;
     private String title;
     private String content;
-    private Timestamp time;
-
+    private Timestamp date;
+//    private Timestamp dateCreate;
+//    boolean alarm;
+//    private Timestamp dateRemind;
 
     public Note() {
     }
 
-    public Note(int id, String title, String content, Timestamp time) {
+    public Note(String id, String title, String content, Timestamp date) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.time = time;
+        this.date = date;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,11 +47,11 @@ public class Note {
         this.content = content;
     }
 
-    public Timestamp getTime() {
-        return time;
+    public Timestamp getDate() {
+        return date;
     }
 
-    public void setTime(Timestamp time) {
-        this.time = time;
+    public void setDate(Timestamp time) {
+        this.date = time;
     }
 }
