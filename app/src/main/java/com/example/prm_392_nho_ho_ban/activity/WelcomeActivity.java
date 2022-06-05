@@ -9,24 +9,28 @@ import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.schedulingservice.NotificationScheduling;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.auth.User;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class WelcomeActivity extends OptionsMenuActivity {
@@ -63,10 +67,20 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
         TextView btn = findViewById(R.id.textView4);
         btn.setOnClickListener(this::addNote);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, NotificationScheduling.class);
+        intent.putExtra("noteTitle","co note kia");
+        intent.putExtra("notificationId",1);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND,10);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        Log.i("Tagasd","asd");
     }
 
     private void addNote(View view) {
-        Note note = new Note("1","test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid());
+        Note note = new Note("1","  test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid());
         addNoteCallBack(note);
     }
 
