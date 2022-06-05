@@ -14,6 +14,10 @@ public class Note {
     public Note() {
     }
 
+    public Note(String id) {
+        this.id=id;
+    }
+
     public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId) {
         this.id = id;
         this.title = title;

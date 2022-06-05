@@ -37,7 +37,6 @@ public class EditNoteActivity extends AppCompatActivity {
     private TextView txtId;
 
     private FirebaseAuth firebaseAuth;
-//    private DatabaseReference databaseReference;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference noteRef = db.collection("note");
@@ -81,7 +80,6 @@ public class EditNoteActivity extends AppCompatActivity {
         String title = edtTitle.getText().toString().trim();
         String content = edtaNote.getText().toString().trim();
         String id = txtId.getText().toString().trim();
-
 
         if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
             updateNote(title,content, id);
@@ -129,10 +127,29 @@ public class EditNoteActivity extends AppCompatActivity {
             case R.id.menuNoticeNote:
                 break;
             case R.id.menuDeleteNote:
-
+                deleteNote();
                 break;
         }
         return true;
+    }
+
+    private void deleteNote() {
+        String id = txtId.getText().toString().trim();
+        deleteNoteCallBack(id);
+        Intent n = new Intent(this,WelcomeActivity.class);
+        startActivity(n);
+    }
+
+    private void deleteNoteCallBack(String id) {
+        NoteDAO nDAO = new NoteDAO();
+        nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @Override
+            public void onCallBack() {
+            }
+        }, id);
     }
 
     @Override

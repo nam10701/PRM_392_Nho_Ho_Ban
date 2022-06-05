@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".activity.EditNoteActivity">
 
+    <TextView
+        android:id="@+id/noteId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -17,12 +25,6 @@
             layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/noteId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:visibility="invisible" />
 
         <EditText
             android:id="@+id/edtTitleEdit"
