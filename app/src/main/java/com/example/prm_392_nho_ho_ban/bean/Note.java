@@ -1,9 +1,6 @@
 package com.example.prm_392_nho_ho_ban.bean;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Date;
 
 public class Note {
     private String id;

@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.AddNoteActivity">
-
-
+    tools:context=".activity.EditNoteActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -17,18 +16,24 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/noteId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:visibility="invisible" />
 
         <EditText
-            android:id="@+id/edtTitle"
+            android:id="@+id/edtTitleEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Transparent"
             android:ems="10"
             android:hint="Title"
             android:inputType="textPersonName"
-            android:textSize="40sp"
             android:padding="10dp"
+            android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +43,7 @@
             android:layout_height="1dp"
             android:alpha=".3"
             android:background="@color/black"
-            app:layout_constraintBottom_toTopOf="@+id/edtTitle"
+            app:layout_constraintBottom_toTopOf="@+id/edtTitleEdit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +51,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <EditText
-            android:id="@+id/edtaNote"
+            android:id="@+id/edtaNoteEdit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -61,12 +66,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edtTitle"
+            app:layout_constraintTop_toBottomOf="@+id/edtTitleEdit"
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <Button
-            android:id="@+id/btnSaveNote"
+            android:id="@+id/btnSaveNoteEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save" />

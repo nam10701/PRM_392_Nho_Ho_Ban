@@ -1,33 +1,26 @@
 package com.example.prm_392_nho_ho_ban.dao;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
 import com.example.prm_392_nho_ho_ban.bean.Note;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
-import java.lang.reflect.Array;
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class NoteDAO {
     private final FirebaseFirestore db =  FirebaseFirestore.getInstance();
+
+    private CollectionReference noteRef = db.collection("note");
+
     private ArrayList<Note> notes = new ArrayList<>();
 
     public void getAllNoteCallBack(FirebaseCallBack firebaseCallBack){
@@ -65,6 +58,7 @@ public class NoteDAO {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Note note = document.toObject(Note.class);
+                            note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
                             noteList.add(note);
@@ -92,6 +86,16 @@ public class NoteDAO {
                 firebaseCallBack.onCallBack();
             }
         });
+    }
+
+    public void updateNote(FirebaseCallBack firebaseCallBack, Note note, String id) {
+        db.collection("note").document(id).set(note)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        firebaseCallBack.onCallBack();
+                    }
+                });
     }
 
 
