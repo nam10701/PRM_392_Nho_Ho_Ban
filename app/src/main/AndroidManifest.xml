@@ -13,6 +13,9 @@
             android:name=".activity.EditNoteActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.CalendarActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddNoteActivity"
             android:exported="false" />
         <activity

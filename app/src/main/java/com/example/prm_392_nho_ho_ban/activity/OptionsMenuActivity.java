@@ -73,10 +73,16 @@ public class OptionsMenuActivity extends AppCompatActivity {
                 return true;
             case R.id.itemAccount:
                 return true;
+            case R.id.itemCalendar:
+                onClickCalendar();
+                return true;
         }
         return true;
     }
 
+    private void onClickCalendar(){
+        startActivity(new Intent(this, CalendarActivity.class));
+    }
     private void logout() {
         startActivity(new Intent(this, LogoutActivity.class));
     }

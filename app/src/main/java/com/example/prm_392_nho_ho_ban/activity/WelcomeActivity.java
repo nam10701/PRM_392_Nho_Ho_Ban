@@ -42,7 +42,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private Toolbar toolbar;
     private TextView tvEmailDisplay;
     private Date today;
-
     private RecyclerView noteRecyclerView;
     private NoteListAdapter noteListAdapter;
 

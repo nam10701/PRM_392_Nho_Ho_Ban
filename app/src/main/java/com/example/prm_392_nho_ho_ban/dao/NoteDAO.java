@@ -1,6 +1,7 @@
 package com.example.prm_392_nho_ho_ban.dao;
 
 import android.annotation.SuppressLint;
+
 import android.util.Log;
 
 import com.example.prm_392_nho_ho_ban.bean.Note;
@@ -13,6 +14,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -69,6 +72,8 @@ public class NoteDAO {
                 });
 
     }
+
+
 
     public void addNote(FirebaseCallBack firebaseCallBack, Note note) {
         db.collection("note").add(note).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
