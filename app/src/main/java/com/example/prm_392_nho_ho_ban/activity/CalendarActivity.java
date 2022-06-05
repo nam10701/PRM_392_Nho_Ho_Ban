@@ -27,11 +27,13 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 public class CalendarActivity extends OptionsMenuActivity {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     private MaterialCalendarView calendar;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
@@ -50,35 +52,35 @@ public class CalendarActivity extends OptionsMenuActivity {
 
 
     }
-    private void getNoteByMonth(int month, int year){
-        Date firstday; Date lastday;
+    private void getNoteByMonth(int month, int year) throws ParseException {
+        Date firstDay; Date lastDay;
+        String date = "1-" +month+"-"+year;
         NoteDAO noteDAO = new NoteDAO();
-        Calendar months = Calendar.getInstance(); months.set(year,month);
         Calendar fc = Calendar.getInstance();
-        fc.set(Calendar.DAY_OF_MONTH, 1); firstday = fc.getTime();
+        fc.setTime(sdf.parse(date));
+        fc.set(Calendar.DAY_OF_MONTH, 1); firstDay = fc.getTime();
         Calendar lc = Calendar.getInstance();
+        lc.setTime(sdf.parse(date));
         lc.add(Calendar.MONTH,1);
         lc.set(Calendar.DAY_OF_MONTH, 1); lc.add(Calendar.DATE,-1);
-        lastday = lc.getTime();
+        lastDay = lc.getTime();
         noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
                 noteListAdapter.update(noteList);
-                Log.i("hello",noteList.size()+"");
             }
-
             @Override
             public void onCallBack() {
 
             }
-        },firstday,lastday);
+        },firstDay,lastDay);
     }
     private void bindingAction() {
-        calendar.setOnMonthChangedListener(new OnMonthChangedListener() {
-            @Override
-            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-
+        calendar.setOnMonthChangedListener((widget, date) -> {
+            try {
                 getNoteByMonth(date.getMonth(),date.getYear());
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
     }
