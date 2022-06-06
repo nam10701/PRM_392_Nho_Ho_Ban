@@ -1,5 +1,6 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,12 +16,14 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +40,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
     private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public final static FirebaseUser USER = firebaseAuth.getCurrentUser();
+    public static ArrayList<Note> allNoteList = new ArrayList<>();
 
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
@@ -48,6 +52,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private Date today;
     private RecyclerView noteRecyclerView;
     private NoteListAdapter noteListAdapter;
+    private NoteDAO n = new NoteDAO();
 
     private void bindingUI() throws ParseException {
         nvDrawer = findViewById(R.id.nvView);
@@ -60,23 +65,14 @@ public class WelcomeActivity extends OptionsMenuActivity {
         setupDrawerContent(nvDrawer);
         setupBottomNavContent(nvBottom);
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
-
         noteRecyclerView = findViewById(R.id.noteListRecyclerView);
+        tvEmailDisplay.setText(USER.getEmail());
         today = sdf.parse(sdf.format(new Date()));
         showNoteByDay(today,today);
 
         TextView btn = findViewById(R.id.textView4);
         btn.setOnClickListener(this::addNote);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, NotificationScheduling.class);
-        intent.putExtra("noteTitle","co note kia");
-        intent.putExtra("notificationId",1);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND,10);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Log.i("Tagasd","asd");
+
     }
 
     private void addNote(View view) {
@@ -85,7 +81,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
     private void addNoteCallBack(Note note) {
-        NoteDAO n = new NoteDAO();
         n.addNote(new NoteDAO.FirebaseCallBack() {
 
             @Override
@@ -110,13 +105,16 @@ public class WelcomeActivity extends OptionsMenuActivity {
     public void showNoteByDay(Date startDate, Date endDate) {
         NoteDAO n = new NoteDAO();
         n.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack()  {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
+                allNoteList.addAll(noteList);
                 LinearLayoutManager verticalLayoutManager
                         = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
                 noteRecyclerView.setLayoutManager(verticalLayoutManager);
                 noteListAdapter = new NoteListAdapter(WelcomeActivity.this,noteList);
                 noteRecyclerView.setAdapter(noteListAdapter);
+                reSetTimerNotify();
             }
 
             @Override
@@ -129,9 +127,12 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private void bindingAction(){
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
+
         setContentView(R.layout.welcome_activity);
         try {
             bindingUI();
@@ -142,11 +143,39 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
     }
 
+    private void authorize() {
+        if(USER==null){
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            tvEmailDisplay.setText(user.getEmail());}
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void reSetTimerNotify(){
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent;
+        if(!allNoteList.isEmpty()){
+            for(Note note: allNoteList){
+                if(note.getDateRemind()!=null){
+                    intent = new Intent(this, NotificationScheduling.class);
+                    //xem lai id cua notify
+                    String noteJson = new Gson().toJson(note);
+                    intent.putExtra("noteJson",noteJson);
+                    intent.putExtra("action",NotificationScheduling.ACTION_BUILD_NOTIFY);
+                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                            PendingIntent.getService(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    long destinationTime = note.getDateRemind().getSeconds()*1000;
+                    long timer =destinationTime -  new Date().getTime();
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timer, pendingIntent);
+                }
+            }
+        }
     }
+
+}
+

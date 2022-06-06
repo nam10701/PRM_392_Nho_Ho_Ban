@@ -112,6 +112,24 @@ public class NoteDAO {
         });
     }
 
+    public void getAllNoteByUser(FirebaseCallBack firebaseCallBack) {
+        ArrayList<Note> noteList = new ArrayList<>();
+        db.collection("note")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Note note = document.toObject(Note.class);
+                            note.setDateCreate(document.getTimestamp("dateCreate"));
+                            note.setDateRemind(document.getTimestamp("dateRemind"));
+                            noteList.add(note);
+                        }
+                        firebaseCallBack.onCallBack(noteList);
+                    }
+                });
+    }
+
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
         void onCallBack();

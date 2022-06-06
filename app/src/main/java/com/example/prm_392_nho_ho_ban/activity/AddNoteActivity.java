@@ -1,9 +1,15 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -16,15 +22,19 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.schedulingservice.NotificationScheduling;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class AddNoteActivity extends AppCompatActivity {
-
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
     private EditText edtTitle;
     private EditText edtaNote;
     private Button btnSave;
@@ -44,14 +54,15 @@ public class AddNoteActivity extends AppCompatActivity {
         noteToolbar = findViewById(R.id.toolbar);
     }
 
-    public void bindingAction() {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void bindingAction()   {
         btnSave.setOnClickListener(this::onBtnSaveClick);
-
         setSupportActionBar(noteToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void onBtnSaveClick(View view) {
         String title = edtTitle.getText().toString().trim();
         String content = edtaNote.getText().toString().trim();
@@ -65,6 +76,22 @@ public class AddNoteActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setTimerNotify(Note note) {
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, NotificationScheduling.class);
+        //xem lai id cua notify
+        String noteJson = new Gson().toJson(note);
+        intent.putExtra("noteJson",noteJson);
+        intent.putExtra("action", NotificationScheduling.ACTION_BUILD_NOTIFY);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long destinationTime = note.getDateRemind().getSeconds()*1000;
+        long timer =destinationTime -  new Date().getTime();
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timer, pendingIntent);
+    }
+
+
     private void createNote(View view, String title, String content) {
         Note note = new Note("",title, content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid());
         createNoteCallBack(note);
@@ -76,8 +103,10 @@ public class AddNoteActivity extends AppCompatActivity {
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
             }
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack() {
+                setTimerNotify(note);
             }
         },note);
     }
@@ -108,6 +137,7 @@ public class AddNoteActivity extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
