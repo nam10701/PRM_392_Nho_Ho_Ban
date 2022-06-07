@@ -162,16 +162,21 @@ public class WelcomeActivity extends OptionsMenuActivity {
         if(!allNoteList.isEmpty()){
             for(Note note: allNoteList){
                 if(note.getDateRemind()!=null){
+                    long destinationTime = note.getDateRemind().getSeconds()*1000;
                     intent = new Intent(this, NotificationScheduling.class);
                     //xem lai id cua notify
                     String noteJson = new Gson().toJson(note);
                     intent.putExtra("noteJson",noteJson);
                     intent.putExtra("action",NotificationScheduling.ACTION_BUILD_NOTIFY);
                     @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getService(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    long destinationTime = note.getDateRemind().getSeconds()*1000;
-                    long timer =destinationTime -  new Date().getTime();
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timer, pendingIntent);
+                            PendingIntent.getService(this, allNoteList.indexOf(note)+1, intent, PendingIntent.FLAG_ONE_SHOT);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager
+                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                    } else {
+                        alarmManager
+                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                    }
                 }
             }
         }

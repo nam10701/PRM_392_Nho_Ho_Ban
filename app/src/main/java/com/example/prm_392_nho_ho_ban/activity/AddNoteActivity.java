@@ -88,7 +88,13 @@ public class AddNoteActivity extends AppCompatActivity {
                 PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long destinationTime = note.getDateRemind().getSeconds()*1000;
         long timer =destinationTime -  new Date().getTime();
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timer, pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager
+                    .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+        } else {
+            alarmManager
+                    .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+        }
     }
 
 
