@@ -33,5 +33,6 @@
     <string name="record">Record</string>
     <string name="text">Text</string>
     <string name="today_note_and_promises">Today note and promises</string>
+    <string name="month_notes">All notes in month</string>
 
 </resources>
