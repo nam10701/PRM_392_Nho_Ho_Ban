@@ -69,8 +69,8 @@ public class AddNoteActivity extends AppCompatActivity {
 
         if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
             createNote(view ,title, content);
-            Intent n = new Intent(this,WelcomeActivity.class);
-            startActivity(n);
+//            Intent n = new Intent(this,WelcomeActivity.class);
+//            startActivity(n);
         } else {
             Snackbar.make(view,"Please fill empty fields!", Snackbar.LENGTH_SHORT).show();
         }
@@ -99,7 +99,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
 
     private void createNote(View view, String title, String content) {
-        Note note = new Note("",title, content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid());
+        Note note = new Note("",title, content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
         createNoteCallBack(note);
     }
 
@@ -115,6 +115,7 @@ public class AddNoteActivity extends AppCompatActivity {
                 setTimerNotify(note);
             }
         },note);
+        finish();
     }
 
     @Override

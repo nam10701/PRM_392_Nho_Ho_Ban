@@ -151,6 +151,12 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
+    protected void onResume() {
+        super.onResume();
+        showNoteByDay(today,today);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
     }

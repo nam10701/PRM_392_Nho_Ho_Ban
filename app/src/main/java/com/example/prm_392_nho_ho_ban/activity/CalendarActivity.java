@@ -136,6 +136,22 @@ public class CalendarActivity extends OptionsMenuActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Date firstday; Date lastday;
+        Calendar fc = Calendar.getInstance();
+        fc.set(Calendar.DAY_OF_MONTH, 1);
+        firstday = fc.getTime();
+        Calendar lc = Calendar.getInstance();
+        lc.add(Calendar.MONTH, 1);
+        lc.set(Calendar.DAY_OF_MONTH, 1);
+        lc.add(Calendar.DATE, -1);
+        lastday = lc.getTime();
+        showNoteByDay(firstday,lastday);
+    }
+
     protected void onStart() {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

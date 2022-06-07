@@ -60,6 +60,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         String title = mCurrent.getTitle();
         String content = mCurrent.getContent();
 
+        holder.pin = mCurrent.getPin();
         holder.id = mCurrent.getId();
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);
@@ -79,6 +80,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         protected TextView tvNoteContent;
         protected TextView tvDate;
         protected String id;
+        protected boolean pin;
         protected View view;
 
         public WordViewHolder(@NonNull View itemView, NoteListAdapter adapter) {
@@ -98,6 +100,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
                 i.putExtra("title",tvNoteTitle.getText().toString());
                 i.putExtra("content",tvNoteContent.getText().toString());
                 i.putExtra("id",id);
+                i.putExtra("pin", pin);
                 v.getContext().startActivity(i);
 
 //            Intent intent = new Intent(context,NoteDetailActivity.class);

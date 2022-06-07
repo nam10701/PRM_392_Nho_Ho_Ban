@@ -10,6 +10,7 @@ public class Note {
     private boolean alarm;
     private Timestamp dateRemind;
     private String uId;
+    private boolean pin;
 
     public Note() {
     }
@@ -26,6 +27,17 @@ public class Note {
         this.alarm = alarm;
         this.dateRemind = dateRemind;
         this.uId = uId;
+    }
+
+    public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId, boolean pin) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.dateCreate = dateCreate;
+        this.alarm = alarm;
+        this.dateRemind = dateRemind;
+        this.uId = uId;
+        this.pin = pin;
     }
 
     public String getId() {
@@ -82,5 +94,13 @@ public class Note {
 
     public void setuId(String uId) {
         this.uId = uId;
+    }
+
+    public boolean getPin() {
+        return pin;
+    }
+
+    public void setPin(boolean pin) {
+        this.pin = pin;
     }
 }

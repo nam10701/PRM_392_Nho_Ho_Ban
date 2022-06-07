@@ -44,6 +44,8 @@ public class EditNoteActivity extends AppCompatActivity {
     private Toolbar noteToolbar;
     private Menu noteMenu;
 
+    private boolean notePin;
+
     public void bindingView() {
         edtTitle = findViewById(R.id.edtTitleEdit);
         edtaNote = findViewById(R.id.edtaNoteEdit);
@@ -71,9 +73,12 @@ public class EditNoteActivity extends AppCompatActivity {
         String title = receiveIntent.getStringExtra("title");
         String content = receiveIntent.getStringExtra("content");
         String id = receiveIntent.getStringExtra("id");
+        boolean pin = receiveIntent.getExtras().getBoolean("pin");
+//        edtTitle.setText(String.valueOf(pin));
         edtTitle.setText(title);
         edtaNote.setText(content);
         txtId.setText(id);
+        notePin = pin;
     }
 
     private void onBtnSaveClick(View view) {
@@ -83,15 +88,14 @@ public class EditNoteActivity extends AppCompatActivity {
 
         if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
             updateNote(title,content, id);
-            Intent n = new Intent(this,WelcomeActivity.class);
-            startActivity(n);
+
         } else {
             Snackbar.make(view,"Please fill empty fields!", Snackbar.LENGTH_SHORT).show();
         }
     }
 
     private void updateNote(String title, String content, String id) {
-        Note updateNote = new Note(id ,title,content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid());
+        Note updateNote = new Note(id ,title,content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
         updateNoteDataCallBack(updateNote, id);
     }
 
@@ -105,6 +109,7 @@ public class EditNoteActivity extends AppCompatActivity {
             public void onCallBack() {
             }
         },updateNote, id);
+        finish();
     }
 
     @Override
@@ -123,6 +128,7 @@ public class EditNoteActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.menuPinNote:
+                pinNote();
                 break;
             case R.id.menuNoticeNote:
                 break;
@@ -133,11 +139,33 @@ public class EditNoteActivity extends AppCompatActivity {
         return true;
     }
 
+    private void pinNote() {
+        String id = txtId.getText().toString().trim();
+        if(String.valueOf(notePin).equals("true")) {
+            notePin = false;
+            pinNoteCallBack(id,notePin);
+        }
+        else if(String.valueOf(notePin).equals("false")) {
+            notePin = true;
+            pinNoteCallBack(id,notePin);
+        }
+    }
+
+    private void pinNoteCallBack(String id, boolean notePin) {
+        NoteDAO nDAO = new NoteDAO();
+        nDAO.pinNote(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @Override
+            public void onCallBack() {
+            }
+        }, id, notePin);
+    }
+
     private void deleteNote() {
         String id = txtId.getText().toString().trim();
         deleteNoteCallBack(id);
-        Intent n = new Intent(this,WelcomeActivity.class);
-        startActivity(n);
     }
 
     private void deleteNoteCallBack(String id) {
@@ -148,8 +176,10 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
+
             }
         }, id);
+        finish();
     }
 
     @Override
