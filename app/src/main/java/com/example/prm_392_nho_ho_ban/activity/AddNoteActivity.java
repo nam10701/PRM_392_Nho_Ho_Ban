@@ -22,7 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
-import com.example.prm_392_nho_ho_ban.schedulingservice.NotificationScheduling;
+import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,9 +48,7 @@ public class AddNoteActivity extends AppCompatActivity {
         edtTitle = findViewById(R.id.edtTitle);
         edtaNote = findViewById(R.id.edtaNote);
         btnSave = findViewById(R.id.btnSaveNote);
-
         firebaseAuth = FirebaseAuth.getInstance();
-
         noteToolbar = findViewById(R.id.toolbar);
     }
 
@@ -79,21 +77,18 @@ public class AddNoteActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setTimerNotify(Note note) {
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, NotificationScheduling.class);
-        //xem lai id cua notify
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         String noteJson = new Gson().toJson(note);
         intent.putExtra("noteJson",noteJson);
-        intent.putExtra("action", NotificationScheduling.ACTION_BUILD_NOTIFY);
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long destinationTime = note.getDateRemind().getSeconds()*1000;
-        long timer =destinationTime -  new Date().getTime();
+                PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager
-                    .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                    .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
         } else {
             alarmManager
-                    .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                    .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
         }
     }
 

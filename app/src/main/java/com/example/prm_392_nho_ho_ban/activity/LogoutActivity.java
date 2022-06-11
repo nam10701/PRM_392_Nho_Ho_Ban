@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.prm_392_nho_ho_ban.schedulingservice.NotificationScheduling;
+import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutActivity extends AppCompatActivity {
@@ -19,11 +19,12 @@ public class LogoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, NotificationScheduling.class);
-        intent.putExtra("action", NotificationScheduling.ACTION_CANCEL_NOTIFY);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 1, intent, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, 100, pendingIntent);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), 1, myIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
 
         firebaseAuth.signOut();
         startActivity(new Intent(this, LoginActivity.class));

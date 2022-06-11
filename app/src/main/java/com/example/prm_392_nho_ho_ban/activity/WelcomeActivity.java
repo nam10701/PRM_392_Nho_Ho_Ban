@@ -10,7 +10,7 @@ import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
-import com.example.prm_392_nho_ho_ban.schedulingservice.NotificationScheduling;
+import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
@@ -33,7 +33,6 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class WelcomeActivity extends OptionsMenuActivity {
@@ -162,23 +161,21 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+
     private void reSetTimerNotify(){
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        Intent intent;
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         if(!allNoteList.isEmpty()){
             for(Note note: allNoteList){
                 if(note.getDateRemind()!=null){
-                    long destinationTime = note.getDateRemind().getSeconds()*1000;
-                    intent = new Intent(this, NotificationScheduling.class);
-                    //xem lai id cua notify
                     String noteJson = new Gson().toJson(note);
                     intent.putExtra("noteJson",noteJson);
-                    intent.putExtra("action",NotificationScheduling.ACTION_BUILD_NOTIFY);
                     @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getService(this, allNoteList.indexOf(note)+1, intent, PendingIntent.FLAG_ONE_SHOT);
+                            PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager
                                 .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+
                     } else {
                         alarmManager
                                 .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
@@ -186,6 +183,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
                 }
             }
         }
+
     }
 
 }
