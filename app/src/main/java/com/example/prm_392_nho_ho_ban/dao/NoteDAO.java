@@ -10,6 +10,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -64,8 +65,12 @@ public class NoteDAO {
                             note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
-                            noteList.add(note);
-                            Log.i("========after",noteList.size()+"");
+                            if(note.getPin() == false) {
+                                noteList.add(note);
+                                Log.i("========after",noteList.size()+"");
+                            }
+//                            noteList.add(note);
+//                            Log.i("========after",noteList.size()+"");
                         }
                         firebaseCallBack.onCallBack(noteList);
                     }
@@ -73,6 +78,37 @@ public class NoteDAO {
 
     }
 
+
+    public void getAllPinByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd) {
+        ArrayList<Note> noteList = new ArrayList<>();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+        final long MILLI_SECOND_IN_DAY = 86400000;
+        long timeDateEnd = dateEnd.getTime() + MILLI_SECOND_IN_DAY;
+        Timestamp dateStartTimestamp = new Timestamp(dateStart);
+        Timestamp dateEndTimestamp;
+        dateEndTimestamp = new Timestamp(new Date(timeDateEnd));
+
+        db.collection("note").whereGreaterThanOrEqualTo("dateRemind",dateStartTimestamp).whereLessThanOrEqualTo("dateRemind",dateEndTimestamp)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Note note = document.toObject(Note.class);
+                            note.setId(document.getId());
+                            note.setDateCreate(document.getTimestamp("dateCreate"));
+                            note.setDateRemind(document.getTimestamp("dateRemind"));
+                            if(note.getPin() == true) {
+                                noteList.add(note);
+                                Log.i("pin",noteList.size()+"");
+                            }
+                        }
+                        firebaseCallBack.onCallBack(noteList);
+                    }
+                });
+
+    }
 
 
     public void addNote(FirebaseCallBack firebaseCallBack, Note note) {

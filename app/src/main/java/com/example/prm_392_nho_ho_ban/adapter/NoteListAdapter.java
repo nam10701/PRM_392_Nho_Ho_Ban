@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.EditNoteActivity;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.Serializable;
@@ -60,6 +61,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         String title = mCurrent.getTitle();
         String content = mCurrent.getContent();
 
+        holder.createDate = mCurrent.getDateCreate().getSeconds()*1000;
+        holder.remindDate = mCurrent.getDateRemind().getSeconds()*1000;
         holder.pin = mCurrent.getPin();
         holder.id = mCurrent.getId();
         holder.tvNoteTitle.setText(title);
@@ -82,6 +85,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         protected String id;
         protected boolean pin;
         protected View view;
+        protected long createDate;
+        protected long remindDate;
 
         public WordViewHolder(@NonNull View itemView, NoteListAdapter adapter) {
             super(itemView);
@@ -101,6 +106,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
                 i.putExtra("content",tvNoteContent.getText().toString());
                 i.putExtra("id",id);
                 i.putExtra("pin", pin);
+                i.putExtra("create", createDate);
+                i.putExtra("remind", remindDate);
                 v.getContext().startActivity(i);
 
 //            Intent intent = new Intent(context,NoteDetailActivity.class);

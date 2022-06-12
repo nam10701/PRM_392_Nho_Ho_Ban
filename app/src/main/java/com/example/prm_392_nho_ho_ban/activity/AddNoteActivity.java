@@ -108,9 +108,9 @@ public class AddNoteActivity extends AppCompatActivity {
             @Override
             public void onCallBack() {
                 setTimerNotify(note);
+                finish();
             }
         },note);
-        finish();
     }
 
     @Override

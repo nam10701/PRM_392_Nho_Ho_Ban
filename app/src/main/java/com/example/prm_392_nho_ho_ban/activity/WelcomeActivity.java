@@ -50,7 +50,9 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private TextView tvEmailDisplay;
     private Date today;
     private RecyclerView noteRecyclerView;
+    private RecyclerView pinRecyclerView;
     private NoteListAdapter noteListAdapter;
+    private NoteListAdapter pinListAdapter;
     private NoteDAO n = new NoteDAO();
 
     private void bindingUI() throws ParseException {
@@ -65,9 +67,12 @@ public class WelcomeActivity extends OptionsMenuActivity {
         setupBottomNavContent(nvBottom);
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         noteRecyclerView = findViewById(R.id.noteListRecyclerView);
+        pinRecyclerView = findViewById(R.id.PinListRecyclerView);
         tvEmailDisplay.setText(USER.getEmail());
         today = sdf.parse(sdf.format(new Date()));
         showNoteByDay(today,today);
+        showPinByDay(today,today);
+
 
         TextView btn = findViewById(R.id.textView4);
         btn.setOnClickListener(this::addNote);
@@ -75,7 +80,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
     private void addNote(View view) {
-        Note note = new Note("1","  test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid());
+        Note note = new Note("1","  test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid(), false);
         addNoteCallBack(note);
     }
 
@@ -122,6 +127,27 @@ public class WelcomeActivity extends OptionsMenuActivity {
         },startDate, endDate);
     }
 
+    public void showPinByDay(Date startDate, Date endDate) {
+        NoteDAO n = new NoteDAO();
+        n.getAllPinByDayCallBack(new NoteDAO.FirebaseCallBack()  {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+                allNoteList.addAll(noteList);
+                LinearLayoutManager verticalLayoutManager
+                        = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
+                pinRecyclerView.setLayoutManager(verticalLayoutManager);
+                pinListAdapter = new NoteListAdapter(WelcomeActivity.this,noteList);
+                pinRecyclerView.setAdapter(pinListAdapter);
+                reSetTimerNotify();
+            }
+
+            @Override
+            public void onCallBack() {
+            }
+        },startDate, endDate);
+    }
+
 
     private void bindingAction(){
     }
@@ -153,6 +179,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     protected void onResume() {
         super.onResume();
         showNoteByDay(today,today);
+        showPinByDay(today, today);
     }
 
     @Override

@@ -45,6 +45,8 @@ public class EditNoteActivity extends AppCompatActivity {
     private Menu noteMenu;
 
     private boolean notePin;
+    private Timestamp createDate;
+    private Timestamp remindDate;
 
     public void bindingView() {
         edtTitle = findViewById(R.id.edtTitleEdit);
@@ -74,11 +76,15 @@ public class EditNoteActivity extends AppCompatActivity {
         String content = receiveIntent.getStringExtra("content");
         String id = receiveIntent.getStringExtra("id");
         boolean pin = receiveIntent.getExtras().getBoolean("pin");
+        Timestamp createTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("create")));
+        Timestamp remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
 //        edtTitle.setText(String.valueOf(pin));
         edtTitle.setText(title);
         edtaNote.setText(content);
         txtId.setText(id);
         notePin = pin;
+        createDate = createTime;
+        remindDate = remindTime;
     }
 
     private void onBtnSaveClick(View view) {
@@ -95,7 +101,7 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void updateNote(String title, String content, String id) {
-        Note updateNote = new Note(id ,title,content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
+        Note updateNote = new Note(id ,title,content, createDate, false, remindDate, WelcomeActivity.USER.getUid(), notePin);
         updateNoteDataCallBack(updateNote, id);
     }
 
@@ -107,9 +113,9 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
+                finish();
             }
         },updateNote, id);
-        finish();
     }
 
     @Override
@@ -159,6 +165,7 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
+                finish();
             }
         }, id, notePin);
     }
@@ -176,10 +183,9 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
-
+                finish();
             }
         }, id);
-        finish();
     }
 
     @Override
