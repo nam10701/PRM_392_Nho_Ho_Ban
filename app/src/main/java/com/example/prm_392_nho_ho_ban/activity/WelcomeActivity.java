@@ -192,6 +192,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private void reSetTimerNotify(){
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+
         if(!allNoteList.isEmpty()){
             for(Note note: allNoteList){
                 if(note.getDateRemind()!=null){
@@ -202,7 +203,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager
                                 .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
-
                     } else {
                         alarmManager
                                 .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);

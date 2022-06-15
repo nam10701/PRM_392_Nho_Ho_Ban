@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private void login(View view) {
        String email = edtEmail.getText().toString();
        String password = edtPassword.getText().toString();
+
         progressDialog.show();
        if(validate(email,password)){
        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

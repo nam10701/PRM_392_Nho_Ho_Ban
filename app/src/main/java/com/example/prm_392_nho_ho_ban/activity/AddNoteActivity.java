@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,6 +75,31 @@ public class AddNoteActivity extends AppCompatActivity {
         }
     }
 
+    private void createNote(View view, String title, String content) {
+        Note note = new Note("",title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
+        createNoteCallBack(note);
+    }
+
+    private void createNoteCallBack(Note note) {
+        NoteDAO nDAO = new NoteDAO();
+        nDAO.createNote(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onCallBack() {
+//                setTimerNotify(note);
+//                if(note.isAlarm()){
+//                    Log.i("ALARM","1");
+//                    setAlarm(note);
+//                }
+//                finish();
+            }
+        },note);
+        setAlarm(note);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setTimerNotify(Note note) {
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
@@ -92,25 +118,22 @@ public class AddNoteActivity extends AppCompatActivity {
         }
     }
 
-
-    private void createNote(View view, String title, String content) {
-        Note note = new Note("",title, content, new Timestamp(new Date()), false, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
-        createNoteCallBack(note);
-    }
-
-    private void createNoteCallBack(Note note) {
-        NoteDAO nDAO = new NoteDAO();
-        nDAO.createNote(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onCallBack() {
-                setTimerNotify(note);
-                finish();
-            }
-        },note);
+    private void setAlarm(Note note) {
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        String noteJson = new Gson().toJson(note);
+        intent.putExtra("noteJson",noteJson);
+        intent.setAction("Alarm");
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager
+                    .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        } else {
+            alarmManager
+                    .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.activity.AlarmActivity;
 import com.example.prm_392_nho_ho_ban.activity.EditNoteActivity;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.google.gson.Gson;
@@ -27,8 +29,17 @@ public class AlarmReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        Note note = retrieveNote(intent);
 
+        Log.i("ALARM","3");
+        if(intent.getAction()!=null){
+            Log.i("ALARM","2");
+            Intent alarmIntent = new Intent(context, AlarmActivity.class);
+            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alarmIntent.putExtra("noteJson", intent.getStringExtra("noteJson"));
+            context.startActivity(alarmIntent);
+
+        } else {
+        Note note = retrieveNote(intent);
         Intent intentClick = new Intent(context, EditNoteActivity.class);
         PendingIntent pending = PendingIntent.getActivity(
                 context, 0, intentClick, 0);
@@ -50,6 +61,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         int id = new Random().nextInt(1000);
         Log.i("RECEIVER",id+"");
         manager.notify(id,notification);
+        }
     }
 
     private Note retrieveNote(Intent intent){
