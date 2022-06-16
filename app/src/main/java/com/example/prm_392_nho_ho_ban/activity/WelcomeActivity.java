@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,7 +39,6 @@ import java.util.Date;
 public class WelcomeActivity extends OptionsMenuActivity {
 
     private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    public final static FirebaseUser USER = firebaseAuth.getCurrentUser();
     public static ArrayList<Note> allNoteList = new ArrayList<>();
 
     @SuppressLint("SimpleDateFormat")
@@ -68,43 +68,13 @@ public class WelcomeActivity extends OptionsMenuActivity {
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         noteRecyclerView = findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = findViewById(R.id.PinListRecyclerView);
-        tvEmailDisplay.setText(USER.getEmail());
+        tvEmailDisplay.setText(User.USER.getEmail());
         today = sdf.parse(sdf.format(new Date()));
         showNoteByDay(today,today);
         showPinByDay(today,today);
-
-
-        TextView btn = findViewById(R.id.textView4);
-        btn.setOnClickListener(this::addNote);
-
     }
 
-    private void addNote(View view) {
-        Note note = new Note("1","  test add ne","test add ne",new Timestamp(new Date()),true,new Timestamp(new Date()),USER.getUid(), false);
-        addNoteCallBack(note);
-    }
 
-    private void addNoteCallBack(Note note) {
-        n.addNote(new NoteDAO.FirebaseCallBack() {
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @Override
-            public void onCallBack() {
-                Toast.makeText(getApplicationContext(), "Add thành công", Toast.LENGTH_SHORT).show();
-                n.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
-                    @Override
-                    public void onCallBack(ArrayList<Note> noteList) {
-                        noteListAdapter.update(noteList);
-                    }
-                    @Override
-                    public void onCallBack() {
-                    }
-                },today,today);
-            }
-        },note);
-    }
 
     public void showNoteByDay(Date startDate, Date endDate) {
         NoteDAO n = new NoteDAO();
@@ -124,7 +94,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
             @Override
             public void onCallBack() {
             }
-        },startDate, endDate);
+        },startDate, endDate,User.USER);
     }
 
     public void showPinByDay(Date startDate, Date endDate) {
@@ -145,7 +115,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
             @Override
             public void onCallBack() {
             }
-        },startDate, endDate);
+        },startDate, endDate,true);
     }
 
 
@@ -169,7 +139,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
     private void authorize() {
-        if(USER==null){
+        if(User.USER==null){
             startActivity(new Intent(this, LoginActivity.class));
         }
     }

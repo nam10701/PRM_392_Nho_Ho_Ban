@@ -50,13 +50,12 @@ public class AlarmActivity extends AppCompatActivity implements SimpleGestureFil
     private SimpleGestureFilter detector;
     private Vibrator v;
     private MediaPlayer mPlayer;
-    private TextView tvDelay;
+    private Button btnDelay;
     private TextView tvTurnOff;
     private TextView tvCurrentDate;
     private TextView tvClock;
     private TextView tvTitle;
     private Note note;
-    private ProgressBar progressBar;
 private CountDownTimer cdt ;
     private float originDX;
     private float originDY;
@@ -68,11 +67,11 @@ private CountDownTimer cdt ;
     @SuppressLint("ClickableViewAccessibility")
     private void bindingAction(){
 
-        tvDelay.setOnLongClickListener(this::delay);
-
+        btnDelay.setOnLongClickListener(this::delay);
         loAlarm.setOnTouchListener(this::drag);
 
     }
+
 
 
     private boolean drag(View view, MotionEvent event) {
@@ -131,12 +130,11 @@ private CountDownTimer cdt ;
         note =  new Gson().fromJson(noteJson, Note.class);
         loAlarmRoot = findViewById(R.id.loAlarmRoot);
         loAlarm = findViewById(R.id.loAlarm);
-        tvDelay = findViewById(R.id.tvDelay);
+        btnDelay = findViewById(R.id.btnDelay);
         tvTurnOff = findViewById(R.id.tvTurnOff);
         tvCurrentDate = findViewById(R.id.tvCurrentDate);
         tvClock = findViewById(R.id.tvClock);
         tvTitle = findViewById(R.id.tvTitle);
-        progressBar = findViewById(R.id.progressBar);
         detector = new SimpleGestureFilter(AlarmActivity.this, this);
 
         tvCurrentDate.setText(sdf.format(new Date()));

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,7 +75,7 @@ public class CalendarActivity extends OptionsMenuActivity {
             public void onCallBack() {
 
             }
-        }, firstDay, lastDay);
+        }, firstDay, lastDay, User.USER);
     }
 
     private void bindingAction() {
@@ -118,7 +119,7 @@ public class CalendarActivity extends OptionsMenuActivity {
             @Override
             public void onCallBack() {
             }
-        }, startDate, endDate);
+        }, startDate, endDate,User.USER);
     }
     private void getAllEvent(ArrayList<Note> noteList){
         for (Note note: noteList){

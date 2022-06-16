@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
@@ -76,7 +77,7 @@ public class AddNoteActivity extends AppCompatActivity {
     }
 
     private void createNote(View view, String title, String content) {
-        Note note = new Note("",title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), WelcomeActivity.USER.getUid(), false);
+        Note note = new Note("",title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
         createNoteCallBack(note);
     }
 

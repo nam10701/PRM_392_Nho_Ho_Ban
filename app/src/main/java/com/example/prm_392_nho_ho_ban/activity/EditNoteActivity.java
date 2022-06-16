@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
@@ -101,7 +102,7 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void updateNote(String title, String content, String id) {
-        Note updateNote = new Note(id ,title,content, createDate, false, remindDate, WelcomeActivity.USER.getUid(), notePin);
+        Note updateNote = new Note(id ,title,content, createDate, false, remindDate, User.USER.getUid(), notePin);
         updateNoteDataCallBack(updateNote, id);
     }
 

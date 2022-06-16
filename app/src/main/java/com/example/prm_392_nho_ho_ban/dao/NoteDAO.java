@@ -7,16 +7,14 @@ import android.util.Log;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -45,7 +43,7 @@ public class NoteDAO {
                 });
     }
 
-    public void getAllNoteByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd) {
+    public void getAllNoteByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd, FirebaseUser user) {
         ArrayList<Note> noteList = new ArrayList<>();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
@@ -79,7 +77,7 @@ public class NoteDAO {
     }
 
 
-    public void getAllPinByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd) {
+    public void getAllPinByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd, boolean pin) {
         ArrayList<Note> noteList = new ArrayList<>();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
@@ -90,6 +88,7 @@ public class NoteDAO {
         dateEndTimestamp = new Timestamp(new Date(timeDateEnd));
 
         db.collection("note").whereGreaterThanOrEqualTo("dateRemind",dateStartTimestamp).whereLessThanOrEqualTo("dateRemind",dateEndTimestamp)
+                .whereEqualTo("pin",pin)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -99,10 +98,7 @@ public class NoteDAO {
                             note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
-                            if(note.getPin() == true) {
-                                noteList.add(note);
-                                Log.i("pin",noteList.size()+"");
-                            }
+                            noteList.add(note);
                         }
                         firebaseCallBack.onCallBack(noteList);
                     }

@@ -1,6 +1,12 @@
 package com.example.prm_392_nho_ho_ban.bean;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class User {
+    private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    public final static FirebaseUser USER = firebaseAuth.getCurrentUser();
+
     private int id;
     private String email;
 

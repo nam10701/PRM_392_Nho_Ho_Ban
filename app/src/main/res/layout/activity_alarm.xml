@@ -53,43 +53,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#5CFFFFFF"
-        tools:layout_editor_absoluteX="-185dp"
-        tools:layout_editor_absoluteY="160dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
-        <ProgressBar
-            android:visibility="invisible"
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:background="@drawable/circle_shape"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="0"
-            android:progressDrawable="@drawable/circular"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <Button
+            android:id="@+id/btnDelay"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="452dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/beamin"
+            android:text="@string/hold_delay"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.715" />
-
-        <TextView
-            android:id="@+id/tvDelay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="236dp"
-            android:text="@string/delay"
-            android:textColor="@color/white"
-            android:textSize="26sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTurnOff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/beamin"
             android:text="@string/swipe_up_to_turn_off"
             android:textColor="@color/white"
             android:textSize="30sp"
@@ -97,8 +81,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDelay"
-            app:layout_constraintVertical_bias="0.94" />
+            app:layout_constraintTop_toBottomOf="@+id/btnDelay"
+            app:layout_constraintVertical_bias="0.914" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
