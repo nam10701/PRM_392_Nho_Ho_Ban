@@ -90,15 +90,14 @@ public class AddNoteActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack() {
-//                setTimerNotify(note);
-//                if(note.isAlarm()){
-//                    Log.i("ALARM","1");
-//                    setAlarm(note);
-//                }
-//                finish();
+                setTimerNotify(note);
+                if(note.isAlarm()){
+                    Log.i("ALARM","1");
+                    setAlarm(note);
+                }
+                finish();
             }
         },note);
-        setAlarm(note);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
