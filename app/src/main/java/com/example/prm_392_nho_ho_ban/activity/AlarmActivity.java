@@ -18,6 +18,7 @@ import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -36,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -49,7 +51,7 @@ public class AlarmActivity extends AppCompatActivity implements SimpleGestureFil
     private ConstraintLayout loAlarmRoot;
     private SimpleGestureFilter detector;
     private Vibrator v;
-    private MediaPlayer mPlayer;
+    private MediaPlayer mPlayer = new MediaPlayer();
     private Button btnDelay;
     private TextView tvTurnOff;
     private TextView tvCurrentDate;
@@ -171,12 +173,27 @@ private CountDownTimer cdt ;
         // Start without a delay
         // Each element then alternates between vibrate, sleep, vibrate, sleep...
         long[] pattern = {0,800,200,1000,300,1000,200,2000};
+
         mPlayer = MediaPlayer.create(this,R.raw.spirit_of_the_night);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         mPlayer.setLooping(true);
-        mPlayer.start();
+        mPlayer.setAudioAttributes(
+                new AudioAttributes
+                        .Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build());
+        mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+               mp.start();
+            }
+        });
+
+        Log.i("Plain",mPlayer.isPlaying()+"");
+
+
         v.vibrate(pattern, 0);
     }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
@@ -211,6 +228,7 @@ private CountDownTimer cdt ;
     }
 
     private void turnOffAlarm() {
+        loAlarm.getBackground().setAlpha(255);
         finish();
         v.cancel();
         mPlayer.stop();
@@ -220,5 +238,12 @@ private CountDownTimer cdt ;
     @Override
     public void onDoubleTap() {
 
+    }
+
+
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        mPlayer.release();
     }
 }

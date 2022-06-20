@@ -18,6 +18,7 @@ import com.example.prm_392_nho_ho_ban.room_entities.User;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface RoomNoteDAO {
@@ -29,7 +30,7 @@ public interface RoomNoteDAO {
         public void delete(ArrayList<Note> list);
 
         @Query("SELECT * FROM note WHERE uId = :uId AND dateRemind>= :firstDay AND dateRemind<= :lastDay AND pin= :pin AND alarm= :alarm")
-        ArrayList<Note> getAllNoteByDay(Timestamp firstDay, Timestamp lastDay, String uId, boolean pin, boolean alarm);
+        List<Note> getAllNoteByDay(Timestamp firstDay, Timestamp lastDay, String uId, boolean pin, boolean alarm);
 
     }
 
