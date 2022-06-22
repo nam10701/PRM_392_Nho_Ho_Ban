@@ -1,5 +1,6 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -22,12 +24,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class CalendarActivity extends OptionsMenuActivity {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -37,7 +44,8 @@ public class CalendarActivity extends OptionsMenuActivity {
     private TextView tvEmailDisplay;
     private RecyclerView rvNote;
     private NoteListAdapter noteListAdapter;
-
+    private NoteDAO noteDAO = new NoteDAO();
+    private ArrayList<Note> monthNoteList = new ArrayList<>();
     private void bindingView() throws ParseException {
         calendar = findViewById(R.id.calendarView);
         toolbar = findViewById(R.id.toolbar);
@@ -52,7 +60,6 @@ public class CalendarActivity extends OptionsMenuActivity {
         Date firstDay;
         Date lastDay;
         String date = "1-" + month + "-" + year;
-        NoteDAO noteDAO = new NoteDAO();
         Calendar fc = Calendar.getInstance();
         fc.setTime(sdf.parse(date));
         fc.set(Calendar.DAY_OF_MONTH, 1);
@@ -68,7 +75,7 @@ public class CalendarActivity extends OptionsMenuActivity {
             public void onCallBack(ArrayList<Note> noteList) {
                 noteListAdapter.update(noteList);
                 getAllEvent(noteList);
-
+                monthNoteList = noteList;
             }
 
             @Override
@@ -84,6 +91,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     }
 
     private void bindingAction() {
+
         calendar.setOnMonthChangedListener((widget, date) -> {
             try {
                 getNoteByMonth(date.getMonth(), date.getYear());
@@ -91,6 +99,44 @@ public class CalendarActivity extends OptionsMenuActivity {
                 e.printStackTrace();
             }
         });
+
+        calendar.setOnDateChangedListener(this::getNoteByDay);
+
+    }
+
+    private void getNoteByDay(MaterialCalendarView materialCalendarView, CalendarDay date, boolean selected) {
+        final CalendarDay[] prevDay = {null};
+                String day = date.getDay() + "-" + date.getMonth() + "-" + date.getYear();
+                Date d = null;
+                try {
+                    d = sdf.parse(day);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (selected) {
+                    noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
+                        @Override
+                        public void onCallBack(ArrayList<Note> noteList) {
+                            noteListAdapter.update(noteList);
+                        }
+
+                        @Override
+                        public void onCallBack() {
+
+                        }
+
+                        @Override
+                        public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+                        }
+                    },d,d,User.USER);
+                    if (prevDay[0] != null && prevDay[0] != date) {
+                        calendar.setDateSelected(prevDay[0], false);
+                    }
+                    prevDay[0] = date;
+                } else {
+                    noteListAdapter.update(monthNoteList);
+                }
     }
 
     private void sideNav() {
@@ -118,9 +164,12 @@ public class CalendarActivity extends OptionsMenuActivity {
                         = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
                 rvNote.setLayoutManager(verticalLayoutManager);
                 noteListAdapter = new NoteListAdapter(CalendarActivity.this, noteList);
+
                 rvNote.setAdapter(noteListAdapter);
                 getAllEvent(noteList);
+                monthNoteList = noteList;
             }
+
             @Override
             public void onCallBack() {
             }
@@ -131,18 +180,19 @@ public class CalendarActivity extends OptionsMenuActivity {
             }
         }, startDate, endDate,User.USER);
     }
-    private void getAllEvent(ArrayList<Note> noteList){
-        for (Note note: noteList){
+
+    private void getAllEvent(ArrayList<Note> noteList) {
+        for (Note note : noteList) {
             ArrayList<CalendarDay> cd = new ArrayList<>();
-            Date date = new Date(note.getDateRemind().getSeconds()*1000);
-            String day          = (String) DateFormat.format("dd",   date);
-            String monthNumber  = (String) DateFormat.format("MM",   date);
-            String year         = (String) DateFormat.format("yyyy", date);
+            Date date = new Date(note.getDateRemind().getSeconds() * 1000);
+            String day = (String) DateFormat.format("dd", date);
+            String monthNumber = (String) DateFormat.format("MM", date);
+            String year = (String) DateFormat.format("yyyy", date);
             int yearParse = Integer.parseInt(year);
             int monthParse = Integer.parseInt(monthNumber);
             int dayParse = Integer.parseInt(day);
-            cd.add(CalendarDay.from(yearParse,monthParse,dayParse));
-            EventDecorator eventDecorator = new EventDecorator(cd,getApplicationContext());
+            cd.add(CalendarDay.from(yearParse, monthParse, dayParse));
+            EventDecorator eventDecorator = new EventDecorator(cd, getApplicationContext());
             calendar.addDecorator(eventDecorator);
         }
     }
@@ -151,7 +201,13 @@ public class CalendarActivity extends OptionsMenuActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Date firstday; Date lastday;
+        dayOfMonth();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void dayOfMonth() {
+        Date firstday;
+        Date lastday;
         Calendar fc = Calendar.getInstance();
         fc.set(Calendar.DAY_OF_MONTH, 1);
         firstday = fc.getTime();
@@ -160,7 +216,7 @@ public class CalendarActivity extends OptionsMenuActivity {
         lc.set(Calendar.DAY_OF_MONTH, 1);
         lc.add(Calendar.DATE, -1);
         lastday = lc.getTime();
-        showNoteByDay(firstday,lastday);
+        showNoteByDay(firstday, lastday);
     }
 
     protected void onStart() {
@@ -175,7 +231,6 @@ public class CalendarActivity extends OptionsMenuActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Date firstday; Date lastday;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);// get the reference of CalendarView
         try {
@@ -183,16 +238,9 @@ public class CalendarActivity extends OptionsMenuActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        calendarAction(); sideNav();
-        Calendar fc = Calendar.getInstance();
-        fc.set(Calendar.DAY_OF_MONTH, 1);
-        firstday = fc.getTime();
-        Calendar lc = Calendar.getInstance();
-        lc.add(Calendar.MONTH, 1);
-        lc.set(Calendar.DAY_OF_MONTH, 1);
-        lc.add(Calendar.DATE, -1);
-        lastday = lc.getTime();
-        showNoteByDay(firstday, lastday);
+        calendarAction();
+        sideNav();
+        dayOfMonth();
         bindingAction();
     }
 }

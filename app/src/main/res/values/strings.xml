@@ -33,7 +33,7 @@
     <string name="record">Record</string>
     <string name="text">Text</string>
     <string name="today_note_and_promises">Today note and promises</string>
-    <string name="month_notes">All notes in month</string>
+    <string name="month_notes">Notes</string>
     <string name="swipe_up_to_turn_off">SWIPE UP TO TURN OFF</string>
     <string name="textview">TextView</string>
     <string name="tap_to_delay">TAP TO DELAY</string>
