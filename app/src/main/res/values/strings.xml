@@ -39,5 +39,7 @@
     <string name="tap_to_delay">TAP TO DELAY</string>
     <string name="delay">DELAY</string>
     <string name="hold_delay">HOLD DELAY</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="all">All</string>
 
 </resources>

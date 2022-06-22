@@ -5,15 +5,20 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
+import com.example.prm_392_nho_ho_ban.adapter.VPAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,43 +46,53 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static ArrayList<Note> allNoteList = new ArrayList<>();
     @SuppressLint("SimpleDateFormat")
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
     private DrawerLayout mdrawer;
     private NavigationView nvDrawer;
     private BottomNavigationView nvBottom;
     private Toolbar toolbar;
     private TextView tvEmailDisplay;
-    private Date today;
-    private RecyclerView noteRecyclerView;
-    private RecyclerView pinRecyclerView;
-    private NoteListAdapter noteListAdapter;
-    private NoteListAdapter pinListAdapter;
-    private NoteDAO n = new NoteDAO();
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
 
     private void bindingUI() throws ParseException {
         nvDrawer = findViewById(R.id.nvView);
         nvBottom = findViewById(R.id.nvBottom);
         toolbar = findViewById(R.id.toolbar);
+        viewPager2 = findViewById(R.id.viewPagerWelcome);
         mdrawer = findViewById(R.id.layoutDrawer);
+        tabLayout = findViewById(R.id.tabLayoutWelcome);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
         setupDrawerContent(nvDrawer);
         setupBottomNavContent(nvBottom);
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
-        noteRecyclerView = findViewById(R.id.noteListRecyclerView);
-        pinRecyclerView = findViewById(R.id.PinListRecyclerView);
         tvEmailDisplay.setText(User.USER.getEmail());
-        today = sdf.parse(sdf.format(new Date()));
-        showNoteByDay(today,today);
-        showPinByDay(today,today);
+        reSet();
+        VPAdapter vpAdapter = new VPAdapter(this);
+        viewPager2.setAdapter(vpAdapter);
+            new TabLayoutMediator(tabLayout,viewPager2, (tab, position) ->{
+switch (position){
+    case 0:
+        tab.setText("TODAY");
+        break;
+    case 1:
+        tab.setText("ALL NOTE");
+        break;
+    case 2:
+        tab.setText("UPCOMING");
+        break;
+    }
+        }).attach();
+
     }
 
 
 
-    public void showNoteByDay(Date startDate, Date endDate) {
+
+    public void reSet() {
         NoteDAO n = new NoteDAO();
-        n.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack()  {
+        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack()  {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
@@ -93,38 +108,9 @@ public class WelcomeActivity extends OptionsMenuActivity {
             public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
             }
-        },startDate, endDate,User.USER);
+        },User.USER);
     }
 
-    public void showPinByDay(Date startDate, Date endDate) {
-        NoteDAO n = new NoteDAO();
-        n.getAllPinByDayCallBack(new NoteDAO.FirebaseCallBack()  {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-
-            @Override
-            public void onCallBack() {
-            }
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-                LinearLayoutManager verticalLayoutManager
-                        = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
-                pinRecyclerView.setLayoutManager(verticalLayoutManager);
-                pinListAdapter = new NoteListAdapter(WelcomeActivity.this,noteList);
-                pinRecyclerView.setAdapter(pinListAdapter);
-
-                LinearLayoutManager verticalLayoutManagerr
-                        = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
-                noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-                noteListAdapter = new NoteListAdapter(WelcomeActivity.this,noteUnpinList);
-                noteRecyclerView.setAdapter(noteListAdapter);
-
-            }
-        },startDate, endDate,true);
-    }
 
 
     private void bindingAction(){
@@ -156,8 +142,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showNoteByDay(today,today);
-        showPinByDay(today, today);
+
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,7 @@ public class NoteDAO {
 
     public void getAllNoteCallBack(FirebaseCallBack firebaseCallBack){
         ArrayList<Note> noteList = new ArrayList<>();
+        ArrayList<Note> noteUnpinList = new ArrayList<>();
         db.collection("note")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -36,9 +38,36 @@ public class NoteDAO {
                             Note note = document.toObject(Note.class);
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
-                            noteList.add(note);
+                            if(note.isPin()){
+                                noteList.add(note);
+                            }else{
+                                noteUnpinList.add(note);
+                            }
                         }
-                        firebaseCallBack.onCallBack(noteList);
+                        firebaseCallBack.onCallBack(noteList,noteUnpinList);
+                    }
+                });
+    }
+    public void getAllUpcomingNoteCallBack(FirebaseCallBack firebaseCallBack, FirebaseUser user){
+        ArrayList<Note> noteList = new ArrayList<>();
+        ArrayList<Note> noteUnpinList = new ArrayList<>();
+        Timestamp dateStartTimestamp = new Timestamp(new Date());
+        db.collection("note").whereGreaterThanOrEqualTo("dateRemind",dateStartTimestamp)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Note note = document.toObject(Note.class);
+                            note.setDateCreate(document.getTimestamp("dateCreate"));
+                            note.setDateRemind(document.getTimestamp("dateRemind"));
+                            if(note.isPin()){
+                                noteList.add(note);
+                            }else{
+                                noteUnpinList.add(note);
+                            }
+                        }
+                        firebaseCallBack.onCallBack(noteList, noteUnpinList);
                     }
                 });
     }
@@ -174,6 +203,8 @@ public class NoteDAO {
                     }
                 });
     }
+
+
 
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
