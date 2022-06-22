@@ -46,6 +46,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     private NoteListAdapter noteListAdapter;
     private NoteDAO noteDAO = new NoteDAO();
     private ArrayList<Note> monthNoteList = new ArrayList<>();
+    CalendarDay prevDay = null;
     private void bindingView() throws ParseException {
         calendar = findViewById(R.id.calendarView);
         toolbar = findViewById(R.id.toolbar);
@@ -105,7 +106,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     }
 
     private void getNoteByDay(MaterialCalendarView materialCalendarView, CalendarDay date, boolean selected) {
-        final CalendarDay[] prevDay = {null};
+
                 String day = date.getDay() + "-" + date.getMonth() + "-" + date.getYear();
                 Date d = null;
                 try {
@@ -130,10 +131,10 @@ public class CalendarActivity extends OptionsMenuActivity {
 
                         }
                     },d,d,User.USER);
-                    if (prevDay[0] != null && prevDay[0] != date) {
-                        calendar.setDateSelected(prevDay[0], false);
+                    if (prevDay != null && prevDay != date) {
+                        calendar.setDateSelected(prevDay, false);
                     }
-                    prevDay[0] = date;
+                    prevDay = date;
                 } else {
                     noteListAdapter.update(monthNoteList);
                 }
