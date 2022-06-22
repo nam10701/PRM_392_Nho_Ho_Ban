@@ -19,7 +19,7 @@ import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 
 import java.util.ArrayList;
-
+//sd
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentUpcomingNote#newInstance} factory method to
