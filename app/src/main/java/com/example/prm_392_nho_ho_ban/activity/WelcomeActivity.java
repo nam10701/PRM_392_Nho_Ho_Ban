@@ -40,7 +40,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
     private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static ArrayList<Note> allNoteList = new ArrayList<>();
-
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
     private DrawerLayout mdrawer;
@@ -83,16 +82,16 @@ public class WelcomeActivity extends OptionsMenuActivity {
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
                 allNoteList.addAll(noteList);
-                LinearLayoutManager verticalLayoutManager
-                        = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
-                noteRecyclerView.setLayoutManager(verticalLayoutManager);
-                noteListAdapter = new NoteListAdapter(WelcomeActivity.this,noteList);
-                noteRecyclerView.setAdapter(noteListAdapter);
                 reSetTimerNotify();
             }
 
             @Override
             public void onCallBack() {
+            }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
             }
         },startDate, endDate,User.USER);
     }
@@ -103,17 +102,26 @@ public class WelcomeActivity extends OptionsMenuActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
-                allNoteList.addAll(noteList);
+            }
+
+            @Override
+            public void onCallBack() {
+            }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
                 LinearLayoutManager verticalLayoutManager
                         = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
                 pinRecyclerView.setLayoutManager(verticalLayoutManager);
                 pinListAdapter = new NoteListAdapter(WelcomeActivity.this,noteList);
                 pinRecyclerView.setAdapter(pinListAdapter);
-                reSetTimerNotify();
-            }
 
-            @Override
-            public void onCallBack() {
+                LinearLayoutManager verticalLayoutManagerr
+                        = new LinearLayoutManager(WelcomeActivity.this, LinearLayoutManager.VERTICAL, false);
+                noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
+                noteListAdapter = new NoteListAdapter(WelcomeActivity.this,noteUnpinList);
+                noteRecyclerView.setAdapter(noteListAdapter);
+
             }
         },startDate, endDate,true);
     }

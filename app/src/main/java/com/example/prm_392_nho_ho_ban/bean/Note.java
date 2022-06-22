@@ -96,7 +96,7 @@ public class Note {
         this.uId = uId;
     }
 
-    public boolean getPin() {
+    public boolean isPin() {
         return pin;
     }
 

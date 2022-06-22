@@ -63,7 +63,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
 
         holder.createDate = mCurrent.getDateCreate().getSeconds()*1000;
         holder.remindDate = mCurrent.getDateRemind().getSeconds()*1000;
-        holder.pin = mCurrent.getPin();
+        holder.pin = mCurrent.isPin();
         holder.id = mCurrent.getId();
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);

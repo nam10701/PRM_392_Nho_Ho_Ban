@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.activity.SplashActivity.INTERNET_STATE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,7 +119,16 @@ public class EditNoteActivity extends AppCompatActivity {
             public void onCallBack() {
                 finish();
             }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+            }
         },updateNote, id);
+        if(!INTERNET_STATE){
+            Log.i("Internet Add","Yess");
+            finish();
+        }
     }
 
     @Override
@@ -168,6 +180,11 @@ public class EditNoteActivity extends AppCompatActivity {
             public void onCallBack() {
                 finish();
             }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+            }
         }, id, notePin);
     }
 
@@ -185,6 +202,11 @@ public class EditNoteActivity extends AppCompatActivity {
             @Override
             public void onCallBack() {
                 finish();
+            }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
             }
         }, id);
     }

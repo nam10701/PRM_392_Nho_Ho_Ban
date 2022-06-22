@@ -63,12 +63,11 @@ public class NoteDAO {
                             note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
-                            if(note.getPin() == false) {
+
                                 noteList.add(note);
                                 Log.i("========after",noteList.size()+"");
-                            }
-//                            noteList.add(note);
-//                            Log.i("========after",noteList.size()+"");
+
+
                         }
                         firebaseCallBack.onCallBack(noteList);
                     }
@@ -79,6 +78,7 @@ public class NoteDAO {
 
     public void getAllPinByDayCallBack(FirebaseCallBack firebaseCallBack, Date dateStart, Date dateEnd, boolean pin) {
         ArrayList<Note> noteList = new ArrayList<>();
+        ArrayList<Note> noteUnpinList = new ArrayList<>();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
         final long MILLI_SECOND_IN_DAY = 86400000;
@@ -88,7 +88,6 @@ public class NoteDAO {
         dateEndTimestamp = new Timestamp(new Date(timeDateEnd));
 
         db.collection("note").whereGreaterThanOrEqualTo("dateRemind",dateStartTimestamp).whereLessThanOrEqualTo("dateRemind",dateEndTimestamp)
-                .whereEqualTo("pin",pin)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -98,9 +97,13 @@ public class NoteDAO {
                             note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
-                            noteList.add(note);
+                            if(note.isPin()){
+                                noteList.add(note);
+                            }else{
+                                noteUnpinList.add(note);
+                            }
                         }
-                        firebaseCallBack.onCallBack(noteList);
+                        firebaseCallBack.onCallBack(noteList,noteUnpinList);
                     }
                 });
 
@@ -175,7 +178,7 @@ public class NoteDAO {
     public interface FirebaseCallBack{
         void onCallBack(ArrayList<Note> noteList);
         void onCallBack();
-
+        void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList);
     }
 
 }

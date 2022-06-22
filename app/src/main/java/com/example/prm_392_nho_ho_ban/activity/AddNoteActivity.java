@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.activity.SplashActivity.INTERNET_STATE;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,7 +99,16 @@ public class AddNoteActivity extends AppCompatActivity {
                 }
                 finish();
             }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+            }
         },note);
+        if(!INTERNET_STATE){
+            Log.i("Internet Add","Yess");
+            finish();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

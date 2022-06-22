@@ -75,6 +75,11 @@ public class CalendarActivity extends OptionsMenuActivity {
             public void onCallBack() {
 
             }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+            }
         }, firstDay, lastDay, User.USER);
     }
 
@@ -118,6 +123,11 @@ public class CalendarActivity extends OptionsMenuActivity {
             }
             @Override
             public void onCallBack() {
+            }
+
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
             }
         }, startDate, endDate,User.USER);
     }
