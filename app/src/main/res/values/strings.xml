@@ -41,5 +41,9 @@
     <string name="hold_delay">HOLD DELAY</string>
     <string name="upcoming">Upcoming</string>
     <string name="all">All</string>
+    <string name="today_s_notes_appear_here">Today\'s notes appear here</string>
+    <string name="all_notes_appear_here">All notes appear here</string>
+    <string name="upcoming_notes_appear_here">Upcoming notes appear here</string>
+    <string name="home">Home</string>
 
 </resources>

@@ -1,24 +1,19 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class OptionsMenuActivity extends AppCompatActivity {
     private DrawerLayout mdrawer;
@@ -48,10 +43,9 @@ public class OptionsMenuActivity extends AppCompatActivity {
 
     private boolean selectBottomItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.itemLogout:
-                logout();
+            case R.id.itemRecord:
                 return true;
-            case R.id.itemAccount:
+            case R.id.itemDraw:
                 return true;
             case R.id.itemText:
                 createNote();
@@ -61,17 +55,14 @@ public class OptionsMenuActivity extends AppCompatActivity {
 
     }
 
-    private void createNote() {
-        startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
-    }
-
     @SuppressLint("NonConstantResourceId")
     public boolean selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.itemLogout:
-                logout();
+            case R.id.itemHome:
+                onClickHome();
                 return true;
             case R.id.itemAccount:
+                onClickAccount();
                 return true;
             case R.id.itemCalendar:
                 onClickCalendar();
@@ -79,14 +70,21 @@ public class OptionsMenuActivity extends AppCompatActivity {
         }
         return true;
     }
+    private void onClickAccount(){
+        startActivity(new Intent(getApplicationContext(), AccountActivity.class));
+    }
+
+    private void onClickHome() {
+        startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+    }
+
+    private void createNote() {
+        startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
+    }
 
     private void onClickCalendar(){
         startActivity(new Intent(this, CalendarActivity.class));
     }
-    private void logout() {
-        startActivity(new Intent(this, LogoutActivity.class));
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

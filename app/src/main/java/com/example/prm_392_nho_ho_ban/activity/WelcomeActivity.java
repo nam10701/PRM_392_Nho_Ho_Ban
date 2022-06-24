@@ -1,15 +1,19 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.TextView;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
-import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.adapter.VPAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
@@ -19,34 +23,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class WelcomeActivity extends OptionsMenuActivity {
 
-    private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static ArrayList<Note> allNoteList = new ArrayList<>();
     @SuppressLint("SimpleDateFormat")
-    private DrawerLayout mdrawer;
     private NavigationView nvDrawer;
     private BottomNavigationView nvBottom;
     private Toolbar toolbar;
@@ -59,7 +46,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
         nvBottom = findViewById(R.id.nvBottom);
         toolbar = findViewById(R.id.toolbar);
         viewPager2 = findViewById(R.id.viewPagerWelcome);
-        mdrawer = findViewById(R.id.layoutDrawer);
         tabLayout = findViewById(R.id.tabLayoutWelcome);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

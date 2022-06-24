@@ -1,17 +1,14 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import androidx.annotation.NonNull;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.widget.TextView;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.view.View;
-import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
@@ -24,17 +21,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class CalendarActivity extends OptionsMenuActivity {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -128,7 +120,6 @@ public class CalendarActivity extends OptionsMenuActivity {
 
                         @Override
                         public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
                         }
                     },d,d,User.USER);
                     if (prevDay != null && prevDay != date) {

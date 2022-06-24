@@ -1,8 +1,24 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import static java.lang.System.currentTimeMillis;
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.KeyguardManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,36 +28,10 @@ import com.example.prm_392_nho_ho_ban.handler.SimpleGestureFilter;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.gson.Gson;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.KeyguardManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.os.Vibrator;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AlarmActivity extends AppCompatActivity implements SimpleGestureFilter.SimpleGestureListener {
+public class AlarmActivity extends AppCompatActivity{
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf = new SimpleDateFormat("dd,MMM,yyyy");
     @SuppressLint("SimpleDateFormat")
@@ -58,7 +48,6 @@ public class AlarmActivity extends AppCompatActivity implements SimpleGestureFil
     private TextView tvClock;
     private TextView tvTitle;
     private Note note;
-private CountDownTimer cdt ;
     private float originDX;
     private float originDY;
     private int lastAction;
@@ -66,14 +55,10 @@ private CountDownTimer cdt ;
     private float dY;
     private float screenHeight;
     private int opacity;
-    @SuppressLint("ClickableViewAccessibility")
     private void bindingAction(){
-
         btnDelay.setOnLongClickListener(this::delay);
         loAlarm.setOnTouchListener(this::drag);
-
     }
-
 
 
     private boolean drag(View view, MotionEvent event) {
@@ -137,7 +122,6 @@ private CountDownTimer cdt ;
         tvCurrentDate = findViewById(R.id.tvCurrentDate);
         tvClock = findViewById(R.id.tvClock);
         tvTitle = findViewById(R.id.tvTitle);
-        detector = new SimpleGestureFilter(AlarmActivity.this, this);
 
         tvCurrentDate.setText(sdf.format(new Date()));
         tvClock.setText(sdf2.format(new Date()));
@@ -202,30 +186,6 @@ private CountDownTimer cdt ;
         return super.dispatchTouchEvent(me);
     }
 
-    @Override
-    public void onSwipe(int direction) {
-
-        //Detect the swipe gestures and display toast
-        String showToastMessage = "";
-
-        switch (direction) {
-            case SimpleGestureFilter.SWIPE_RIGHT:
-                showToastMessage = "You have Swiped Right.";
-                break;
-            case SimpleGestureFilter.SWIPE_LEFT:
-                showToastMessage = "You have Swiped Left.";
-                break;
-            case SimpleGestureFilter.SWIPE_DOWN:
-                showToastMessage = "You have Swiped Down.";
-                break;
-            case SimpleGestureFilter.SWIPE_UP:
-                showToastMessage = "You have Swiped Up.";
-                turnOffAlarm();
-                break;
-
-        }
-        Toast.makeText(this, showToastMessage, Toast.LENGTH_SHORT).show();
-    }
 
     private void turnOffAlarm() {
         loAlarm.getBackground().setAlpha(255);
@@ -234,12 +194,6 @@ private CountDownTimer cdt ;
         mPlayer.stop();
         mPlayer.release();
             }
-
-    @Override
-    public void onDoubleTap() {
-
-    }
-
 
     protected void onPause() {
         // TODO Auto-generated method stub

@@ -12,7 +12,6 @@
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.113" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/ic_iphone_8___1.xml" value="0.113" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/spashscreen.xml" value="0.113" />
-        <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_add_note.xml" value="0.3625" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_calendar.xml" value="0.33" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_spash.xml" value="0.1529888551165147" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/header_sidenav.xml" value="0.15881458966565348" />
@@ -20,7 +19,6 @@
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/toolbar.xml" value="0.1762917933130699" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/welcome_activity.xml" value="0.1" />
         <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/menu/menu_drawer.xml" value="0.3145833333333333" />
-        <entry key="..\:/Study/ki 7/GitHub/PRM_392_Nho_Ho_Ban/app/src/main/res/menu/note_menu.xml" value="0.3625" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/background_login_screen.xml" value="0.143" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/button_primary.xml" value="0.1" />
@@ -31,14 +29,21 @@
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1165" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/ic_baseline_table_rows_24.xml" value="0.191" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_alarm.xml" value="0.1" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_calendar.xml" value="0.16" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_day_detail.xml" value="0.1" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_edit_note.xml" value="0.1" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/activity_main.xml" value="0.1796875" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/fragment_all_note.xml" value="0.18" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/fragment_today_note.xml" value="0.1" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/fragment_upcoming_note.xml" value="0.2" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/header_sidenav.xml" value="0.2" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/login_activity.xml" value="0.12" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/menu_drawer.xml" value="0.1" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/register_activity.xml" value="0.22" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/toolbar.xml" value="0.12" />
-        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/welcome_activity.xml" value="0.1" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/layout/welcome_activity.xml" value="0.22" />
+        <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/menu/menu.xml" value="0.1" />
         <entry key="..\:/Users/ADMN/AndroidStudioProjects/PRM_392_Nho_Ho_Ban/app/src/main/res/menu/menu_drawer.xml" value="0.15" />
       </map>
     </option>

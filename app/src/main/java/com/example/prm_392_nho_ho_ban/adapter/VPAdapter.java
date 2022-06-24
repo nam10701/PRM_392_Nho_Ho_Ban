@@ -23,11 +23,9 @@ public class VPAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position){
-            case 0:
-                return new FragmentTodayNote();
             case 1:
                 return new FragmentAllNote();
-            case 3:
+            case 2:
                 return new FragmentUpcomingNote();
             default:
                 return new FragmentTodayNote();

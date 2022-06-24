@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
@@ -38,6 +39,7 @@ public class FragmentAllNote extends Fragment {
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
     private NoteDAO n = new NoteDAO();
+    private TextView tvMes1;
     public FragmentAllNote() {
         super(R.layout.fragment_all_note);
     }
@@ -57,6 +59,7 @@ public class FragmentAllNote extends Fragment {
     }
 
     private void bindingUI(View view) {
+        tvMes1 = view.findViewById(R.id.tvMes1);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
 
@@ -67,19 +70,14 @@ public class FragmentAllNote extends Fragment {
                              Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_all_note, container, false);
-        bindingUI(view);
 
-        try {
-            today = sdf.parse(sdf.format(new Date()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        showPinByDay(today,today);
+        bindingUI(view);
+        showPinByDay();
 
         return view;
     }
 
-    public void showPinByDay(Date startDate, Date endDate) {
+    public void showPinByDay() {
         NoteDAO n = new NoteDAO();
         n.getAllNoteCallBack(new NoteDAO.FirebaseCallBack()  {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -104,7 +102,9 @@ public class FragmentAllNote extends Fragment {
                 noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
                 noteListAdapter = new NoteListAdapter(getActivity(),noteUnpinList);
                 noteRecyclerView.setAdapter(noteListAdapter);
-
+                if(noteList.isEmpty()&&noteUnpinList.isEmpty()){
+                    tvMes1.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

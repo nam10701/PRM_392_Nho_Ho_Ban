@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
@@ -36,6 +37,7 @@ public class FragmentTodayNote extends Fragment {
     private RecyclerView pinRecyclerView;
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
+    private TextView tvMes2;
     private NoteDAO n = new NoteDAO();
 
     public FragmentTodayNote() {
@@ -55,6 +57,7 @@ public class FragmentTodayNote extends Fragment {
 
     }
     private void bindingUI(View view) {
+        tvMes2 = view.findViewById(R.id.tvMes2);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
 
@@ -98,7 +101,9 @@ public class FragmentTodayNote extends Fragment {
                 noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
                 noteListAdapter = new NoteListAdapter(getActivity(),noteUnpinList);
                 noteRecyclerView.setAdapter(noteListAdapter);
-
+                if(noteList.isEmpty()&&noteUnpinList.isEmpty()){
+                    tvMes2.setVisibility(View.VISIBLE);
+                }
             }
         },startDate, endDate,true);
     }
