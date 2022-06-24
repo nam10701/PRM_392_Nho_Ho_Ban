@@ -1,12 +1,6 @@
 package com.example.prm_392_nho_ho_ban.room_entities;
 
-import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "user")
 public class User {
-    @PrimaryKey @NonNull
     private int id;
     private String email;
 

@@ -20,6 +20,7 @@ import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class FragmentAllNote extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static FragmentAllNote newInstance(String param1, String param2) {
+    public static FragmentAllNote newInstance() {
         FragmentAllNote fragment = new FragmentAllNote();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -78,7 +79,6 @@ public class FragmentAllNote extends Fragment {
     }
 
     public void showPinByDay() {
-        NoteDAO n = new NoteDAO();
         n.getAllNoteCallBack(new NoteDAO.FirebaseCallBack()  {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -107,6 +107,23 @@ public class FragmentAllNote extends Fragment {
                 }
             }
         });
+    }
+
+    public void updateAdapter(){
+        n.getAllNoteCallBack(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @Override
+            public void onCallBack() {
+            }
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                pinListAdapter.update(noteList);
+                noteListAdapter.update(noteUnpinList);
+            }
+        });
+
     }
 
 

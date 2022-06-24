@@ -1,17 +1,10 @@
 package com.example.prm_392_nho_ho_ban.room_entities;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
-
 import com.google.firebase.Timestamp;
 
-import java.sql.Time;
-
-@Entity(tableName = "note")
 public class Note {
-    @PrimaryKey @NonNull private String id;
+    private String id;
     private String title;
     private String content;
     private Timestamp dateCreate;

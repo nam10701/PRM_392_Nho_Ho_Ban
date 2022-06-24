@@ -24,7 +24,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
-import com.example.prm_392_nho_ho_ban.handler.SimpleGestureFilter;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.gson.Gson;
 
@@ -39,7 +38,6 @@ public class AlarmActivity extends AppCompatActivity{
 
     private ConstraintLayout loAlarm;
     private ConstraintLayout loAlarmRoot;
-    private SimpleGestureFilter detector;
     private Vibrator v;
     private MediaPlayer mPlayer = new MediaPlayer();
     private Button btnDelay;
@@ -176,14 +174,6 @@ public class AlarmActivity extends AppCompatActivity{
 
 
         v.vibrate(pattern, 0);
-    }
-
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent me) {
-        // Call onTouchEvent of SimpleGestureFilter class
-        this.detector.onTouchEvent(me);
-        return super.dispatchTouchEvent(me);
     }
 
 

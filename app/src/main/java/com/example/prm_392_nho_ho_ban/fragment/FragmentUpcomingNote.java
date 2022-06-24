@@ -93,4 +93,20 @@ public class FragmentUpcomingNote extends Fragment {
             }
         }, User.USER);
     }
+    public void updateAdapter(){
+        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @Override
+            public void onCallBack() {
+            }
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                pinListAdapter.update(noteList);
+                noteListAdapter.update(noteUnpinList);
+            }
+        },User.USER);
+
+    }
     }

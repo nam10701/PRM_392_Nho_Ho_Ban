@@ -117,6 +117,7 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
+                WelcomeActivity.updateFragment();
                 finish();
             }
 
@@ -201,6 +202,7 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
+                WelcomeActivity.updateFragment();
                 finish();
             }
 

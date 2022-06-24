@@ -39,7 +39,6 @@ public class FragmentTodayNote extends Fragment {
     private NoteListAdapter pinListAdapter;
     private TextView tvMes2;
     private NoteDAO n = new NoteDAO();
-
     public FragmentTodayNote() {
        super(R.layout.fragment_all_note);
     }
@@ -106,5 +105,21 @@ public class FragmentTodayNote extends Fragment {
                 }
             }
         },startDate, endDate,true);
+    }
+    public void updateAdapter(){
+        n.getAllPinByDayCallBack(new NoteDAO.FirebaseCallBack() {
+            @Override
+            public void onCallBack(ArrayList<Note> noteList) {
+            }
+            @Override
+            public void onCallBack() {
+            }
+            @Override
+            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                pinListAdapter.update(noteList);
+                noteListAdapter.update(noteUnpinList);
+            }
+        },today,today,true);
+
     }
 }

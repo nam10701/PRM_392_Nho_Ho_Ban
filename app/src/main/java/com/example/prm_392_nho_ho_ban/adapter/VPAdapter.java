@@ -13,7 +13,9 @@ import com.example.prm_392_nho_ho_ban.fragment.FragmentTodayNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentUpcomingNote;
 
 public class VPAdapter extends FragmentStateAdapter {
-
+    FragmentAllNote a;
+    FragmentUpcomingNote b;
+    FragmentTodayNote c;
     public VPAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -24,16 +26,28 @@ public class VPAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new FragmentAllNote();
+                return a = new FragmentAllNote();
             case 2:
-                return new FragmentUpcomingNote();
+                return b = new FragmentUpcomingNote();
             default:
-                return new FragmentTodayNote();
+                return c = new FragmentTodayNote();
         }
     }
+
 
     @Override
     public int getItemCount() {
         return 3;
+    }
+
+    public Fragment getItemByPosition(int position) {
+        switch (position){
+            case 1:
+                return a;
+            case 2:
+                return b;
+            default:
+                return c;
+        }
     }
 }

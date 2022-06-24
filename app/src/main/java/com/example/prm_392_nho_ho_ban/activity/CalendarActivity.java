@@ -3,6 +3,7 @@ package com.example.prm_392_nho_ho_ban.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -107,6 +108,7 @@ public class CalendarActivity extends OptionsMenuActivity {
                     e.printStackTrace();
                 }
                 if (selected) {
+                    Log.i("SIZE", monthNoteList.size()+"");
                     noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
                         @Override
                         public void onCallBack(ArrayList<Note> noteList) {
@@ -127,6 +129,7 @@ public class CalendarActivity extends OptionsMenuActivity {
                     }
                     prevDay = date;
                 } else {
+                    Log.i("SIZE", monthNoteList.size()+"");
                     noteListAdapter.update(monthNoteList);
                 }
     }
@@ -152,6 +155,8 @@ public class CalendarActivity extends OptionsMenuActivity {
         n.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
+                monthNoteList = noteList;
+                Log.i("SIZE", monthNoteList.size()+"");
                 LinearLayoutManager verticalLayoutManager
                         = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
                 rvNote.setLayoutManager(verticalLayoutManager);
@@ -159,7 +164,7 @@ public class CalendarActivity extends OptionsMenuActivity {
 
                 rvNote.setAdapter(noteListAdapter);
                 getAllEvent(noteList);
-                monthNoteList = noteList;
+
             }
 
             @Override

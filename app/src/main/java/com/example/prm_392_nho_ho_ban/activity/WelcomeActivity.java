@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -18,6 +19,9 @@ import com.example.prm_392_nho_ho_ban.adapter.VPAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentTodayNote;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentUpcomingNote;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -25,6 +29,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
+import com.google.rpc.context.AttributeContext;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -40,6 +45,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private TextView tvEmailDisplay;
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
+    private static VPAdapter vpAdapter;
 
     private void bindingUI() throws ParseException {
         nvDrawer = findViewById(R.id.nvView);
@@ -55,30 +61,45 @@ public class WelcomeActivity extends OptionsMenuActivity {
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         tvEmailDisplay.setText(User.USER.getEmail());
         reSet();
-        VPAdapter vpAdapter = new VPAdapter(this);
+        vpAdapter = new VPAdapter(this);
         viewPager2.setAdapter(vpAdapter);
-            new TabLayoutMediator(tabLayout,viewPager2, (tab, position) ->{
-switch (position){
-    case 0:
-        tab.setText("TODAY");
-        break;
-    case 1:
-        tab.setText("ALL NOTE");
-        break;
-    case 2:
-        tab.setText("UPCOMING");
-        break;
-    }
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("TODAY");
+                    break;
+                case 1:
+                    tab.setText("ALL NOTE");
+                    break;
+                case 2:
+                    tab.setText("UPCOMING");
+                    break;
+            }
         }).attach();
 
     }
 
+    public static void updateFragment() {
 
+        FragmentTodayNote a = (FragmentTodayNote) vpAdapter.getItemByPosition(0);
+        FragmentAllNote b = (FragmentAllNote) vpAdapter.getItemByPosition(1);
+        FragmentUpcomingNote c = (FragmentUpcomingNote) vpAdapter.getItemByPosition(2);
+        if (a != null) {
+            a.updateAdapter();
+        }
+        if (b != null) {
+            b.updateAdapter();
+        }
+        if (c != null) {
+            c.updateAdapter();
+        }
+
+    }
 
 
     public void reSet() {
         NoteDAO n = new NoteDAO();
-        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack()  {
+        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
@@ -94,12 +115,11 @@ switch (position){
             public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
             }
-        },User.USER);
+        }, User.USER);
     }
 
 
-
-    private void bindingAction(){
+    private void bindingAction() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -119,7 +139,7 @@ switch (position){
     }
 
     private void authorize() {
-        if(User.USER==null){
+        if (User.USER == null) {
             startActivity(new Intent(this, LoginActivity.class));
         }
     }
@@ -138,23 +158,23 @@ switch (position){
 
     @RequiresApi(api = Build.VERSION_CODES.O)
 
-    private void reSetTimerNotify(){
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+    private void reSetTimerNotify() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 
-        if(!allNoteList.isEmpty()){
-            for(Note note: allNoteList){
-                if(note.getDateRemind()!=null){
+        if (!allNoteList.isEmpty()) {
+            for (Note note : allNoteList) {
+                if (note.getDateRemind() != null) {
                     String noteJson = new Gson().toJson(note);
-                    intent.putExtra("noteJson",noteJson);
+                    intent.putExtra("noteJson", noteJson);
                     @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
                             PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager
-                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
                     } else {
                         alarmManager
-                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
+                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
                     }
                 }
             }
