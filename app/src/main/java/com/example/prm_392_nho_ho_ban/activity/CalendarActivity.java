@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
@@ -109,10 +110,11 @@ public class CalendarActivity extends OptionsMenuActivity {
                 }
                 if (selected) {
                     Log.i("SIZE", monthNoteList.size()+"");
-                    noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
+                    noteDAO.getAllNoteByDayCallBack2(new NoteDAO.FirebaseCallBack() {
                         @Override
                         public void onCallBack(ArrayList<Note> noteList) {
                             noteListAdapter.update(noteList);
+
                         }
 
                         @Override
@@ -123,7 +125,7 @@ public class CalendarActivity extends OptionsMenuActivity {
                         @Override
                         public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
                         }
-                    },d,d,User.USER);
+                    },d,d,User.USER,this);
                     if (prevDay != null && prevDay != date) {
                         calendar.setDateSelected(prevDay, false);
                     }

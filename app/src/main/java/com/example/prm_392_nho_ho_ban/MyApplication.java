@@ -3,11 +3,17 @@ package com.example.prm_392_nho_ho_ban;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MyApplication extends Application {
     public static final String CHANNEL_ID = "PRM391";
     public static final String CHANNEL_NAME = "PRM391";
+    public static boolean INTERNET_STATE;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -22,5 +28,16 @@ public class MyApplication extends Application {
                 manager.createNotificationChannel(channel);
             }
         }
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().getReference("note").keepSynced(true);
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            INTERNET_STATE = true;
+        }
+        else
+            INTERNET_STATE = false;
     }
 }
