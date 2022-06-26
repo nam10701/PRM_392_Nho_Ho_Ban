@@ -1,15 +1,28 @@
 package com.example.prm_392_nho_ho_ban.bean;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 import com.google.firebase.Timestamp;
 
+@Entity(tableName = "note")
 public class Note {
+    @PrimaryKey @NonNull
     private String id;
+    @ColumnInfo
     private String title;
+    @ColumnInfo
     private String content;
+    @ColumnInfo
     private Timestamp dateCreate;
+    @ColumnInfo
     private boolean alarm;
+    @ColumnInfo
     private Timestamp dateRemind;
+    @ColumnInfo
     private String uId;
+    @ColumnInfo
     private boolean pin;
 
     public Note() {
@@ -88,11 +101,11 @@ public class Note {
         this.dateRemind = dateRemind;
     }
 
-    public String getuId() {
+    public String getUId() {
         return uId;
     }
 
-    public void setuId(String uId) {
+    public void setUId(String uId) {
         this.uId = uId;
     }
 

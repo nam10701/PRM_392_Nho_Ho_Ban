@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.fragment;
 
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
+
 import android.os.Build;
 import android.os.Bundle;
 
@@ -18,8 +20,11 @@ import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
+import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 //sd
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +37,10 @@ public class FragmentUpcomingNote extends Fragment {
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
     private TextView tvMes3;
-    private NoteDAO n = new NoteDAO();
+    private Timestamp today;
+    private ArrayList<Note> pinList;
+    private ArrayList<Note> unPinList;
+    RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     public FragmentUpcomingNote() {
        super(R.layout.fragment_upcoming_note);
     }
@@ -53,60 +61,55 @@ public class FragmentUpcomingNote extends Fragment {
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
 
+        LinearLayoutManager verticalLayoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        pinRecyclerView.setLayoutManager(verticalLayoutManager);
+        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote(today));
+        pinRecyclerView.setAdapter(pinListAdapter);
+
+        LinearLayoutManager verticalLayoutManagerr
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
+        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote(today));
+        noteRecyclerView.setAdapter(noteListAdapter);
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming_note, container, false);
+        today = new Timestamp(new Date());
         bindingUI(view);
-        showUpcomingNote();
         return view;
     }
 
-    private void showUpcomingNote() {
-        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack()  {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-
-            @Override
-            public void onCallBack() {
-            }
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-                LinearLayoutManager verticalLayoutManager
-                        = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                pinRecyclerView.setLayoutManager(verticalLayoutManager);
-                pinListAdapter = new NoteListAdapter(getActivity(),noteList);
-                pinRecyclerView.setAdapter(pinListAdapter);
-
-                LinearLayoutManager verticalLayoutManagerr
-                        = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-                noteListAdapter = new NoteListAdapter(getActivity(),noteUnpinList);
-                noteRecyclerView.setAdapter(noteListAdapter);
-                if(noteList.isEmpty()&&noteUnpinList.isEmpty()){
-                    tvMes3.setVisibility(View.VISIBLE);
-                }
-            }
-        }, User.USER);
+    private ArrayList<Note> getPinNote(Timestamp today){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,true, User.USER.getUid());
+        return pinList;
     }
+
+    private ArrayList<Note> getUnpinNote(Timestamp today){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,false,User.USER.getUid());
+        return unPinList;
+    }
+
     public void updateAdapter(){
-        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @Override
-            public void onCallBack() {
-            }
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-                pinListAdapter.update(noteList);
-                noteListAdapter.update(noteUnpinList);
-            }
-        },User.USER);
+        pinListAdapter.update(getPinNote(today));
+        noteListAdapter.update(getUnpinNote(today));
+        checkEmpty();
+    }
 
+    private void checkEmpty(){
+        if(pinList.isEmpty()&&unPinList.isEmpty()){
+            tvMes3.setVisibility(View.VISIBLE);
+        }else{
+            tvMes3.setVisibility(View.INVISIBLE);
+        }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateAdapter();
     }
+}

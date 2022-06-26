@@ -43,7 +43,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
-
+    implementation  "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor  "android.arch.persistence.room:compiler:1.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'
