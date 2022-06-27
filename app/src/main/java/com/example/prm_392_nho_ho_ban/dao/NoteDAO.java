@@ -1,10 +1,12 @@
 package com.example.prm_392_nho_ho_ban.dao;
 
-import android.annotation.SuppressLint;
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,7 +16,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,36 @@ public class NoteDAO {
 
     private ArrayList<Note> notes = new ArrayList<>();
 
+    
+    public void syncRoomToFirebase(FirebaseCallBack firebaseCallBack){
+       ArrayList<Note> allNote= (ArrayList<Note>) dbRoom.createNoteDAO().getAllNote(User.USER.getUid());
+       for(Note note: allNote){
+           if(note.getId().length()>0){
+           db.collection("note").document(note.getId())
+                   .set(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+                       @Override
+                       public void onSuccess(Void unused) {
+                           firebaseCallBack.onCallBack();
+                       }
+                   });
+           }
+       }
+    }
+
+    public void syncFirebaseToRoom(FirebaseCallBack firebaseCallBack){
+        RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+        db.collection("note").whereEqualTo("uId",User.USER.getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    roomNoteDAO.insert(document.toObject(Note.class));
+                }
+                firebaseCallBack.onCallBack();
+            }
+        });
+
+    }
     public void getAllNoteCallBack(FirebaseCallBack firebaseCallBack){
         ArrayList<Note> noteList = new ArrayList<>();
         ArrayList<Note> noteUnpinList = new ArrayList<>();

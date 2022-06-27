@@ -4,17 +4,21 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
 import androidx.room.Room;
 
+import com.example.prm_392_nho_ho_ban.schedulingservice.InternetStateReceiver;
+
 public class MyApplication extends Application {
     public static final String CHANNEL_ID = "PRM391";
     public static final String CHANNEL_NAME = "PRM391";
     public static AppDatabase dbRoom;
     public static boolean INTERNET_STATE;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,4 +53,5 @@ public class MyApplication extends Application {
         }
        
     }
+
 }

@@ -3,12 +3,15 @@ package com.example.prm_392_nho_ho_ban.bean;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import com.google.firebase.Timestamp;
 
-@Entity(tableName = "note")
+@Entity(tableName = "note", primaryKeys = {"id","uId"},
+        indices = {@Index(value = {"id", "uId"},
+        unique = true)})
 public class Note {
-    @PrimaryKey @NonNull
+    @NonNull
     private String id;
     @ColumnInfo
     private String title;
@@ -20,7 +23,7 @@ public class Note {
     private boolean alarm;
     @ColumnInfo
     private Timestamp dateRemind;
-    @ColumnInfo
+    @ColumnInfo @NonNull
     private String uId;
     @ColumnInfo
     private boolean pin;

@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,15 +67,32 @@ public class LoginActivity extends AppCompatActivity {
     private void login(View view) {
        String email = edtEmail.getText().toString();
        String password = edtPassword.getText().toString();
-
+        progressDialog.setTitle("Verifying and fetching your data");
         progressDialog.show();
+
        if(validate(email,password)){
        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
            @Override
            public void onComplete(@NonNull Task<AuthResult> task) {
                progressDialog.dismiss();
                if(task.isSuccessful()){
-                  startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                   startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                   NoteDAO noteDAO = new NoteDAO();
+//                   noteDAO.syncFirebaseToRoom(new NoteDAO.FirebaseCallBack() {
+//                       @Override
+//                       public void onCallBack(ArrayList<Note> noteList) {
+//
+//                       }
+//
+//                       @Override
+//                       public void onCallBack() {
+//                           startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+//                       }
+//
+//                       @Override
+//                       public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+//                       }
+//                   });
                }else{
                    Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_LONG).show();
                }

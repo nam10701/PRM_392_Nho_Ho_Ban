@@ -1,10 +1,14 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -19,14 +23,17 @@ import com.example.prm_392_nho_ho_ban.adapter.VPAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentTodayNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentUpcomingNote;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
+import com.example.prm_392_nho_ho_ban.schedulingservice.InternetStateReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.rpc.context.AttributeContext;
@@ -76,7 +83,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
                     break;
             }
         }).attach();
-
     }
 
     public static void updateFragment() {
@@ -136,6 +142,19 @@ public class WelcomeActivity extends OptionsMenuActivity {
         }
         bindingAction();
 
+//        RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+//        Note note = roomNoteDAO.getLatestNote(User.USER.getUid());
+//        if(note!=null){
+//        String num = note.getId().split("_")[0];
+//        String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
+//        note.setId(newId);
+//        roomNoteDAO.insert(note);
+//        }else{
+//            Note notee = new Note("1_"+User.USER.getUid(),"first", "first", new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+//            roomNoteDAO.insert(notee);
+//
+//        }
+
     }
 
     private void authorize() {
@@ -154,10 +173,19 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        createBroadcast();
     }
 
+    private void createBroadcast(){
+        InternetStateReceiver internetStateReceiver = new InternetStateReceiver();
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+            registerReceiver(internetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            registerReceiver(internetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
-
     private void reSetTimerNotify() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);

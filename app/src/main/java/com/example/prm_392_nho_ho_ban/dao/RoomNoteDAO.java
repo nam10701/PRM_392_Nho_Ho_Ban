@@ -3,6 +3,7 @@ package com.example.prm_392_nho_ho_ban.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Dao
 public interface RoomNoteDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Note note);
     @Delete
     void delete(Note note);
@@ -36,6 +37,8 @@ public interface RoomNoteDAO {
     @Query("SELECT * FROM note WHERE pin = :isPin AND uId = :uId")
     List<Note> getAllPin(boolean isPin, String uId);
 
+    @Query("SELECT * FROM note WHERE uId = :uId ORDER BY dateCreate DESC LIMIT 1")
+    Note getLatestNote(String uId);
 
 
 }

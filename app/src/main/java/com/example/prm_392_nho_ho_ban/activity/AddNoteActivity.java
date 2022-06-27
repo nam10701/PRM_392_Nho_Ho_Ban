@@ -1,13 +1,8 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import static com.example.prm_392_nho_ho_ban.activity.SplashActivity.INTERNET_STATE;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -21,13 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
-import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;

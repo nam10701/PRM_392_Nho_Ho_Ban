@@ -1,6 +1,6 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import static com.example.prm_392_nho_ho_ban.activity.SplashActivity.INTERNET_STATE;
+import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
