@@ -14,20 +14,20 @@ public class User {
 
     @PrimaryKey
     @NonNull
-    private int id;
+    private String id;
     @ColumnInfo
     private String email;
 
-    public User(int id, String email) {
+    public User(String id, String email) {
         this.id = id;
         this.email = email;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

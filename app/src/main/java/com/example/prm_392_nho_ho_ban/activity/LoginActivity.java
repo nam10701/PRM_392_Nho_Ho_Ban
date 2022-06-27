@@ -17,8 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvForgot;
     private Button btnLogin;
     private Button btnRegister;
+    private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -88,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                        @Override
                        public void onCallBack() {
                            WelcomeActivity.updateFragment();
+                           roomUserDAO.insert(new User(USER.getUid(),USER.getEmail()));
                        }
 
                        @Override

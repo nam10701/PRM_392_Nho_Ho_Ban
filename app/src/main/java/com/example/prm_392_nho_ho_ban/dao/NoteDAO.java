@@ -46,7 +46,7 @@ public class NoteDAO {
     public void syncFirebaseToRoom(FirebaseCallBack firebaseCallBack, String uId){
         RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
         Log.i("CheckID",uId+"");
-        db.collection("note").whereEqualTo("uId",uId)
+        db.collection("note").whereEqualTo("uid",uId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

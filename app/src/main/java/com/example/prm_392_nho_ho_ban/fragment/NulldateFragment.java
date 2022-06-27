@@ -16,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.prm_392_nho_ho_ban.AppDatabase;
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
@@ -24,37 +26,39 @@ import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.firebase.Timestamp;
 
-
-import java.sql.Time;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentTodayNote#newInstance} factory method to
+ * Use the {@link FragmentAllNote#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTodayNote extends Fragment {
+public class NulldateFragment extends Fragment {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-    private Timestamp todayTS;
+    private Date today;
     private RecyclerView noteRecyclerView;
     private RecyclerView pinRecyclerView;
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
-    private TextView tvMes2;
+    private NoteDAO n = new NoteDAO();
+    private TextView tvMes0;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
-
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
-    public FragmentTodayNote() {
-       super(R.layout.fragment_all_note);
+    public NulldateFragment() {
+        super(R.layout.fragment_all_note);
     }
 
-    public static FragmentTodayNote newInstance(String param1, String param2) {
-        FragmentTodayNote fragment = new FragmentTodayNote();
+
+    // TODO: Rename and change types and number of parameters
+    public static FragmentAllNote newInstance() {
+        FragmentAllNote fragment = new FragmentAllNote();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -63,65 +67,61 @@ public class FragmentTodayNote extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
     private void bindingUI(View view) {
-        tvMes2 = view.findViewById(R.id.tvMes2);
+        tvMes0 = view.findViewById(R.id.tvMes0);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
 
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pinRecyclerView.setLayoutManager(verticalLayoutManager);
-        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote(todayTS,todayTS));
+        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote());
         pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote(todayTS,todayTS));
+        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote());
         noteRecyclerView.setAdapter(noteListAdapter);
-
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            todayTS = new Timestamp(new Date());
-        View view = inflater.inflate(R.layout.fragment_today_note, container, false);
-        bindingUI(view);
 
+        View view =  inflater.inflate(R.layout.fragment_nulldate, container, false);
+        bindingUI(view);
         return view;
     }
 
-    private ArrayList<Note> getPinNote(Timestamp startDate, Timestamp endDate){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,true, User.USER.getUid());
+    private ArrayList<Note> getPinNote(){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),null,true);
         return pinList;
     }
 
-    private ArrayList<Note> getUnpinNote(Timestamp startDate, Timestamp endDate){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,false,User.USER.getUid());
+    private ArrayList<Note> getUnpinNote(){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),null,false);
         return unPinList;
     }
 
     public void updateAdapter(){
-        long todayendTS =(todayTS.getSeconds()*1000+86400000)-((todayTS.getSeconds()*1000+86400000)%86400000);
-                pinListAdapter.update(getPinNote(todayTS,new Timestamp(new Date(todayendTS))));
-                noteListAdapter.update(getUnpinNote(todayTS,new Timestamp(new Date(todayendTS))));
-                checkEmpty();
+        pinListAdapter.update(getPinNote());
+        noteListAdapter.update(getUnpinNote());
+        checkEmpty();
     }
-
 
     private void checkEmpty(){
         if(pinList.isEmpty()&&unPinList.isEmpty()){
-            tvMes2.setVisibility(View.VISIBLE);
+            tvMes0.setVisibility(View.VISIBLE);
         }else{
-            tvMes2.setVisibility(View.INVISIBLE);
+            tvMes0.setVisibility(View.INVISIBLE);
         }
     }
-
     @Override
     public void onResume() {
         super.onResume();
-       updateAdapter();
+        updateAdapter();
     }
 }

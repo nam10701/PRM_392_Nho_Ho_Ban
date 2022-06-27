@@ -27,6 +27,7 @@ import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentTodayNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentUpcomingNote;
+import com.example.prm_392_nho_ho_ban.fragment.NulldateFragment;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.example.prm_392_nho_ho_ban.schedulingservice.InternetStateReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -73,23 +74,29 @@ public class WelcomeActivity extends OptionsMenuActivity {
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("TODAY");
+                    tab.setText("");
                     break;
                 case 1:
-                    tab.setText("ALL NOTE");
+                    tab.setText("Today");
                     break;
                 case 2:
-                    tab.setText("UPCOMING");
+                    tab.setText("ALL NOTE");
+                    break;
+                case 3:
+                    tab.setText("COMING");
                     break;
             }
         }).attach();
     }
 
     public static void updateFragment() {
-
-        FragmentTodayNote a = (FragmentTodayNote) vpAdapter.getItemByPosition(0);
-        FragmentAllNote b = (FragmentAllNote) vpAdapter.getItemByPosition(1);
-        FragmentUpcomingNote c = (FragmentUpcomingNote) vpAdapter.getItemByPosition(2);
+        NulldateFragment z = (NulldateFragment) vpAdapter.getItemByPosition(0);
+        FragmentTodayNote a = (FragmentTodayNote) vpAdapter.getItemByPosition(1);
+        FragmentAllNote b = (FragmentAllNote) vpAdapter.getItemByPosition(2);
+        FragmentUpcomingNote c = (FragmentUpcomingNote) vpAdapter.getItemByPosition(3);
+        if (z != null) {
+            z.updateAdapter();
+        }
         if (a != null) {
             a.updateAdapter();
         }

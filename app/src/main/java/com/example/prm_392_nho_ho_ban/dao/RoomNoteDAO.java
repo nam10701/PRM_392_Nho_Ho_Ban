@@ -25,6 +25,9 @@ public interface RoomNoteDAO {
     @Query("SELECT * FROM note WHERE uId = :uId")
     List<Note> getAllNote(String uId);
 
+    @Query("SELECT * FROM note WHERE uId = :uId AND dateRemind = :timestamp AND pin = :isPin")
+    List<Note> getAllNotRemindNote(String uId, Timestamp timestamp, boolean isPin);
+
     @Query("SELECT * FROM note WHERE dateRemind > :date AND uId = :uId AND pin= :isPin")
     List<Note> getAllUpcomingNote(Timestamp date,boolean isPin, String uId);
 

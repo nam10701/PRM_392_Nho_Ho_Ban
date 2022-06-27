@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
@@ -42,7 +43,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     private RecyclerView rvNote;
     private NoteListAdapter noteListAdapter;
     private NoteDAO noteDAO = new NoteDAO();
-    private ArrayList<Note> monthNoteList = new ArrayList<>();
+    private ArrayList<Note> monthNoteList;
     CalendarDay prevDay = null;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private void bindingView() throws ParseException {
@@ -93,21 +94,22 @@ public class CalendarActivity extends OptionsMenuActivity {
     private void getNoteByDay(MaterialCalendarView materialCalendarView, CalendarDay date, boolean selected) {
 
                 String day = date.getDay() + "-" + date.getMonth() + "-" + date.getYear();
-                Date d = null;
+                Date firstDay = null;
+                Date lastDay = null;
                 try {
-                    d = sdf.parse(day);
+                    firstDay = sdf.parse(day);
+                    lastDay = new Date(firstDay.getTime() + 86400000);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 if (selected) {
-                    ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(d), new Timestamp(d), User.USER.getUid());
+                    ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
                     noteListAdapter.update(noteLit);
                     if (prevDay != null && prevDay != date) {
                         calendar.setDateSelected(prevDay, false);
                     }
                     prevDay = date;
                 } else {
-                    Log.i("SIZE", monthNoteList.size()+"");
                     noteListAdapter.update(monthNoteList);
                 }
     }
@@ -131,8 +133,6 @@ public class CalendarActivity extends OptionsMenuActivity {
     private void showNoteByDay(Date startDate, Date endDate) {
         NoteDAO n = new NoteDAO();
         ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(startDate), new Timestamp(endDate), User.USER.getUid());
-        monthNoteList = noteLit;
-        Log.i("SIZE", monthNoteList.size()+"");
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
         rvNote.setLayoutManager(verticalLayoutManager);
@@ -167,17 +167,18 @@ public class CalendarActivity extends OptionsMenuActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void dayOfMonth() {
-        Date firstday;
-        Date lastday;
+        Date firstDay;
+        Date lastDay;
         Calendar fc = Calendar.getInstance();
         fc.set(Calendar.DAY_OF_MONTH, 1);
-        firstday = fc.getTime();
+        firstDay = fc.getTime();
         Calendar lc = Calendar.getInstance();
         lc.add(Calendar.MONTH, 1);
         lc.set(Calendar.DAY_OF_MONTH, 1);
         lc.add(Calendar.DATE, -1);
-        lastday = lc.getTime();
-        showNoteByDay(firstday, lastday);
+        lastDay = lc.getTime();
+        showNoteByDay(firstDay, lastDay);
+        monthNoteList = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
     }
 
     protected void onStart() {
