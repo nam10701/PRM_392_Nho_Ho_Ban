@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -16,7 +18,9 @@ import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -40,6 +44,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     private NoteDAO noteDAO = new NoteDAO();
     private ArrayList<Note> monthNoteList = new ArrayList<>();
     CalendarDay prevDay = null;
+    RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private void bindingView() throws ParseException {
         calendar = findViewById(R.id.calendarView);
         toolbar = findViewById(R.id.toolbar);
@@ -64,24 +69,11 @@ public class CalendarActivity extends OptionsMenuActivity {
         lc.set(Calendar.DAY_OF_MONTH, 1);
         lc.add(Calendar.DATE, -1);
         lastDay = lc.getTime();
-        noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-                noteListAdapter.update(noteList);
-                getAllEvent(noteList);
-                monthNoteList = noteList;
-            }
+        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
+        noteListAdapter.update(noteLit);
+        getAllEvent(noteLit);
+        monthNoteList = noteLit;
 
-            @Override
-            public void onCallBack() {
-
-            }
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
-            }
-        }, firstDay, lastDay, User.USER);
     }
 
     private void bindingAction() {
@@ -108,22 +100,8 @@ public class CalendarActivity extends OptionsMenuActivity {
                     e.printStackTrace();
                 }
                 if (selected) {
-                    Log.i("SIZE", monthNoteList.size()+"");
-                    noteDAO.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
-                        @Override
-                        public void onCallBack(ArrayList<Note> noteList) {
-                            noteListAdapter.update(noteList);
-                        }
-
-                        @Override
-                        public void onCallBack() {
-
-                        }
-
-                        @Override
-                        public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-                        }
-                    },d,d,User.USER);
+                    ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(d), new Timestamp(d), User.USER.getUid());
+                    noteListAdapter.update(noteLit);
                     if (prevDay != null && prevDay != date) {
                         calendar.setDateSelected(prevDay, false);
                     }
@@ -152,30 +130,16 @@ public class CalendarActivity extends OptionsMenuActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showNoteByDay(Date startDate, Date endDate) {
         NoteDAO n = new NoteDAO();
-        n.getAllNoteByDayCallBack(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-                monthNoteList = noteList;
-                Log.i("SIZE", monthNoteList.size()+"");
-                LinearLayoutManager verticalLayoutManager
-                        = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
-                rvNote.setLayoutManager(verticalLayoutManager);
-                noteListAdapter = new NoteListAdapter(CalendarActivity.this, noteList);
+        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(startDate), new Timestamp(endDate), User.USER.getUid());
+        monthNoteList = noteLit;
+        Log.i("SIZE", monthNoteList.size()+"");
+        LinearLayoutManager verticalLayoutManager
+                = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
+        rvNote.setLayoutManager(verticalLayoutManager);
+        noteListAdapter = new NoteListAdapter(CalendarActivity.this, noteLit);
 
-                rvNote.setAdapter(noteListAdapter);
-                getAllEvent(noteList);
-
-            }
-
-            @Override
-            public void onCallBack() {
-            }
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
-            }
-        }, startDate, endDate,User.USER);
+        rvNote.setAdapter(noteListAdapter);
+        getAllEvent(noteLit);
     }
 
     private void getAllEvent(ArrayList<Note> noteList) {
