@@ -1,6 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -21,11 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
+
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
@@ -47,6 +53,11 @@ public class AddNoteActivity extends AppCompatActivity {
 
     private Toolbar noteToolbar;
     private Menu noteMenu;
+
+    private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+
+    FragmentSetNotify fragmentSetNotify;
+    FragmentManager fragmentManager;
 
     public void bindingView() {
         edtTitle = findViewById(R.id.edtTitle);
@@ -78,26 +89,40 @@ public class AddNoteActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNote(View view, String title, String content) {
-        Note note = new Note("",title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+        Note latestNote = roomNoteDAO.getLatestNote(User.USER.getUid());
+        Note note;
+        if(latestNote!=null){
+            String num = latestNote.getId().split("_")[0];
+            String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
+            note = new Note(newId, title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+        }else{
+            note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+        }
         createNoteCallBack(note);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNoteCallBack(Note note) {
         NoteDAO nDAO = new NoteDAO();
-        nDAO.createNote(new NoteDAO.FirebaseCallBack() {
+        roomNoteDAO.insert(note);
+        if(note.getDateRemind()!=null){
+            setTimerNotify(note);}
+        if(note.isAlarm()){
+            Log.i("ALARM","1");
+            setAlarm(note);
+        }
+        WelcomeActivity.updateFragment();
+        if(INTERNET_STATE) {
+        nDAO.syncRoomToFirebase(new NoteDAO.FirebaseCallBack() {
             @Override
             public void onCallBack(ArrayList<Note> noteList) {
+
             }
-            @RequiresApi(api = Build.VERSION_CODES.O)
+
             @Override
             public void onCallBack() {
-                setTimerNotify(note);
-                if(note.isAlarm()){
-                    Log.i("ALARM","1");
-                    setAlarm(note);
-                }
-                WelcomeActivity.updateFragment();
                 finish();
             }
 
@@ -105,11 +130,8 @@ public class AddNoteActivity extends AppCompatActivity {
             public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
             }
-        },note);
-        if(!INTERNET_STATE){
-            Log.i("Internet Add","Yess");
-            finish();
-        }
+        });
+        } else finish();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

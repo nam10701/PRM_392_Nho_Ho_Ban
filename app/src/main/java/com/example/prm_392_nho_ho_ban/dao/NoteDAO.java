@@ -43,12 +43,14 @@ public class NoteDAO {
        }
     }
 
-    public void syncFirebaseToRoom(FirebaseCallBack firebaseCallBack){
+    public void syncFirebaseToRoom(FirebaseCallBack firebaseCallBack, String uId){
         RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
-        db.collection("note").whereEqualTo("uId",User.USER.getUid())
+        Log.i("CheckID",uId+"");
+        db.collection("note").whereEqualTo("uId",uId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                Log.i("TungDT", queryDocumentSnapshots.size()+ " ");
                 for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                     roomNoteDAO.insert(document.toObject(Note.class));
                 }
@@ -67,6 +69,7 @@ public class NoteDAO {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Note note = document.toObject(Note.class);
+                            note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
                             if(note.isPin()){
@@ -90,6 +93,7 @@ public class NoteDAO {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Note note = document.toObject(Note.class);
+                            note.setId(document.getId());
                             note.setDateCreate(document.getTimestamp("dateCreate"));
                             note.setDateRemind(document.getTimestamp("dateRemind"));
                             if(note.isPin()){

@@ -5,6 +5,9 @@ import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,17 +19,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -52,6 +61,12 @@ public class EditNoteActivity extends AppCompatActivity {
     private Timestamp createDate;
     private Timestamp remindDate;
 
+    private String timeRemindPick;
+    private String dateRemindPick;
+
+    FragmentSetNotify fragmentSetNotify;
+    FragmentManager fragmentManager;
+
     public void bindingView() {
         edtTitle = findViewById(R.id.edtTitleEdit);
         edtaNote = findViewById(R.id.edtaNoteEdit);
@@ -62,6 +77,7 @@ public class EditNoteActivity extends AppCompatActivity {
 
         noteToolbar = findViewById(R.id.toolbar);
 
+        fragmentManager = getSupportFragmentManager();
     }
 
     public void bindingAction() {
@@ -89,6 +105,36 @@ public class EditNoteActivity extends AppCompatActivity {
         notePin = pin;
         createDate = createTime;
         remindDate = remindTime;
+
+    }
+
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof FragmentSetNotify) {
+             fragmentSetNotify= (FragmentSetNotify) fragment;
+            fragmentSetNotify.setOnBtnSaveClickListener(this::setDateTimeRemind);
+        }
+    }
+
+    private void setDateTimeRemind(String datePick, String timePick) {
+        Log.i("TungDt","check :" + datePick + "; " +timePick);
+        if(datePick.length()>=0 && timePick.length()>=0) {
+            timeRemindPick = timePick;
+            dateRemindPick = datePick;
+            String toDate = datePick +" "+ timePick;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date date = null;
+            try {
+                date = sdf.parse(toDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Timestamp ts = new Timestamp(date);
+            remindDate = ts;
+        }
+        else remindDate = null;
+        //        edtaNote.setText(dateRemindPick);
     }
 
     private void onBtnSaveClick(View view) {
@@ -151,12 +197,18 @@ public class EditNoteActivity extends AppCompatActivity {
                 pinNote();
                 break;
             case R.id.menuNoticeNote:
+                onNotifySelect();
                 break;
             case R.id.menuDeleteNote:
                 deleteNote();
                 break;
         }
         return true;
+    }
+
+    private void onNotifySelect() {
+        fragmentSetNotify = new FragmentSetNotify();
+        fragmentSetNotify.show(fragmentManager, "NotifyFragment");
     }
 
     private void pinNote() {
@@ -179,7 +231,6 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             @Override
             public void onCallBack() {
-                finish();
             }
 
             @Override

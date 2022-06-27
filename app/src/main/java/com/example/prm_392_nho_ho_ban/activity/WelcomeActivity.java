@@ -134,6 +134,8 @@ public class WelcomeActivity extends OptionsMenuActivity {
         super.onCreate(savedInstanceState);
         authorize();
 
+        createBroadcast();
+
         setContentView(R.layout.welcome_activity);
         try {
             bindingUI();
@@ -173,7 +175,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        createBroadcast();
+
     }
 
     private void createBroadcast(){

@@ -30,7 +30,7 @@ public class InternetStateReceiver extends BroadcastReceiver {
         final android.net.NetworkInfo mobile = connMgr
                 .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        if (isOnline(context) && !INTERNET_STATE) {
+        if (isOnline(context) && INTERNET_STATE) {
             INTERNET_STATE = true;
             Toast.makeText(context, "You're currently online", Toast.LENGTH_LONG).show();
             NoteDAO noteDAO = new NoteDAO();
