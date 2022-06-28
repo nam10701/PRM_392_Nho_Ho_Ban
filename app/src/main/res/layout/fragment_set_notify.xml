@@ -60,6 +60,13 @@
                 android:textSize="14sp"
                 tools:ignore="MissingPrefix,SpeakableTextPresentCheck" />
 
+            <Switch
+                android:id="@+id/swAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="Set Alarm" />
+
             <Button
                 android:id="@+id/btnConfirm"
                 android:layout_width="match_parent"

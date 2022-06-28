@@ -9,12 +9,15 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -42,10 +45,13 @@ public class FragmentSetNotify extends DialogFragment {
     private TextView noteRemindTime;
     private Button remindConfirm;
 
+    private Switch setAlarm;
+
     private DatePickerDialog.OnDateSetListener setListener;
 
     private String remindDate;
     private String remindTime;
+    private boolean checkAlarm;
 
     private int nHour, nMinute;
 
@@ -61,10 +67,11 @@ public class FragmentSetNotify extends DialogFragment {
         noteRemindDate = view.findViewById(R.id.noteRemindDate);
         noteRemindTime = view.findViewById(R.id.noteRemindTime);
         remindConfirm = view.findViewById(R.id.btnConfirm);
+        setAlarm = view.findViewById(R.id.swAlarm);
     }
 
     public interface OnBtnSaveClickListener {
-        void onClick(String date, String time);
+        void onClick(String date, String time, boolean alarm);
     }
 
     private OnBtnSaveClickListener callback;
@@ -77,6 +84,14 @@ public class FragmentSetNotify extends DialogFragment {
         noteRemindTime.setOnClickListener(this::onTimeSelect);
         noteRemindDate.setOnClickListener(this::onDateSelect);
         remindConfirm.setOnClickListener(this::onBtnConfirmClick);
+        setAlarm.setOnCheckedChangeListener(this::onAlarmSwitchChange);
+    }
+
+    private void onAlarmSwitchChange(CompoundButton compoundButton, boolean alarmState) {
+        if (alarmState) {
+            checkAlarm = true;
+        } else checkAlarm = false;
+        Log.i("CheckSwitch", checkAlarm +" ");
     }
 
     private void onDateSelect(View view) {
@@ -123,7 +138,7 @@ public class FragmentSetNotify extends DialogFragment {
             remindDate = noteRemindDate.getText().toString();
             remindTime = noteRemindTime.getText().toString();
             if(this.callback!=null) {
-                this.callback.onClick(remindDate, remindTime);
+                this.callback.onClick(remindDate, remindTime, checkAlarm);
                 closeFragment();
             }
         } else closeFragment();

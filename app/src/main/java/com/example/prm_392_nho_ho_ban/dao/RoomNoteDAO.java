@@ -43,6 +43,7 @@ public interface RoomNoteDAO {
     @Query("SELECT * FROM note WHERE uId = :uId ORDER BY dateCreate DESC LIMIT 1")
     Note getLatestNote(String uId);
 
-
+    @Query("SELECT * FROM note WHERE uId = :uId AND id = :nId")
+    Note getSelectedNote(String uId, String nId);
 }
 

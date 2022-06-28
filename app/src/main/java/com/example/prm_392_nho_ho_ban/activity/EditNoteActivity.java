@@ -1,6 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
+import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
@@ -64,8 +66,12 @@ public class EditNoteActivity extends AppCompatActivity {
     private String timeRemindPick;
     private String dateRemindPick;
 
+    private boolean setAlarm;
+
     FragmentSetNotify fragmentSetNotify;
     FragmentManager fragmentManager;
+
+    private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
 
     public void bindingView() {
         edtTitle = findViewById(R.id.edtTitleEdit);
@@ -117,7 +123,7 @@ public class EditNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void setDateTimeRemind(String datePick, String timePick) {
+    private void setDateTimeRemind(String datePick, String timePick, boolean alarm) {
         Log.i("TungDt","check :" + datePick + "; " +timePick);
         if(datePick.length()>=0 && timePick.length()>=0) {
             timeRemindPick = timePick;
@@ -132,8 +138,12 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             Timestamp ts = new Timestamp(date);
             remindDate = ts;
+            setAlarm = alarm;
         }
-        else remindDate = null;
+        else  {
+            remindDate = null;
+            setAlarm = false;
+        }
         //        edtaNote.setText(dateRemindPick);
     }
 
@@ -151,31 +161,36 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void updateNote(String title, String content, String id) {
-        Note updateNote = new Note(id ,title,content, createDate, false, remindDate, User.USER.getUid(), notePin);
+//        Note selectedNote = roomNoteDAO.getSelectedNote(User.USER.getUid(), id);
+//        Note note = new Note(id, title, content, createDate, false, remindDate, User.USER.getUid(), notePin);
+        Note updateNote = new Note(id ,title,content, createDate, setAlarm, remindDate, User.USER.getUid(), notePin);
         updateNoteDataCallBack(updateNote, id);
     }
 
     private void updateNoteDataCallBack(Note updateNote, String id) {
         NoteDAO nDAO = new NoteDAO();
-        nDAO.updateNote(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @Override
-            public void onCallBack() {
-                WelcomeActivity.updateFragment();
-                finish();
-            }
+        roomNoteDAO.update(updateNote);
+        if (INTERNET_STATE) {
+            nDAO.updateNote(new NoteDAO.FirebaseCallBack() {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList) {
+                }
+                @Override
+                public void onCallBack() {
+                    WelcomeActivity.updateFragment();
+                    finish();
+                }
 
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
-            }
-        },updateNote, id);
-        if(!INTERNET_STATE){
-            Log.i("Internet Add","Yess");
-            finish();
-        }
+                }
+            },updateNote, id);
+        } else finish();
+//        if(!INTERNET_STATE){
+//            Log.i("Internet Add","Yess");
+//            finish();
+//        }
     }
 
     @Override
@@ -225,19 +240,21 @@ public class EditNoteActivity extends AppCompatActivity {
 
     private void pinNoteCallBack(String id, boolean notePin) {
         NoteDAO nDAO = new NoteDAO();
-        nDAO.pinNote(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @Override
-            public void onCallBack() {
-            }
+        if (INTERNET_STATE) {
+            nDAO.pinNote(new NoteDAO.FirebaseCallBack() {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList) {
+                }
+                @Override
+                public void onCallBack() {
+                }
 
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
-            }
-        }, id, notePin);
+                }
+            }, id, notePin);
+        }
     }
 
     private void deleteNote() {
@@ -247,21 +264,25 @@ public class EditNoteActivity extends AppCompatActivity {
 
     private void deleteNoteCallBack(String id) {
         NoteDAO nDAO = new NoteDAO();
-        nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-            }
-            @Override
-            public void onCallBack() {
-                WelcomeActivity.updateFragment();
-                finish();
-            }
+        roomNoteDAO.delete(roomNoteDAO.getSelectedNote(User.USER.getUid(), id));
+        if (INTERNET_STATE) {
+            nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList) {
+                }
+                @Override
+                public void onCallBack() {
+                    WelcomeActivity.updateFragment();
+                    finish();
+                }
 
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
 
-            }
-        }, id);
+                }
+            }, id);
+        } else finish();
+
     }
 
     @Override

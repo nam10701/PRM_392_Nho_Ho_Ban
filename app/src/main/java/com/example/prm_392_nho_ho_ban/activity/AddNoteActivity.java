@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -38,6 +39,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +58,13 @@ public class AddNoteActivity extends AppCompatActivity {
 
     private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
 
+    private Timestamp remindTimeSet = null;
+
+    private String timeRemindPick;
+    private String dateRemindPick;
+
+    private boolean setAlarm;
+
     FragmentSetNotify fragmentSetNotify;
     FragmentManager fragmentManager;
 
@@ -65,6 +74,8 @@ public class AddNoteActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSaveNote);
         firebaseAuth = FirebaseAuth.getInstance();
         noteToolbar = findViewById(R.id.toolbar);
+
+        fragmentManager = getSupportFragmentManager();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -89,6 +100,37 @@ public class AddNoteActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof FragmentSetNotify) {
+            fragmentSetNotify= (FragmentSetNotify) fragment;
+            fragmentSetNotify.setOnBtnSaveClickListener(this::setDateTimeRemind);
+        }
+    }
+
+    private void setDateTimeRemind(String date, String time, boolean alarm) {
+        if(date.length()>=0 && time.length()>=0) {
+            timeRemindPick = time;
+            dateRemindPick = date;
+            String toDate = date +" "+ time;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date dateRemind = null;
+            try {
+                dateRemind = sdf.parse(toDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Timestamp ts = new Timestamp(dateRemind);
+            setAlarm = alarm;
+            remindTimeSet = ts;
+        }
+        else  {
+            remindTimeSet = null;
+            setAlarm = false;
+        };
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNote(View view, String title, String content) {
         Note latestNote = roomNoteDAO.getLatestNote(User.USER.getUid());
@@ -96,9 +138,9 @@ public class AddNoteActivity extends AppCompatActivity {
         if(latestNote!=null){
             String num = latestNote.getId().split("_")[0];
             String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
-            note = new Note(newId, title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+            note = new Note(newId, title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false);
         }else{
-            note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
+            note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false);
         }
         createNoteCallBack(note);
     }
@@ -188,12 +230,18 @@ public class AddNoteActivity extends AppCompatActivity {
             case R.id.menuPinNote:
                 break;
             case R.id.menuNoticeNote:
+                onNotifySelect();
                 break;
             case R.id.menuDeleteNote:
                 finish();
                 break;
         }
         return true;
+    }
+
+    private void onNotifySelect() {
+        fragmentSetNotify = new FragmentSetNotify();
+        fragmentSetNotify.show(fragmentManager, "NotifyFragment");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
