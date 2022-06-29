@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,9 @@ public class NulldateFragment extends Fragment {
     }
 
     private void bindingUI(View view) {
+        getPinNote();
+        getUnpinNote();
+
         tvMes0 = view.findViewById(R.id.tvMes0);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
@@ -77,13 +81,13 @@ public class NulldateFragment extends Fragment {
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pinRecyclerView.setLayoutManager(verticalLayoutManager);
-        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote());
+        pinListAdapter = new NoteListAdapter(getActivity(),pinList);
         pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote());
+        noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
         noteRecyclerView.setAdapter(noteListAdapter);
     }
 
@@ -96,19 +100,22 @@ public class NulldateFragment extends Fragment {
         return view;
     }
 
-    private ArrayList<Note> getPinNote(){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),null,true);
-        return pinList;
+    private void getPinNote(){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),true,true);
     }
 
-    private ArrayList<Note> getUnpinNote(){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),null,false);
-        return unPinList;
+    private void getUnpinNote(){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllNotRemindNote(User.USER.getUid(),false, true);
     }
 
     public void updateAdapter(){
-        pinListAdapter.update(getPinNote());
-        noteListAdapter.update(getUnpinNote());
+        getPinNote();
+        getUnpinNote();
+        Log.i("UPDATEE", "updateAdapter: " + unPinList.size());
+        if(pinListAdapter!=null){
+        pinListAdapter.update(pinList);
+        }
+        noteListAdapter.update(unPinList);
         checkEmpty();
     }
 

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
            @Override
            public void onComplete(@NonNull Task<AuthResult> task) {
-               progressDialog.dismiss();
+
                if(task.isSuccessful()){
                    final FirebaseUser USER = firebaseAuth.getCurrentUser();
 
@@ -90,8 +91,11 @@ public class LoginActivity extends AppCompatActivity {
 
                        @Override
                        public void onCallBack() {
-                           WelcomeActivity.updateFragment();
-                           roomUserDAO.insert(new User(USER.getUid(),USER.getEmail()));
+                           Log.i("USer", USER.getUid() + USER.getEmail());
+                           User u = new User(USER.getUid(),USER.getEmail(),password);
+                           roomUserDAO.insert(u);
+                           progressDialog.dismiss();
+                           startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
                        }
 
                        @Override

@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.prm_392_nho_ho_ban.AppDatabase;
 import com.example.prm_392_nho_ho_ban.R;
@@ -25,6 +27,8 @@ import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.firebase.Timestamp;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
@@ -70,6 +74,8 @@ public class FragmentAllNote extends Fragment {
     }
 
     private void bindingUI(View view) {
+        getPinNote();
+        getUnpinNote();
         tvMes1 = view.findViewById(R.id.tvMes1);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
@@ -77,13 +83,13 @@ public class FragmentAllNote extends Fragment {
         LinearLayoutManager verticalLayoutManager
                         = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 pinRecyclerView.setLayoutManager(verticalLayoutManager);
-                pinListAdapter = new NoteListAdapter(getActivity(),getPinNote());
+                pinListAdapter = new NoteListAdapter(getActivity(),pinList);
                 pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                         = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-                noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote());
+                noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
                 noteRecyclerView.setAdapter(noteListAdapter);
     }
 
@@ -96,19 +102,22 @@ public class FragmentAllNote extends Fragment {
         return view;
     }
 
-    private ArrayList<Note> getPinNote(){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllPin(true,User.USER.getUid());
-        return pinList;
+    private void getPinNote(){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllPin(true,User.USER.getUid(),true);
+
     }
 
-    private ArrayList<Note> getUnpinNote(){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPin(false,User.USER.getUid());
-        return unPinList;
+    private void getUnpinNote(){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPin(false,User.USER.getUid(),true);
+
     }
 
     public void updateAdapter(){
-        pinListAdapter.update(getPinNote());
-        noteListAdapter.update(getUnpinNote());
+        getPinNote();
+        getUnpinNote();
+
+        pinListAdapter.update(pinList);
+        noteListAdapter.update(unPinList);
         checkEmpty();
     }
 

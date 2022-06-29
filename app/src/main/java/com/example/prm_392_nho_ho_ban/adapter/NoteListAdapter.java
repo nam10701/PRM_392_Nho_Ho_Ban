@@ -40,6 +40,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
 
     @SuppressLint("NotifyDataSetChanged")
     public void update(ArrayList<Note> datas){
+
         noteList.clear();
         noteList.addAll(datas);
         notifyDataSetChanged();
@@ -62,12 +63,20 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         String content = mCurrent.getContent();
 
         holder.createDate = mCurrent.getDateCreate().getSeconds()*1000;
+        if(mCurrent.getDateRemind()!=null){
         holder.remindDate = mCurrent.getDateRemind().getSeconds()*1000;
+        }else{
+            holder.remindDate = 0;
+        }
         holder.pin = mCurrent.isPin();
         holder.id = mCurrent.getId();
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);
+        if(mCurrent.getDateRemind()!=null){
         holder.tvDate.setText(sdf.format(new Date(mCurrent.getDateRemind().getSeconds()*1000)));
+        }else{
+            holder.tvDate.setText("");
+        }
 
     }
 

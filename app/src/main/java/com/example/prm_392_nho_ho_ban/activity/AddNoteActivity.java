@@ -133,14 +133,14 @@ public class AddNoteActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNote(View view, String title, String content) {
-        Note latestNote = roomNoteDAO.getLatestNote(User.USER.getUid());
+        Note latestNote = roomNoteDAO.getLatestNote(User.USER.getUid(),true);
         Note note;
         if(latestNote!=null){
             String num = latestNote.getId().split("_")[0];
             String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
-            note = new Note(newId, title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false);
+            note = new Note(newId, title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false,true);
         }else{
-            note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false);
+            note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false,true);
         }
         createNoteCallBack(note);
     }
@@ -149,13 +149,13 @@ public class AddNoteActivity extends AppCompatActivity {
     private void createNoteCallBack(Note note) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.insert(note);
-        if(note.getDateRemind()!=null){
-            setTimerNotify(note);}
+        if(note.getDateRemind()!=null && !note.isAlarm()){
+            setTimerNotify(note);
+        }
         if(note.isAlarm()){
             Log.i("ALARM","1");
             setAlarm(note);
         }
-        WelcomeActivity.updateFragment();
         if(INTERNET_STATE) {
         nDAO.syncRoomToFirebase(new NoteDAO.FirebaseCallBack() {
             @Override
@@ -166,6 +166,7 @@ public class AddNoteActivity extends AppCompatActivity {
             @Override
             public void onCallBack() {
                 finish();
+                WelcomeActivity.updateFragment();
             }
 
             @Override
@@ -173,7 +174,10 @@ public class AddNoteActivity extends AppCompatActivity {
 
             }
         });
-        } else finish();
+        }
+        else finish();
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -184,7 +188,7 @@ public class AddNoteActivity extends AppCompatActivity {
         intent.putExtra("noteJson",noteJson);
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
+        long destinationTime = note.getDateRemind().getSeconds()*1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager
                     .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
@@ -202,7 +206,7 @@ public class AddNoteActivity extends AppCompatActivity {
         intent.setAction("Alarm");
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
+        long destinationTime = note.getDateRemind().getSeconds()*1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager
                     .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);

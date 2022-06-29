@@ -97,13 +97,17 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void intitialIntent() {
+        Timestamp remindTime = null;
         Intent receiveIntent = getIntent();
         String title = receiveIntent.getStringExtra("title");
         String content = receiveIntent.getStringExtra("content");
         String id = receiveIntent.getStringExtra("id");
         boolean pin = receiveIntent.getExtras().getBoolean("pin");
         Timestamp createTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("create")));
-        Timestamp remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
+        long remindTimeMillis = receiveIntent.getExtras().getLong("remind");
+        if(remindTimeMillis!=0){
+        remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
+        }
 //        edtTitle.setText(String.valueOf(pin));
         edtTitle.setText(title);
         edtaNote.setText(content);
@@ -170,6 +174,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private void updateNoteDataCallBack(Note updateNote, String id) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.update(updateNote);
+        WelcomeActivity.updateFragment();
         if (INTERNET_STATE) {
             nDAO.updateNote(new NoteDAO.FirebaseCallBack() {
                 @Override
@@ -187,10 +192,6 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
             },updateNote, id);
         } else finish();
-//        if(!INTERNET_STATE){
-//            Log.i("Internet Add","Yess");
-//            finish();
-//        }
     }
 
     @Override
@@ -265,6 +266,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private void deleteNoteCallBack(String id) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.delete(roomNoteDAO.getSelectedNote(User.USER.getUid(), id));
+        WelcomeActivity.updateFragment();
         if (INTERNET_STATE) {
             nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
                 @Override
@@ -272,7 +274,6 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onCallBack() {
-                    WelcomeActivity.updateFragment();
                     finish();
                 }
 

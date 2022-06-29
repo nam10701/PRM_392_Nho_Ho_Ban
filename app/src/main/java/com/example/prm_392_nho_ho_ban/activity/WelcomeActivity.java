@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -35,9 +34,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
-import com.google.rpc.context.AttributeContext;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -54,7 +51,8 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private static VPAdapter vpAdapter;
-
+    private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void bindingUI() throws ParseException {
         nvDrawer = findViewById(R.id.nvView);
         nvBottom = findViewById(R.id.nvBottom);
@@ -110,25 +108,14 @@ public class WelcomeActivity extends OptionsMenuActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void reSet() {
         NoteDAO n = new NoteDAO();
-        n.getAllUpcomingNoteCallBack(new NoteDAO.FirebaseCallBack() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onCallBack(ArrayList<Note> noteList) {
-                allNoteList.addAll(noteList);
-                reSetTimerNotify();
-            }
-
-            @Override
-            public void onCallBack() {
-            }
-
-            @Override
-            public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
-            }
-        }, User.USER);
+       ArrayList<Note> upcomingNote = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(new Timestamp(new Date()),true,User.USER.getUid(),true);
+       ArrayList<Note> upcomingNoteUnpin = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(new Timestamp(new Date()),false,User.USER.getUid(),true);
+        allNoteList.addAll(upcomingNote);
+        allNoteList.addAll(upcomingNoteUnpin);
+        reSetTimerNotify();
     }
 
 
@@ -140,9 +127,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         authorize();
-
         createBroadcast();
-
         setContentView(R.layout.welcome_activity);
         try {
             bindingUI();
@@ -150,20 +135,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
             e.printStackTrace();
         }
         bindingAction();
-
-//        RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
-//        Note note = roomNoteDAO.getLatestNote(User.USER.getUid());
-//        if(note!=null){
-//        String num = note.getId().split("_")[0];
-//        String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
-//        note.setId(newId);
-//        roomNoteDAO.insert(note);
-//        }else{
-//            Note notee = new Note("1_"+User.USER.getUid(),"first", "first", new Timestamp(new Date()), true, new Timestamp(new Date()), User.USER.getUid(), false);
-//            roomNoteDAO.insert(notee);
-//
-//        }
-
     }
 
     private void authorize() {
@@ -176,6 +147,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        authorize();
 
     }
 
@@ -201,17 +173,33 @@ public class WelcomeActivity extends OptionsMenuActivity {
 
         if (!allNoteList.isEmpty()) {
             for (Note note : allNoteList) {
-                if (note.getDateRemind() != null) {
+                if (note.getDateRemind() != null && !note.isAlarm()) {
                     String noteJson = new Gson().toJson(note);
                     intent.putExtra("noteJson", noteJson);
                     @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
+                            PendingIntent.getBroadcast(getApplicationContext(), allNoteList.indexOf(note), intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager
                                 .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
                     } else {
                         alarmManager
                                 .set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
+                    }
+                }
+                else if(note.getDateRemind()!=null && note.isAlarm()){
+                    Intent intentt = new Intent(getApplicationContext(), AlarmReceiver.class);
+                    String noteJson = new Gson().toJson(note);
+                    intent.putExtra("noteJson",noteJson);
+                    intent.setAction("Alarm");
+                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                            PendingIntent.getBroadcast(getApplicationContext(), allNoteList.indexOf(note), intentt, PendingIntent.FLAG_UPDATE_CURRENT);
+                    long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager
+                                .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+                    } else {
+                        alarmManager
+                                .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
                     }
                 }
             }

@@ -37,7 +37,7 @@ public class FragmentUpcomingNote extends Fragment {
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
     private TextView tvMes3;
-    private Timestamp today;
+    private Timestamp todayTimestamp;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
@@ -57,6 +57,8 @@ public class FragmentUpcomingNote extends Fragment {
 
     }
     private void bindingUI(View view) {
+        getUnpinNote(todayTimestamp);
+        getPinNote(todayTimestamp);
         tvMes3 = view.findViewById(R.id.tvMes3);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
@@ -64,13 +66,13 @@ public class FragmentUpcomingNote extends Fragment {
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pinRecyclerView.setLayoutManager(verticalLayoutManager);
-        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote(today));
+        pinListAdapter = new NoteListAdapter(getActivity(),pinList);
         pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote(today));
+        noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
         noteRecyclerView.setAdapter(noteListAdapter);
 
     }
@@ -78,24 +80,25 @@ public class FragmentUpcomingNote extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming_note, container, false);
-        today = new Timestamp(new Date());
+        todayTimestamp = new Timestamp(new Date());
         bindingUI(view);
         return view;
     }
 
-    private ArrayList<Note> getPinNote(Timestamp today){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,true, User.USER.getUid());
-        return pinList;
+    private void getPinNote(Timestamp today){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,true, User.USER.getUid(),true);
     }
 
-    private ArrayList<Note> getUnpinNote(Timestamp today){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,false,User.USER.getUid());
-        return unPinList;
+    private void getUnpinNote(Timestamp today){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(today,false,User.USER.getUid(),true);
     }
 
     public void updateAdapter(){
-        pinListAdapter.update(getPinNote(today));
-        noteListAdapter.update(getUnpinNote(today));
+        getPinNote(todayTimestamp);
+        getUnpinNote(todayTimestamp);
+
+        pinListAdapter.update(pinList);
+        noteListAdapter.update(unPinList);
         checkEmpty();
     }
 

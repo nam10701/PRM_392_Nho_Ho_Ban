@@ -70,7 +70,7 @@ public class CalendarActivity extends OptionsMenuActivity {
         lc.set(Calendar.DAY_OF_MONTH, 1);
         lc.add(Calendar.DATE, -1);
         lastDay = lc.getTime();
-        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
+        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(),true);
         noteListAdapter.update(noteLit);
         getAllEvent(noteLit);
         monthNoteList = noteLit;
@@ -103,7 +103,7 @@ public class CalendarActivity extends OptionsMenuActivity {
                     e.printStackTrace();
                 }
                 if (selected) {
-                    ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
+                    ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(),true);
                     noteListAdapter.update(noteLit);
                     if (prevDay != null && prevDay != date) {
                         calendar.setDateSelected(prevDay, false);
@@ -132,7 +132,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showNoteByDay(Date startDate, Date endDate) {
         NoteDAO n = new NoteDAO();
-        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(startDate), new Timestamp(endDate), User.USER.getUid());
+        ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(startDate), new Timestamp(endDate), User.USER.getUid(),true);
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(CalendarActivity.this, LinearLayoutManager.VERTICAL, false);
         rvNote.setLayoutManager(verticalLayoutManager);
@@ -178,7 +178,7 @@ public class CalendarActivity extends OptionsMenuActivity {
         lc.add(Calendar.DATE, -1);
         lastDay = lc.getTime();
         showNoteByDay(firstDay, lastDay);
-        monthNoteList = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid());
+        monthNoteList = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(),true);
     }
 
     protected void onStart() {

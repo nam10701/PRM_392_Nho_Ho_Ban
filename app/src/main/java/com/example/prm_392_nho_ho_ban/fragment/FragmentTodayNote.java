@@ -39,7 +39,6 @@ import java.util.Date;
 public class FragmentTodayNote extends Fragment {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-    private Timestamp todayTS;
     private RecyclerView noteRecyclerView;
     private RecyclerView pinRecyclerView;
     private NoteListAdapter noteListAdapter;
@@ -47,7 +46,8 @@ public class FragmentTodayNote extends Fragment {
     private TextView tvMes2;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
-
+    private Timestamp startTimestamp;
+    private Timestamp endTimestamp;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     public FragmentTodayNote() {
        super(R.layout.fragment_all_note);
@@ -64,8 +64,17 @@ public class FragmentTodayNote extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
     private void bindingUI(View view) {
+        long startTimeOfDay = new Date().getTime() - (new Date().getTime()%86400000);
+        long endTimeOfDay = startTimeOfDay + 86400000;
+
+        startTimestamp = new Timestamp(new Date(startTimeOfDay));
+        endTimestamp = new Timestamp(new Date(endTimeOfDay));
+        getPinNote(startTimestamp,endTimestamp);
+        getUnpinNote(startTimestamp,endTimestamp);
+
         tvMes2 = view.findViewById(R.id.tvMes2);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
@@ -73,40 +82,38 @@ public class FragmentTodayNote extends Fragment {
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pinRecyclerView.setLayoutManager(verticalLayoutManager);
-        pinListAdapter = new NoteListAdapter(getActivity(),getPinNote(todayTS,todayTS));
+        pinListAdapter = new NoteListAdapter(getActivity(),pinList);
         pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-        noteListAdapter = new NoteListAdapter(getActivity(),getUnpinNote(todayTS,todayTS));
+        noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
         noteRecyclerView.setAdapter(noteListAdapter);
 
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            todayTS = new Timestamp(new Date());
         View view = inflater.inflate(R.layout.fragment_today_note, container, false);
         bindingUI(view);
 
         return view;
     }
 
-    private ArrayList<Note> getPinNote(Timestamp startDate, Timestamp endDate){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,true, User.USER.getUid());
-        return pinList;
+    private void getPinNote(Timestamp startDate, Timestamp endDate){
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,true, User.USER.getUid(),true);
     }
 
-    private ArrayList<Note> getUnpinNote(Timestamp startDate, Timestamp endDate){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,false,User.USER.getUid());
-        return unPinList;
+    private void getUnpinNote(Timestamp startDate, Timestamp endDate){
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,false,User.USER.getUid(),true);
     }
 
     public void updateAdapter(){
-        long todayendTS =(todayTS.getSeconds()*1000+86400000)-((todayTS.getSeconds()*1000+86400000)%86400000);
-                pinListAdapter.update(getPinNote(todayTS,new Timestamp(new Date(todayendTS))));
-                noteListAdapter.update(getUnpinNote(todayTS,new Timestamp(new Date(todayendTS))));
+                getPinNote(startTimestamp,endTimestamp);
+                getUnpinNote(startTimestamp,endTimestamp);
+                pinListAdapter.update(pinList);
+                noteListAdapter.update(unPinList);
                 checkEmpty();
     }
 

@@ -27,6 +27,8 @@ public class Note {
     private String uId;
     @ColumnInfo
     private boolean pin;
+    @ColumnInfo
+    private boolean active;
 
     public Note() {
     }
@@ -35,7 +37,7 @@ public class Note {
         this.id=id;
     }
 
-    public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId) {
+    public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId, boolean active) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -43,9 +45,10 @@ public class Note {
         this.alarm = alarm;
         this.dateRemind = dateRemind;
         this.uId = uId;
+        this.active = active;
     }
 
-    public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId, boolean pin) {
+    public Note(String id, String title, String content, Timestamp dateCreate, boolean alarm, Timestamp dateRemind, String uId, boolean pin, boolean isActive) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -54,6 +57,7 @@ public class Note {
         this.dateRemind = dateRemind;
         this.uId = uId;
         this.pin = pin;
+        this.active = isActive;
     }
 
     public String getId() {
@@ -118,5 +122,13 @@ public class Note {
 
     public void setPin(boolean pin) {
         this.pin = pin;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
