@@ -84,7 +84,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             super(itemView);
             email = itemView.findViewById(R.id.tvUserEmail);
             this.mAdapter = adapter;
-            if(email.getText().toString()!=User.USER.getEmail()){
+            if(!email.getText().toString().equals(User.USER.getEmail())){
             itemView.setOnClickListener(this);
             }
         }

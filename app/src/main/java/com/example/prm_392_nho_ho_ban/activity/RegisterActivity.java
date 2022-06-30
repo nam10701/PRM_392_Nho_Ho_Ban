@@ -1,5 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.bean.User;
+import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Matcher;
 
@@ -27,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText edtPassword;
     private EditText edtRePassword;
     private Button btnRegister;
-
+    private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -49,10 +54,16 @@ public class RegisterActivity extends AppCompatActivity {
             firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    progressDialog.dismiss();
+
                     if(task.isSuccessful()){
+                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        User u = new User(user.getUid(),user.getEmail(),password);
+                        roomUserDAO.insert(u);
+                        progressDialog.dismiss();
                         startActivity(new Intent(getApplicationContext(),LoginActivity.class));
                     }else{
+                        progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(),"Register failed, email exist",Toast.LENGTH_LONG).show();
                     }
                 }

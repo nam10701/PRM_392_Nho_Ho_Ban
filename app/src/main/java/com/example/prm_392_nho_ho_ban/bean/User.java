@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
                 unique = true)})
 public class User {
     private static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    public final static FirebaseUser USER = firebaseAuth.getCurrentUser();
+    public static FirebaseUser USER = firebaseAuth.getCurrentUser();
 
     @NonNull
     private String id;

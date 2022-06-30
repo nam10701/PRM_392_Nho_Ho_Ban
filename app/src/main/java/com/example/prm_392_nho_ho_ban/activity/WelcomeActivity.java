@@ -72,7 +72,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("");
+                    tab.setText("NOTES");
                     break;
                 case 1:
                     tab.setText("Today");
@@ -160,7 +160,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private void createBroadcast(){
         InternetStateReceiver internetStateReceiver = new InternetStateReceiver();
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
-            registerReceiver(internetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            registerReceiver(internetStateReceiver, new IntentFilter(BLUETOOTH_SERVICE));
         }
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
             registerReceiver(internetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));

@@ -20,15 +20,6 @@ import java.util.ArrayList;
 public class InternetStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("INTERNET", "CHANGE");
-        final ConnectivityManager connMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        final android.net.NetworkInfo wifi = connMgr
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        final android.net.NetworkInfo mobile = connMgr
-                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
         if (isOnline(context) && INTERNET_STATE) {
             INTERNET_STATE = true;
@@ -38,9 +29,7 @@ public class InternetStateReceiver extends BroadcastReceiver {
             noteDAO.syncRoomToFirebase(new NoteDAO.FirebaseCallBack() {
                 @Override
                 public void onCallBack(ArrayList<Note> noteList) {
-
                 }
-
                 @Override
                 public void onCallBack() {
                     WelcomeActivity.updateFragment();

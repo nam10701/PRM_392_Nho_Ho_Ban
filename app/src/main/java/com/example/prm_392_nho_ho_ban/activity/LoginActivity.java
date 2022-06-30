@@ -80,8 +80,8 @@ public class LoginActivity extends AppCompatActivity {
            public void onComplete(@NonNull Task<AuthResult> task) {
 
                if(task.isSuccessful()){
-                   final FirebaseUser USER = firebaseAuth.getCurrentUser();
-
+                   final FirebaseUser user = firebaseAuth.getCurrentUser();
+                    User.USER = user;
                    NoteDAO noteDAO = new NoteDAO();
                    noteDAO.syncFirebaseToRoom(new NoteDAO.FirebaseCallBack() {
                        @Override
@@ -91,8 +91,8 @@ public class LoginActivity extends AppCompatActivity {
 
                        @Override
                        public void onCallBack() {
-                           Log.i("USer", USER.getUid() + USER.getEmail());
-                           User u = new User(USER.getUid(),USER.getEmail(),password);
+                           Log.i("USer", user.getUid() + user.getEmail());
+                           User u = new User(user.getUid(),user.getEmail(),password);
                            roomUserDAO.insert(u);
                            progressDialog.dismiss();
                            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
@@ -101,9 +101,11 @@ public class LoginActivity extends AppCompatActivity {
                        @Override
                        public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
                        }
-                   }, USER.getUid());
+                   }, user.getUid());
                }else{
+                   progressDialog.dismiss();
                    Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_LONG).show();
+                   finish();
                }
            }
        });

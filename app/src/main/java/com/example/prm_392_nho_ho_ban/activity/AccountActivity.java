@@ -3,6 +3,7 @@ package com.example.prm_392_nho_ho_ban.activity;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,8 @@ import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
+import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
+import com.example.prm_392_nho_ho_ban.fragment.LoginFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -27,7 +30,8 @@ public class AccountActivity extends AppCompatActivity {
     private ArrayList<User> userList;
     private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
     private Button btnAddAccount;
-
+    private LoginFragment loginFragment;
+    private FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +44,13 @@ public class AccountActivity extends AppCompatActivity {
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                loginFragment = new LoginFragment();
+                loginFragment.show(fragmentManager, "LoginFragment");
             }
         });
     }
     private void bindingUI() {
+        fragmentManager = getSupportFragmentManager();
         userList = (ArrayList<User>) roomUserDAO.getAllUser();
         btnAddAccount = findViewById(R.id.btnAddAccount);
         accountRecyclerView = findViewById(R.id.accountRecycler);
@@ -58,7 +64,6 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        authorize();
 
     }
     private void authorize() {
