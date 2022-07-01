@@ -115,7 +115,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
        ArrayList<Note> upcomingNoteUnpin = (ArrayList<Note>) roomNoteDAO.getAllUpcomingNote(new Timestamp(new Date()),false,User.USER.getUid(),true);
         allNoteList.addAll(upcomingNote);
         allNoteList.addAll(upcomingNoteUnpin);
-        reSetTimerNotify();
     }
 
 
@@ -166,46 +165,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
             registerReceiver(internetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void reSetTimerNotify() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 
-        if (!allNoteList.isEmpty()) {
-            for (Note note : allNoteList) {
-                if (note.getDateRemind() != null && !note.isAlarm()) {
-                    String noteJson = new Gson().toJson(note);
-                    intent.putExtra("noteJson", noteJson);
-                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getBroadcast(getApplicationContext(), allNoteList.indexOf(note), intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager
-                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
-                    } else {
-                        alarmManager
-                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
-                    }
-                }
-                else if(note.getDateRemind()!=null && note.isAlarm()){
-                    Intent intentt = new Intent(getApplicationContext(), AlarmReceiver.class);
-                    String noteJson = new Gson().toJson(note);
-                    intent.putExtra("noteJson",noteJson);
-                    intent.setAction("Alarm");
-                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getBroadcast(getApplicationContext(), allNoteList.indexOf(note), intentt, PendingIntent.FLAG_UPDATE_CURRENT);
-                    long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager
-                                .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
-                    } else {
-                        alarmManager
-                                .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
-                    }
-                }
-            }
-        }
-
-    }
 
 }
 

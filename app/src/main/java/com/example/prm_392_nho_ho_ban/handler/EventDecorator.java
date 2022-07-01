@@ -1,4 +1,4 @@
-package com.example.prm_392_nho_ho_ban.activity;
+package com.example.prm_392_nho_ho_ban.handler;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

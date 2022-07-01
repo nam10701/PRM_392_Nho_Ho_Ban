@@ -2,8 +2,13 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,14 +27,17 @@ import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
+import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private Button btnRegister;
     private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
+    private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private void bindingUI(){
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -94,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                            Log.i("USer", user.getUid() + user.getEmail());
                            User u = new User(user.getUid(),user.getEmail(),password);
                            roomUserDAO.insert(u);
+                           resetNotifyAndAlarm();
                            progressDialog.dismiss();
                            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
                        }
@@ -112,6 +122,46 @@ public class LoginActivity extends AppCompatActivity {
        }else{
            progressDialog.dismiss();
        }
+    }
+
+    private void resetNotifyAndAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        ArrayList<Note> allNoteList = (ArrayList<Note>) roomNoteDAO.getAllNote(User.USER.getUid());
+        if (!allNoteList.isEmpty()) {
+            for (Note note : allNoteList) {
+                int requestCode = Integer.parseInt(note.getId().split("_")[0]);
+                if (note.getDateRemind() != null && !note.isAlarm() && note.getDateRemind().getSeconds()*1000 > new Date().getTime()) {
+                    String noteJson = new Gson().toJson(note);
+                    intent.putExtra("noteJson", noteJson);
+                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                            PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager
+                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
+                    } else {
+                        alarmManager
+                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
+                    }
+                }
+                else if(note.getDateRemind()!=null && note.isAlarm() && note.getDateRemind().getSeconds()*1000 > new Date().getTime()){
+                    Intent intentt = new Intent(getApplicationContext(), AlarmReceiver.class);
+                    String noteJson = new Gson().toJson(note);
+                    intent.putExtra("noteJson",noteJson);
+                    intent.setAction("Alarm");
+                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                            PendingIntent.getBroadcast(getApplicationContext(), requestCode, intentt, PendingIntent.FLAG_UPDATE_CURRENT);
+                    long destinationTime = note.getDateRemind().getSeconds()*1000 + 10000;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager
+                                .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+                    } else {
+                        alarmManager
+                                .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+                    }
+                }
+            }
+        }
     }
 
     private boolean validate(String email, String password){

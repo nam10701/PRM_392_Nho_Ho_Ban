@@ -115,9 +115,10 @@ public class FragmentAllNote extends Fragment {
     public void updateAdapter(){
         getPinNote();
         getUnpinNote();
-
-        pinListAdapter.update(pinList);
-        noteListAdapter.update(unPinList);
+if(pinListAdapter!=null){
+        pinListAdapter.update(pinList);}
+if(noteListAdapter!=null){
+        noteListAdapter.update(unPinList);}
         checkEmpty();
     }
 

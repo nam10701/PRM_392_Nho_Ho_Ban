@@ -21,7 +21,7 @@ public class InternetStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (isOnline(context) && INTERNET_STATE) {
+        if (isOnline(context)) {
             INTERNET_STATE = true;
             Toast.makeText(context, "You're currently online", Toast.LENGTH_LONG).show();
             NoteDAO noteDAO = new NoteDAO();

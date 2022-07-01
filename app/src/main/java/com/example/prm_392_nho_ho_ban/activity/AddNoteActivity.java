@@ -149,10 +149,9 @@ public class AddNoteActivity extends AppCompatActivity {
     private void createNoteCallBack(Note note) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.insert(note);
-        if(note.getDateRemind()!=null && !note.isAlarm()){
+        if(note.getDateRemind()!=null && !note.isAlarm() && (note.getDateRemind().getSeconds()*1000> new Date().getTime())){
             setTimerNotify(note);
-        }
-        if(note.isAlarm()){
+        }else if(note.isAlarm() && (note.getDateRemind().getSeconds()*1000> new Date().getTime())){
             Log.i("ALARM","1");
             setAlarm(note);
         }
@@ -186,8 +185,9 @@ public class AddNoteActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         String noteJson = new Gson().toJson(note);
         intent.putExtra("noteJson",noteJson);
+        int requestCode = Integer.parseInt(note.getId().split("_")[0]);
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long destinationTime = note.getDateRemind().getSeconds()*1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager
@@ -203,9 +203,10 @@ public class AddNoteActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         String noteJson = new Gson().toJson(note);
         intent.putExtra("noteJson",noteJson);
+        int requestCode = Integer.parseInt(note.getId().split("_")[0]);
         intent.setAction("Alarm");
         @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         long destinationTime = note.getDateRemind().getSeconds()*1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager

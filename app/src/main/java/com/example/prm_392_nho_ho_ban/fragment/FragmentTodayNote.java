@@ -112,8 +112,10 @@ public class FragmentTodayNote extends Fragment {
     public void updateAdapter(){
                 getPinNote(startTimestamp,endTimestamp);
                 getUnpinNote(startTimestamp,endTimestamp);
-                pinListAdapter.update(pinList);
-                noteListAdapter.update(unPinList);
+        if(pinListAdapter!=null){
+            pinListAdapter.update(pinList);}
+        if(noteListAdapter!=null){
+            noteListAdapter.update(unPinList);}
                 checkEmpty();
     }
 

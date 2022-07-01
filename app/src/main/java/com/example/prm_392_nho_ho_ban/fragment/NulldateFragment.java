@@ -113,9 +113,9 @@ public class NulldateFragment extends Fragment {
         getUnpinNote();
         Log.i("UPDATEE", "updateAdapter: " + unPinList.size());
         if(pinListAdapter!=null){
-        pinListAdapter.update(pinList);
-        }
-        noteListAdapter.update(unPinList);
+            pinListAdapter.update(pinList);}
+        if(noteListAdapter!=null){
+            noteListAdapter.update(unPinList);}
         checkEmpty();
     }
 

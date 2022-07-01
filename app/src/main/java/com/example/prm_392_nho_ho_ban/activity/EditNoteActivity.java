@@ -10,7 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,11 +33,13 @@ import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
+import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.sql.Time;
 import java.text.DateFormat;
@@ -167,13 +174,19 @@ public class EditNoteActivity extends AppCompatActivity {
     private void updateNote(String title, String content, String id) {
 //        Note selectedNote = roomNoteDAO.getSelectedNote(User.USER.getUid(), id);
 //        Note note = new Note(id, title, content, createDate, false, remindDate, User.USER.getUid(), notePin);
-        Note updateNote = new Note(id ,title,content, createDate, setAlarm, remindDate, User.USER.getUid(), notePin);
+        Note updateNote = new Note(id ,title,content, createDate, setAlarm, remindDate, User.USER.getUid(), notePin,true);
         updateNoteDataCallBack(updateNote, id);
+
     }
 
     private void updateNoteDataCallBack(Note updateNote, String id) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.update(updateNote);
+        if(updateNote.getDateRemind()!=null && !updateNote.isAlarm() && (updateNote.getDateRemind().getSeconds()*1000> new Date().getTime())){
+            setNotiNote(updateNote);
+        }else if(updateNote.isAlarm() && (updateNote.getDateRemind().getSeconds()*1000> new Date().getTime())){
+            setAlarmNote(updateNote);
+        }
         WelcomeActivity.updateFragment();
         if (INTERNET_STATE) {
             nDAO.updateNote(new NoteDAO.FirebaseCallBack() {
@@ -192,6 +205,55 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
             },updateNote, id);
         } else finish();
+    }
+
+    private void setAlarmNote(Note note) {
+        cancelOldNote(note);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        String noteJson = new Gson().toJson(note);
+        intent.putExtra("noteJson",noteJson);
+        int requestCode = Integer.parseInt(note.getId().split("_")[0]);
+        intent.setAction("Alarm");
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long destinationTime = note.getDateRemind().getSeconds()*1000;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager
+                    .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        } else {
+            alarmManager
+                    .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        }
+    }
+
+    private void setNotiNote(Note note) {
+        cancelOldNote(note);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        String noteJson = new Gson().toJson(note);
+        intent.putExtra("noteJson",noteJson);
+        int requestCode = Integer.parseInt(note.getId().split("_")[0]);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long destinationTime = note.getDateRemind().getSeconds()*1000;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager
+                    .setExact(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        } else {
+            alarmManager
+                    .set(AlarmManager.RTC_WAKEUP, destinationTime, pendingIntent);
+        }
+    }
+
+    private void cancelOldNote(Note note){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        int requestCode = Integer.parseInt(note.getId().split("_")[0]);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), requestCode, myIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 
     @Override

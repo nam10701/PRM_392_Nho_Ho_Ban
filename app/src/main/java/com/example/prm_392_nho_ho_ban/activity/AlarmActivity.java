@@ -181,8 +181,10 @@ public class AlarmActivity extends AppCompatActivity{
         loAlarm.getBackground().setAlpha(255);
         finish();
         v.cancel();
+        if(mPlayer.isPlaying()){
         mPlayer.stop();
         mPlayer.release();
+        }
             }
 
     protected void onPause() {
