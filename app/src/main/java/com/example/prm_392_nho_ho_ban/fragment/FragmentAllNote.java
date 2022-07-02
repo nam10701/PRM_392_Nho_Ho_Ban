@@ -7,14 +7,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,33 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.prm_392_nho_ho_ban.AppDatabase;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.prm_392_nho_ho_ban.R;
-import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
-import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
-import com.google.firebase.Timestamp;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentAllNote#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class FragmentAllNote extends Fragment {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
@@ -58,7 +41,6 @@ public class FragmentAllNote extends Fragment {
     private RecyclerView pinRecyclerView;
     private NoteListAdapter noteListAdapter;
     private NoteListAdapter pinListAdapter;
-    private NoteDAO n = new NoteDAO();
     private TextView tvMes1;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
@@ -70,8 +52,6 @@ public class FragmentAllNote extends Fragment {
         super(R.layout.fragment_all_note);
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static FragmentAllNote newInstance() {
         FragmentAllNote fragment = new FragmentAllNote();
         Bundle args = new Bundle();
@@ -136,24 +116,14 @@ public class FragmentAllNote extends Fragment {
         checkEmpty();
     }
 
-    public NoteListAdapter getPinAdapter() {
-
-        return pinListAdapter;
-    }
-
-    public NoteListAdapter getNoteAdapter() {
-
-        return pinListAdapter;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
+        menu.clear();
         inflater.inflate(R.menu.search_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = new SearchView(((WelcomeActivity) getActivity()).getSupportActionBar().getThemedContext());
         if (menuItem != null) {
             searchView = (SearchView) menuItem.getActionView();
         }
@@ -173,7 +143,6 @@ public class FragmentAllNote extends Fragment {
                         unPinList = searchNote(newText);
                         pinListAdapter.update(pinList);
                         noteListAdapter.update(unPinList);
-                        Log.d("tuan", "onQueryTextChange: " + unPinList.size());
 
                     } else {
                         updateAdapter();
@@ -187,7 +156,7 @@ public class FragmentAllNote extends Fragment {
 
 
     private ArrayList<Note> searchNote(String newText) {
-        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText,true);
+        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText, true);
         return myNote;
     }
 

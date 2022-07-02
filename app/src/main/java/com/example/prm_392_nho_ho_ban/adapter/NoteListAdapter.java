@@ -1,24 +1,21 @@
 package com.example.prm_392_nho_ho_ban.adapter;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.EditNoteActivity;
 import com.example.prm_392_nho_ho_ban.bean.Note;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +27,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
     Context context;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm");
-
 
     public NoteListAdapter(Context context, ArrayList<Note> noteList) {
         this.context = context;
@@ -44,7 +40,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         noteList.clear();
         noteList.addAll(datas);
         notifyDataSetChanged();
-        Log.i("update","updateNe");
     }
 
     @NonNull
@@ -61,7 +56,9 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         Note mCurrent = noteList.get(position);
         String title = mCurrent.getTitle();
         String content = mCurrent.getContent();
-
+        if(mCurrent.isPin()){
+            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_pin_note_display));
+        }
         holder.createDate = mCurrent.getDateCreate().getSeconds()*1000;
         if(mCurrent.getDateRemind()!=null){
         holder.remindDate = mCurrent.getDateRemind().getSeconds()*1000;
@@ -109,8 +106,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
 
         @Override
         public void onClick(View v) {
-//            Toast.makeText(context, tvNoteTitle.getText().toString() + " Click ", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(v.getContext(),EditNoteActivity.class);
+           Intent i = new Intent(v.getContext(),EditNoteActivity.class);
                 i.putExtra("title",tvNoteTitle.getText().toString());
                 i.putExtra("content",tvNoteContent.getText().toString());
                 i.putExtra("id",id);
@@ -119,9 +115,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
                 i.putExtra("remind", remindDate);
                 v.getContext().startActivity(i);
 
-//            Intent intent = new Intent(context,NoteDetailActivity.class);
-//            intent.putExtra("label",wordItemView.getText().toString());
-//            context.startActivity(intent);
         }
     }
 }

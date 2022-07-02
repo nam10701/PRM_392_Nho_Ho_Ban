@@ -1,4 +1,5 @@
 package com.example.prm_392_nho_ho_ban.adapter;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -41,12 +42,11 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void update(ArrayList<User> datas){
+    public void update(ArrayList<User> datas) {
 
         userList.clear();
         userList.addAll(datas);
         notifyDataSetChanged();
-        Log.i("update","updateNe");
     }
 
     @NonNull
@@ -62,7 +62,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     public void onBindViewHolder(@NonNull AccountListAdapter.WordViewHolder holder, int position) {
         User mCurrent = userList.get(position);
         String email = mCurrent.getEmail();
-        if(email.equals(User.USER.getEmail())){
+        if (email.equals(User.USER.getEmail())) {
             email += "( CURRENT )";
         }
         holder.email.setText(email);
@@ -84,8 +84,8 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             super(itemView);
             email = itemView.findViewById(R.id.tvUserEmail);
             this.mAdapter = adapter;
-            if(!email.getText().toString().equals(User.USER.getEmail())){
-            itemView.setOnClickListener(this);
+            if (!email.getText().toString().equals(User.USER.getEmail())) {
+                itemView.setOnClickListener(this);
             }
         }
 
@@ -93,8 +93,8 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         public void onClick(View v) {
 //            Toast.makeText(context, tvNoteTitle.getText().toString() + " Click ", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(v.getContext(), ChangeAccountActivity.class);
-            i.putExtra("userEmail",email.getText());
-            i.putExtra("password",password);
+            i.putExtra("userEmail", email.getText());
+            i.putExtra("password", password);
             v.getContext().startActivity(i);
         }
     }

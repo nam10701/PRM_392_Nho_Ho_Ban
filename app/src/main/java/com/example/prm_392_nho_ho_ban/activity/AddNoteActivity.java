@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,13 +29,10 @@ import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
-import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
 import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
-
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
@@ -50,9 +46,6 @@ public class AddNoteActivity extends AppCompatActivity {
     private EditText edtTitle;
     private EditText edtaNote;
     private Button btnSave;
-
-    private FirebaseAuth firebaseAuth;
-
     private Toolbar noteToolbar;
     private Menu noteMenu;
 
@@ -64,7 +57,7 @@ public class AddNoteActivity extends AppCompatActivity {
     private String dateRemindPick;
 
     private boolean setAlarm;
-
+    private boolean pin = false;
     FragmentSetNotify fragmentSetNotify;
     FragmentManager fragmentManager;
 
@@ -72,7 +65,6 @@ public class AddNoteActivity extends AppCompatActivity {
         edtTitle = findViewById(R.id.edtTitle);
         edtaNote = findViewById(R.id.edtaNote);
         btnSave = findViewById(R.id.btnSaveNote);
-        firebaseAuth = FirebaseAuth.getInstance();
         noteToolbar = findViewById(R.id.toolbar);
 
         fragmentManager = getSupportFragmentManager();
@@ -93,8 +85,6 @@ public class AddNoteActivity extends AppCompatActivity {
 
         if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
             createNote(view ,title, content);
-//            Intent n = new Intent(this,WelcomeActivity.class);
-//            startActivity(n);
         } else {
             Snackbar.make(view,"Please fill empty fields!", Snackbar.LENGTH_SHORT).show();
         }
@@ -138,7 +128,7 @@ public class AddNoteActivity extends AppCompatActivity {
         if(latestNote!=null){
             String num = latestNote.getId().split("_")[0];
             String newId = (Integer.parseInt(num)+1) +"_"+ User.USER.getUid();
-            note = new Note(newId, title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false,true);
+            note = new Note(newId, title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), pin,true);
         }else{
             note = new Note("1_"+User.USER.getUid(), title, content, new Timestamp(new Date()), setAlarm, remindTimeSet, User.USER.getUid(), false,true);
         }
@@ -152,7 +142,6 @@ public class AddNoteActivity extends AppCompatActivity {
         if(note.getDateRemind()!=null && !note.isAlarm() && (note.getDateRemind().getSeconds()*1000> new Date().getTime())){
             setTimerNotify(note);
         }else if(note.isAlarm() && (note.getDateRemind().getSeconds()*1000> new Date().getTime())){
-            Log.i("ALARM","1");
             setAlarm(note);
         }
         if(INTERNET_STATE) {
@@ -233,6 +222,7 @@ public class AddNoteActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.menuPinNote:
+                pinNote();
                 break;
             case R.id.menuNoticeNote:
                 onNotifySelect();
@@ -242,6 +232,16 @@ public class AddNoteActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    private void pinNote() {
+        if(pin){
+            noteMenu.getItem(0).setIcon(R.drawable.ic_pin_note);
+            pin = false;
+        } else {
+            noteMenu.getItem(0).setIcon(R.drawable.ic_unpin_note);
+           pin = true;
+        }
     }
 
     private void onNotifySelect() {

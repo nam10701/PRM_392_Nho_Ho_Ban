@@ -3,13 +3,6 @@ package com.example.prm_392_nho_ho_ban.activity;
 import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -25,7 +18,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
@@ -36,13 +34,9 @@ import com.example.prm_392_nho_ho_ban.fragment.FragmentSetNotify;
 import com.example.prm_392_nho_ho_ban.schedulingservice.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,10 +52,7 @@ public class EditNoteActivity extends AppCompatActivity {
 
     private TextView txtId;
 
-    private FirebaseAuth firebaseAuth;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference noteRef = db.collection("note");
 
     private Toolbar noteToolbar;
     private Menu noteMenu;
@@ -85,11 +76,7 @@ public class EditNoteActivity extends AppCompatActivity {
         edtaNote = findViewById(R.id.edtaNoteEdit);
         btnSave = findViewById(R.id.btnSaveNoteEdit);
         txtId = findViewById(R.id.noteId);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-
         noteToolbar = findViewById(R.id.toolbar);
-
         fragmentManager = getSupportFragmentManager();
     }
 
@@ -115,7 +102,6 @@ public class EditNoteActivity extends AppCompatActivity {
         if(remindTimeMillis!=0){
         remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
         }
-//        edtTitle.setText(String.valueOf(pin));
         edtTitle.setText(title);
         edtaNote.setText(content);
         txtId.setText(id);
@@ -172,8 +158,6 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     private void updateNote(String title, String content, String id) {
-//        Note selectedNote = roomNoteDAO.getSelectedNote(User.USER.getUid(), id);
-//        Note note = new Note(id, title, content, createDate, false, remindDate, User.USER.getUid(), notePin);
         Note updateNote = new Note(id ,title,content, createDate, setAlarm, remindDate, User.USER.getUid(), notePin,true);
         updateNoteDataCallBack(updateNote, id);
 
@@ -261,6 +245,12 @@ public class EditNoteActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.note_menu, menu);
         noteMenu = menu;
+        if(String.valueOf(notePin).equals("true")) {
+            noteMenu.getItem(0).setIcon(R.drawable.ic_unpin_note);
+        }else{
+
+            noteMenu.getItem(0).setIcon(R.drawable.ic_pin_note);
+        }
         return true;
     }
 
@@ -292,10 +282,12 @@ public class EditNoteActivity extends AppCompatActivity {
     private void pinNote() {
         String id = txtId.getText().toString().trim();
         if(String.valueOf(notePin).equals("true")) {
+            noteMenu.getItem(0).setIcon(R.drawable.ic_pin_note);
             notePin = false;
             pinNoteCallBack(id,notePin);
         }
         else if(String.valueOf(notePin).equals("false")) {
+            noteMenu.getItem(0).setIcon(R.drawable.ic_unpin_note);
             notePin = true;
             pinNoteCallBack(id,notePin);
         }

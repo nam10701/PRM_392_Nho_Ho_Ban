@@ -6,13 +6,7 @@ import static com.example.prm_392_nho_ho_ban.activity.LoginActivity.VALID_EMAIL_
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.RegisterActivity;
@@ -30,7 +27,6 @@ import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,11 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends DialogFragment {
     private EditText tvEmail;
     private EditText tvPassword;
@@ -58,7 +49,7 @@ public class LoginFragment extends DialogFragment {
         super(R.layout.fragment_login);
     }
 
- static LoginFragment newInstance(String param1, String param2) {
+    static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
         return fragment;
     }
@@ -96,7 +87,7 @@ public class LoginFragment extends DialogFragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         String email = tvEmail.getText().toString();
-        String password =  tvPassword.getText().toString();
+        String password = tvPassword.getText().toString();
         progressDialog.show();
         if (validate(email, password)) {
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -115,7 +106,6 @@ public class LoginFragment extends DialogFragment {
 
                             @Override
                             public void onCallBack() {
-                                Log.i("USer", user.getUid() + user.getEmail());
                                 User u = new User(user.getUid(), user.getEmail(), password);
                                 roomUserDAO.insert(u);
                                 progressDialog.dismiss();
@@ -156,19 +146,20 @@ public class LoginFragment extends DialogFragment {
 
 
     private boolean validate(String email, String password) {
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(getActivity(),"Enter email?",Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(getActivity(), "Enter email?", Toast.LENGTH_LONG).show();
             return false;
-        }else {
+        } else {
             Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-            if(!matcher.find()){
-                Toast.makeText(getActivity(),"Enter right email?",Toast.LENGTH_LONG).show();
-                return false;}
+            if (!matcher.find()) {
+                Toast.makeText(getActivity(), "Enter right email?", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(getActivity(),"Enter password?",Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(getActivity(), "Enter password?", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
     }
-    }
+}

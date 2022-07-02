@@ -9,17 +9,14 @@ import com.example.prm_392_nho_ho_ban.R;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
-
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 public class EventDecorator implements DayViewDecorator {
     private final HashSet<CalendarDay> dates;
     private final Drawable drawable;
 
-    public EventDecorator( Collection<CalendarDay> dates, Context context) {
+    public EventDecorator(Collection<CalendarDay> dates, Context context) {
         this.dates = new HashSet<CalendarDay>(dates);
         this.drawable = ContextCompat.getDrawable(context, R.drawable.ic_drawing_circle);
     }

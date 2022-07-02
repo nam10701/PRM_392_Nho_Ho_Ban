@@ -6,10 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import com.example.prm_392_nho_ho_ban.bean.Note;
-
-import java.sql.Time;
 import com.google.firebase.Timestamp;
 import java.util.List;
 
@@ -17,8 +14,10 @@ import java.util.List;
 public interface RoomNoteDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Note note);
+
     @Delete
     void delete(Note note);
+
     @Update
     void update(Note note);
 
@@ -29,7 +28,7 @@ public interface RoomNoteDAO {
     List<Note> getAllNotRemindNote(String uId, boolean isPin, boolean isActive);
 
     @Query("SELECT * FROM note WHERE dateRemind >= :date AND uId = :uId AND pin= :isPin AND active =:isActive")
-    List<Note> getAllUpcomingNote(Timestamp date,boolean isPin, String uId, boolean isActive);
+    List<Note> getAllUpcomingNote(Timestamp date, boolean isPin, String uId, boolean isActive);
 
     @Query("SELECT * FROM note WHERE dateRemind >= :firstDay AND dateRemind<=:lastDay AND uId = :uId AND active =:isActive")
     List<Note> getAllNoteByDay(Timestamp firstDay, Timestamp lastDay, String uId, boolean isActive);

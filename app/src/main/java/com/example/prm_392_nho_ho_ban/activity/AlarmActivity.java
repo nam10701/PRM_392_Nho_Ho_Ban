@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -30,14 +29,13 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AlarmActivity extends AppCompatActivity{
+public class AlarmActivity extends AppCompatActivity {
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf = new SimpleDateFormat("dd,MMM,yyyy");
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
 
     private ConstraintLayout loAlarm;
-    private ConstraintLayout loAlarmRoot;
     private Vibrator v;
     private MediaPlayer mPlayer = new MediaPlayer();
     private Button btnDelay;
@@ -53,7 +51,8 @@ public class AlarmActivity extends AppCompatActivity{
     private float dY;
     private float screenHeight;
     private int opacity;
-    private void bindingAction(){
+
+    private void bindingAction() {
         btnDelay.setOnLongClickListener(this::delay);
         loAlarm.setOnTouchListener(this::drag);
     }
@@ -61,8 +60,8 @@ public class AlarmActivity extends AppCompatActivity{
 
     private boolean drag(View view, MotionEvent event) {
         originDX = event.getY();
-        opacity = Math.round(((event.getRawY()-450)*255/screenHeight));
-        if(opacity<=225&&opacity>=0){
+        opacity = Math.round(((event.getRawY() - 450) * 255 / screenHeight));
+        if (opacity <= 225 && opacity >= 0) {
             loAlarm.getBackground().setAlpha(opacity);
         }
         switch (event.getActionMasked()) {
@@ -77,43 +76,43 @@ public class AlarmActivity extends AppCompatActivity{
                 break;
 
             case MotionEvent.ACTION_UP:
-                if(event.getRawY()<screenHeight/5){
+                if (event.getRawY() < screenHeight / 5) {
                     turnOffAlarm();
-                }else{
+                } else {
                     loAlarm.getBackground().setAlpha(255);
-                    view.setY(originDY);}
+                    view.setY(originDY);
+                }
                 break;
 
             default:
                 return false;
         }
-    return true;
+        return true;
     }
 
 
     private boolean delay(View view) {
         turnOffAlarm();
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                    intent.setAction("Alarm");
-                    intent.putExtra("noteJson",getIntent().getStringExtra("noteJson"));
-                    @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
-                            PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager
-                                .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
-                    } else {
-                        alarmManager
-                                .set(AlarmManager.RTC_WAKEUP, new Date().getTime()+10000, pendingIntent);
-                    }
+        intent.setAction("Alarm");
+        intent.putExtra("noteJson", getIntent().getStringExtra("noteJson"));
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);// fix this
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager
+                    .setExact(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
+        } else {
+            alarmManager
+                    .set(AlarmManager.RTC_WAKEUP, new Date().getTime() + 10000, pendingIntent);
+        }
 
         return true;
     }
 
-    private void bindingUI(){
+    private void bindingUI() {
         String noteJson = getIntent().getStringExtra("noteJson");
-        note =  new Gson().fromJson(noteJson, Note.class);
-        loAlarmRoot = findViewById(R.id.loAlarmRoot);
+        note = new Gson().fromJson(noteJson, Note.class);
         loAlarm = findViewById(R.id.loAlarm);
         btnDelay = findViewById(R.id.btnDelay);
         tvTurnOff = findViewById(R.id.tvTurnOff);
@@ -129,19 +128,20 @@ public class AlarmActivity extends AppCompatActivity{
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenHeight = displayMetrics.heightPixels;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(this.KEYGUARD_SERVICE);
-            keyguardManager.requestDismissKeyguard(this,null);
-        }else{
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON|
+            keyguardManager.requestDismissKeyguard(this, null);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                     WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
         bindingUI();
@@ -152,11 +152,9 @@ public class AlarmActivity extends AppCompatActivity{
 
     private void playMusic() {
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Start without a delay
-        // Each element then alternates between vibrate, sleep, vibrate, sleep...
-        long[] pattern = {0,800,200,1000,300,1000,200,2000};
+        long[] pattern = {0, 800, 200, 1000, 300, 1000, 200, 2000};
 
-        mPlayer = MediaPlayer.create(this,R.raw.spirit_of_the_night);
+        mPlayer = MediaPlayer.create(this, R.raw.spirit_of_the_night);
         mPlayer.setLooping(true);
         mPlayer.setAudioAttributes(
                 new AudioAttributes
@@ -166,13 +164,9 @@ public class AlarmActivity extends AppCompatActivity{
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-               mp.start();
+                mp.start();
             }
         });
-
-        Log.i("Plain",mPlayer.isPlaying()+"");
-
-
         v.vibrate(pattern, 0);
     }
 
@@ -181,14 +175,13 @@ public class AlarmActivity extends AppCompatActivity{
         loAlarm.getBackground().setAlpha(255);
         finish();
         v.cancel();
-        if(mPlayer.isPlaying()){
-        mPlayer.stop();
-        mPlayer.release();
+        if (mPlayer.isPlaying()) {
+            mPlayer.stop();
+            mPlayer.release();
         }
-            }
+    }
 
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         mPlayer.release();
     }

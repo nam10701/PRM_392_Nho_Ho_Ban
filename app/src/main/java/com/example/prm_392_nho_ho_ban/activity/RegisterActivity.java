@@ -33,7 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText edtRePassword;
     private Button btnRegister;
     private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
-    private void bindingUI(){
+
+    private void bindingUI() {
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         edtRePassword = findViewById(R.id.edtRePassword);
@@ -41,7 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
     }
-    private void bindingAction(){
+
+    private void bindingAction() {
         btnRegister.setOnClickListener(this::register);
     }
 
@@ -50,46 +52,47 @@ public class RegisterActivity extends AppCompatActivity {
         String password = edtPassword.getText().toString();
         String rePassword = edtRePassword.getText().toString();
         progressDialog.show();
-        if(validate(email,password,rePassword)){
-            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        if (validate(email, password, rePassword)) {
+            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                         FirebaseUser user = firebaseAuth.getCurrentUser();
-                        User u = new User(user.getUid(),user.getEmail(),password);
+                        User u = new User(user.getUid(), user.getEmail(), password);
                         roomUserDAO.insert(u);
                         progressDialog.dismiss();
-                        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                    }else{
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    } else {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(),"Register failed, email exist",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Register failed, email exist", Toast.LENGTH_LONG).show();
                     }
                 }
             });
-        }else{
+        } else {
             progressDialog.dismiss();
         }
     }
 
-    private boolean validate(String email, String password,String rePassword){
+    private boolean validate(String email, String password, String rePassword) {
 
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(this,"Enter email?",Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Enter email?", Toast.LENGTH_LONG).show();
             return false;
-        }else {
+        } else {
             Matcher matcher = LoginActivity.VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-            if(!matcher.find()){
-                Toast.makeText(this,"Enter right email?",Toast.LENGTH_LONG).show();
-                return false;}
+            if (!matcher.find()) {
+                Toast.makeText(this, "Enter right email?", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
-        if(TextUtils.isEmpty(password)||password.length()<6){
-            Toast.makeText(this,"Enter password?(At least 6 characters)",Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
+            Toast.makeText(this, "Enter password?(At least 6 characters)", Toast.LENGTH_LONG).show();
             return false;
         }
-        if(!password.equalsIgnoreCase(rePassword)){
-            Toast.makeText(this,"Your Re-Password is not match",Toast.LENGTH_LONG).show();
+        if (!password.equalsIgnoreCase(rePassword)) {
+            Toast.makeText(this, "Your Re-Password is not match", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

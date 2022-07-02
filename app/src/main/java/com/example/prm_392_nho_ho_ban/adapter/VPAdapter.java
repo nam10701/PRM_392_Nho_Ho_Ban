@@ -3,9 +3,6 @@ package com.example.prm_392_nho_ho_ban.adapter;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.prm_392_nho_ho_ban.fragment.FragmentAllNote;
@@ -18,15 +15,15 @@ public class VPAdapter extends FragmentStateAdapter {
     FragmentUpcomingNote b;
     FragmentTodayNote c;
     NulldateFragment z;
+
     public VPAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
+        switch (position) {
             case 1:
                 return c = new FragmentTodayNote();
             case 2:
@@ -38,14 +35,13 @@ public class VPAdapter extends FragmentStateAdapter {
         }
     }
 
-
     @Override
     public int getItemCount() {
         return 4;
     }
 
     public Fragment getItemByPosition(int position) {
-        switch (position){
+        switch (position) {
             case 1:
                 return c;
             case 2:

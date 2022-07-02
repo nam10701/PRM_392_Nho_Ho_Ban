@@ -2,13 +2,11 @@ package com.example.prm_392_nho_ho_ban.schedulingservice;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.prm_392_nho_ho_ban.activity.WelcomeActivity;
@@ -30,6 +28,7 @@ public class InternetStateReceiver extends BroadcastReceiver {
                 @Override
                 public void onCallBack(ArrayList<Note> noteList) {
                 }
+
                 @Override
                 public void onCallBack() {
                     WelcomeActivity.updateFragment();
@@ -41,11 +40,12 @@ public class InternetStateReceiver extends BroadcastReceiver {
                 }
             });
 
-        }else{
+        } else {
             INTERNET_STATE = false;
             Toast.makeText(context, "You're currently offline", Toast.LENGTH_LONG).show();
         }
     }
+
     public boolean isOnline(Context context) {
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -53,5 +53,5 @@ public class InternetStateReceiver extends BroadcastReceiver {
         //should check null because in airplane mode it will be null
         return (netInfo != null && netInfo.isConnected());
     }
-    }
+}
 

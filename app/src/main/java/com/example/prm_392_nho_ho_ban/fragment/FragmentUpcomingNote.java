@@ -6,13 +6,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,23 +16,22 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
-import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
-//sd
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentUpcomingNote#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentUpcomingNote extends Fragment {
     private RecyclerView noteRecyclerView;
     private RecyclerView pinRecyclerView;
@@ -52,11 +44,11 @@ public class FragmentUpcomingNote extends Fragment {
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private ArrayList<Note> emptyList = new ArrayList<>();
     private SearchView searchView = null;
+
     public FragmentUpcomingNote() {
         super(R.layout.fragment_upcoming_note);
     }
 
-    // TODO: Rename and change types and number of parameters
     public static FragmentUpcomingNote newInstance(String param1, String param2) {
         FragmentUpcomingNote fragment = new FragmentUpcomingNote();
         return fragment;
@@ -129,23 +121,13 @@ public class FragmentUpcomingNote extends Fragment {
         }
     }
 
-    public NoteListAdapter getPinAdapter(){
-
-        return pinListAdapter;
-    }
-
-    public NoteListAdapter getNoteAdapter(){
-
-        return pinListAdapter;
-    }
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
+        menu.clear();
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = new SearchView(((WelcomeActivity) getActivity()).getSupportActionBar().getThemedContext());
         if (menuItem != null) {
             searchView = (SearchView) menuItem.getActionView();
         }
@@ -165,8 +147,6 @@ public class FragmentUpcomingNote extends Fragment {
                         unPinList = searchNote(newText);
                         pinListAdapter.update(pinList);
                         noteListAdapter.update(unPinList);
-                        Log.d("tuan", "onQueryTextChange: " + unPinList.size());
-
                     } else {
                         updateAdapter();
                     }
@@ -177,11 +157,11 @@ public class FragmentUpcomingNote extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     private ArrayList<Note> searchNote(String newText) {
-        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText,true);
+        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText, true);
         return myNote;
     }
+
     @Override
     public void onResume() {
         super.onResume();

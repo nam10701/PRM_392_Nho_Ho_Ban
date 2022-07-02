@@ -7,14 +7,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,26 +16,24 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
-import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.firebase.Timestamp;
 
-
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentTodayNote#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class FragmentTodayNote extends Fragment {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
@@ -59,8 +49,9 @@ public class FragmentTodayNote extends Fragment {
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private ArrayList<Note> emptyList = new ArrayList<>();
     private SearchView searchView = null;
+
     public FragmentTodayNote() {
-       super(R.layout.fragment_all_note);
+        super(R.layout.fragment_all_note);
     }
 
     public static FragmentTodayNote newInstance(String param1, String param2) {
@@ -76,14 +67,15 @@ public class FragmentTodayNote extends Fragment {
         setHasOptionsMenu(true);
 
     }
+
     private void bindingUI(View view) {
-        long startTimeOfDay = new Date().getTime() - (new Date().getTime()%86400000);
+        long startTimeOfDay = new Date().getTime() - (new Date().getTime() % 86400000);
         long endTimeOfDay = startTimeOfDay + 86400000;
 
         startTimestamp = new Timestamp(new Date(startTimeOfDay));
         endTimestamp = new Timestamp(new Date(endTimeOfDay));
-        getPinNote(startTimestamp,endTimestamp);
-        getUnpinNote(startTimestamp,endTimestamp);
+        getPinNote(startTimestamp, endTimestamp);
+        getUnpinNote(startTimestamp, endTimestamp);
 
         tvMes2 = view.findViewById(R.id.tvMes2);
         noteRecyclerView = view.findViewById(R.id.noteListRecyclerView);
@@ -92,16 +84,17 @@ public class FragmentTodayNote extends Fragment {
         LinearLayoutManager verticalLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pinRecyclerView.setLayoutManager(verticalLayoutManager);
-        pinListAdapter = new NoteListAdapter(getActivity(),pinList);
+        pinListAdapter = new NoteListAdapter(getActivity(), pinList);
         pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-        noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
+        noteListAdapter = new NoteListAdapter(getActivity(), unPinList);
         noteRecyclerView.setAdapter(noteListAdapter);
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -111,26 +104,28 @@ public class FragmentTodayNote extends Fragment {
         return view;
     }
 
-    private void getPinNote(Timestamp startDate, Timestamp endDate){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,true, User.USER.getUid(),true);
+    private void getPinNote(Timestamp startDate, Timestamp endDate) {
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate, endDate, true, User.USER.getUid(), true);
     }
 
-    private void getUnpinNote(Timestamp startDate, Timestamp endDate){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate,endDate,false,User.USER.getUid(),true);
+    private void getUnpinNote(Timestamp startDate, Timestamp endDate) {
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPinByDay(startDate, endDate, false, User.USER.getUid(), true);
     }
 
-    public void updateAdapter(){
-                getPinNote(startTimestamp,endTimestamp);
-                getUnpinNote(startTimestamp,endTimestamp);
-        if(pinListAdapter!=null){
-            pinListAdapter.update(pinList);}
-        if(noteListAdapter!=null){
-            noteListAdapter.update(unPinList);}
-                checkEmpty();
+    public void updateAdapter() {
+        getPinNote(startTimestamp, endTimestamp);
+        getUnpinNote(startTimestamp, endTimestamp);
+        if (pinListAdapter != null) {
+            pinListAdapter.update(pinList);
+        }
+        if (noteListAdapter != null) {
+            noteListAdapter.update(unPinList);
+        }
+        checkEmpty();
     }
 
 
-    private void checkEmpty(){
+    private void checkEmpty() {
         if (tvMes2 != null) {
             if (pinList.isEmpty() && unPinList.isEmpty()) {
                 tvMes2.setVisibility(View.VISIBLE);
@@ -140,24 +135,13 @@ public class FragmentTodayNote extends Fragment {
         }
     }
 
-    public NoteListAdapter getPinAdapter(){
-
-        return pinListAdapter;
-    }
-
-    public NoteListAdapter getNoteAdapter(){
-
-        return pinListAdapter;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
+        menu.clear();
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = new SearchView(((WelcomeActivity) getActivity()).getSupportActionBar().getThemedContext());
         if (menuItem != null) {
             searchView = (SearchView) menuItem.getActionView();
         }
@@ -177,8 +161,6 @@ public class FragmentTodayNote extends Fragment {
                         unPinList = searchNote(newText);
                         pinListAdapter.update(pinList);
                         noteListAdapter.update(unPinList);
-                        Log.d("tuan", "onQueryTextChange: " + unPinList.size());
-
                     } else {
                         updateAdapter();
                     }
@@ -191,12 +173,13 @@ public class FragmentTodayNote extends Fragment {
 
 
     private ArrayList<Note> searchNote(String newText) {
-        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText,true);
+        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText, true);
         return myNote;
     }
+
     @Override
     public void onResume() {
         super.onResume();
-       updateAdapter();
+        updateAdapter();
     }
 }

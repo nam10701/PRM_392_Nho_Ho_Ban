@@ -37,6 +37,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
     public void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(this::selectDrawerItem);
     }
+
     public void setupBottomNavContent(BottomNavigationView bottomNavigationView) {
         bottomNavigationView.setOnItemSelectedListener(this::selectBottomItem);
     }
@@ -70,7 +71,8 @@ public class OptionsMenuActivity extends AppCompatActivity {
         }
         return true;
     }
-    private void onClickAccount(){
+
+    private void onClickAccount() {
         startActivity(new Intent(getApplicationContext(), AccountActivity.class));
     }
 
@@ -82,7 +84,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
     }
 
-    private void onClickCalendar(){
+    private void onClickCalendar() {
         startActivity(new Intent(this, CalendarActivity.class));
     }
 

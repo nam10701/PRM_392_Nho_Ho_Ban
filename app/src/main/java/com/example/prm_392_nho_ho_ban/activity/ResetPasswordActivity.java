@@ -20,12 +20,14 @@ public class ResetPasswordActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     EditText edtEmail;
     Button btnSend;
-    private void bindingUI(){
+
+    private void bindingUI() {
         edtEmail = findViewById(R.id.edtEmail);
         btnSend = findViewById(R.id.btnSendReset);
         progressDialog = new ProgressDialog(this);
     }
-    private void bindingAction(){
+
+    private void bindingAction() {
         btnSend.setOnClickListener(this::sendEmail);
     }
 
@@ -36,10 +38,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 progressDialog.dismiss();
-                if(task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"Please check your email",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(getApplicationContext(),"Send failed",Toast.LENGTH_LONG).show();
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Please check your email", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Send failed", Toast.LENGTH_LONG).show();
                 }
             }
         });
