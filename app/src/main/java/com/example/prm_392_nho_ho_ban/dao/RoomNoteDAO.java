@@ -45,5 +45,8 @@ public interface RoomNoteDAO {
 
     @Query("SELECT * FROM note WHERE uId = :uId AND id = :nId")
     Note getSelectedNote(String uId, String nId);
+
+    @Query("SELECT * FROM note WHERE uId = :uId AND active =:isActive AND title LIKE '%' || :note  || '%' OR content LIKE '%' || :note  || '%'")
+    List<Note> searchNote(String uId, String note, boolean isActive);
 }
 

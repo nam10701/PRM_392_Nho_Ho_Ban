@@ -3,17 +3,25 @@ package com.example.prm_392_nho_ho_ban.fragment;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -49,6 +57,8 @@ public class FragmentTodayNote extends Fragment {
     private Timestamp startTimestamp;
     private Timestamp endTimestamp;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+    private ArrayList<Note> emptyList = new ArrayList<>();
+    private SearchView searchView = null;
     public FragmentTodayNote() {
        super(R.layout.fragment_all_note);
     }
@@ -63,7 +73,7 @@ public class FragmentTodayNote extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
 
     }
     private void bindingUI(View view) {
@@ -138,6 +148,51 @@ public class FragmentTodayNote extends Fragment {
     public NoteListAdapter getNoteAdapter(){
 
         return pinListAdapter;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = new SearchView(((WelcomeActivity) getActivity()).getSupportActionBar().getThemedContext());
+        if (menuItem != null) {
+            searchView = (SearchView) menuItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            searchView.setQueryHint("Type to search Note");
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (!newText.equals("")) {
+                        pinList = emptyList;
+                        unPinList = searchNote(newText);
+                        pinListAdapter.update(pinList);
+                        noteListAdapter.update(unPinList);
+                        Log.d("tuan", "onQueryTextChange: " + unPinList.size());
+
+                    } else {
+                        updateAdapter();
+                    }
+                    return false;
+                }
+            });
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    private ArrayList<Note> searchNote(String newText) {
+        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText,true);
+        return myNote;
     }
     @Override
     public void onResume() {

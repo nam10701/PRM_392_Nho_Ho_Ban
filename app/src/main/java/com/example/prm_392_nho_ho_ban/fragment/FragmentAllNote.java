@@ -62,7 +62,6 @@ public class FragmentAllNote extends Fragment {
     private TextView tvMes1;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
-    private ArrayList<Note> tempList = new ArrayList<>();
     private ArrayList<Note> emptyList = new ArrayList<>();
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private SearchView searchView = null;
@@ -169,11 +168,16 @@ public class FragmentAllNote extends Fragment {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    pinList = emptyList;
-                    unPinList = searchNote(newText);
-                    pinListAdapter.update(pinList);
-                    noteListAdapter.update(unPinList);
-                    Log.d("tuan", "onQueryTextChange: " + unPinList.size());
+                    if (!newText.equals("")) {
+                        pinList = emptyList;
+                        unPinList = searchNote(newText);
+                        pinListAdapter.update(pinList);
+                        noteListAdapter.update(unPinList);
+                        Log.d("tuan", "onQueryTextChange: " + unPinList.size());
+
+                    } else {
+                        updateAdapter();
+                    }
                     return false;
                 }
             });
@@ -183,19 +187,8 @@ public class FragmentAllNote extends Fragment {
 
 
     private ArrayList<Note> searchNote(String newText) {
-        ArrayList<Note> list = (ArrayList<Note>) roomNoteDAO.getAllNote(User.USER.getUid());
-        if (!newText.equals("")) {
-            for (Note note : list) {
-                if (!tempList.contains(note) && note.getTitle().toLowerCase().contains(newText.toLowerCase()) || note.getContent().toLowerCase().contains(newText.toLowerCase())) {
-                    tempList.add(note);
-                }
-            }
-        } else {
-            getPinNote();
-            getUnpinNote();
-        }
-
-        return tempList;
+        ArrayList<Note> myNote = (ArrayList<Note>) roomNoteDAO.searchNote(User.USER.getUid(), newText,true);
+        return myNote;
     }
 
     private void checkEmpty() {
