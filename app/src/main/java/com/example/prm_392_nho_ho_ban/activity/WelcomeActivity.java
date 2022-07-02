@@ -11,10 +11,18 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -51,6 +59,8 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private static VPAdapter vpAdapter;
+    private DrawerLayout mdrawer;
+    private Menu noteMenu;
     private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void bindingUI() throws ParseException {
@@ -142,6 +152,23 @@ public class WelcomeActivity extends OptionsMenuActivity {
         }
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.search_menu, menu);
+//        noteMenu = menu;
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_search:
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {

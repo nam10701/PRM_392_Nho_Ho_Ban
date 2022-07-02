@@ -2,13 +2,20 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,12 +44,14 @@ public class CalendarActivity extends OptionsMenuActivity {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     private MaterialCalendarView calendar;
     private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
     private NavigationView nvDrawer;
     private TextView tvEmailDisplay;
     private RecyclerView rvNote;
     private NoteListAdapter noteListAdapter;
     private NoteDAO noteDAO = new NoteDAO();
     private ArrayList<Note> monthNoteList;
+    private Menu noteMenu;
     CalendarDay prevDay = null;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
     private void bindingView() throws ParseException {
@@ -51,7 +60,7 @@ public class CalendarActivity extends OptionsMenuActivity {
         nvDrawer = findViewById(R.id.nvView);
         tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
         rvNote = findViewById(R.id.rvNoteM);
-
+        drawerLayout = findViewById(R.id.layoutDrawer);
 
     }
 
@@ -104,6 +113,7 @@ public class CalendarActivity extends OptionsMenuActivity {
                 if (selected) {
                     ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(),true);
                     noteListAdapter.update(noteLit);
+                    Log.d("tuan", "getNoteByDay: "+noteLit.size());
                     if (prevDay != null && prevDay != date) {
                         calendar.setDateSelected(prevDay, false);
                     }
@@ -180,6 +190,28 @@ public class CalendarActivity extends OptionsMenuActivity {
         monthNoteList = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(),true);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.calendar_menu, menu);
+        noteMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.itemAddNote:
+                startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
     protected void onStart() {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

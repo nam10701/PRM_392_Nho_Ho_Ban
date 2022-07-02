@@ -3,9 +3,12 @@ package com.example.prm_392_nho_ho_ban.fragment;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +42,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -54,7 +62,11 @@ public class FragmentAllNote extends Fragment {
     private TextView tvMes1;
     private ArrayList<Note> pinList;
     private ArrayList<Note> unPinList;
+    private ArrayList<Note> tempList = new ArrayList<>();
+    private ArrayList<Note> emptyList = new ArrayList<>();
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+    private SearchView searchView = null;
+
     public FragmentAllNote() {
         super(R.layout.fragment_all_note);
     }
@@ -71,6 +83,7 @@ public class FragmentAllNote extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     private void bindingUI(View view) {
@@ -81,54 +94,120 @@ public class FragmentAllNote extends Fragment {
         pinRecyclerView = view.findViewById(R.id.PinListRecyclerView);
 
         LinearLayoutManager verticalLayoutManager
-                        = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                pinRecyclerView.setLayoutManager(verticalLayoutManager);
-                pinListAdapter = new NoteListAdapter(getActivity(),pinList);
-                pinRecyclerView.setAdapter(pinListAdapter);
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        pinRecyclerView.setLayoutManager(verticalLayoutManager);
+        pinListAdapter = new NoteListAdapter(getActivity(), pinList);
+        pinRecyclerView.setAdapter(pinListAdapter);
 
         LinearLayoutManager verticalLayoutManagerr
-                        = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
-                noteListAdapter = new NoteListAdapter(getActivity(),unPinList);
-                noteRecyclerView.setAdapter(noteListAdapter);
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        noteRecyclerView.setLayoutManager(verticalLayoutManagerr);
+        noteListAdapter = new NoteListAdapter(getActivity(), unPinList);
+        noteRecyclerView.setAdapter(noteListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view =  inflater.inflate(R.layout.fragment_all_note, container, false);
+        View view = inflater.inflate(R.layout.fragment_all_note, container, false);
         bindingUI(view);
         return view;
     }
 
-    private void getPinNote(){
-        pinList = (ArrayList<Note>) roomNoteDAO.getAllPin(true,User.USER.getUid(),true);
+    private void getPinNote() {
+        pinList = (ArrayList<Note>) roomNoteDAO.getAllPin(true, User.USER.getUid(), true);
 
     }
 
-    private void getUnpinNote(){
-        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPin(false,User.USER.getUid(),true);
+    private void getUnpinNote() {
+        unPinList = (ArrayList<Note>) roomNoteDAO.getAllPin(false, User.USER.getUid(), true);
 
     }
 
-    public void updateAdapter(){
+    public void updateAdapter() {
         getPinNote();
         getUnpinNote();
-if(pinListAdapter!=null){
-        pinListAdapter.update(pinList);}
-if(noteListAdapter!=null){
-        noteListAdapter.update(unPinList);}
+        if (pinListAdapter != null) {
+            pinListAdapter.update(pinList);
+        }
+        if (noteListAdapter != null) {
+            noteListAdapter.update(unPinList);
+        }
         checkEmpty();
     }
 
-    private void checkEmpty(){
-        if(pinList.isEmpty()&&unPinList.isEmpty()){
-            tvMes1.setVisibility(View.VISIBLE);
-        }else{
-            tvMes1.setVisibility(View.INVISIBLE);
+    public NoteListAdapter getPinAdapter() {
+
+        return pinListAdapter;
+    }
+
+    public NoteListAdapter getNoteAdapter() {
+
+        return pinListAdapter;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = new SearchView(((WelcomeActivity) getActivity()).getSupportActionBar().getThemedContext());
+        if (menuItem != null) {
+            searchView = (SearchView) menuItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            searchView.setQueryHint("Type to search Note");
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    pinList = emptyList;
+                    unPinList = searchNote(newText);
+                    pinListAdapter.update(pinList);
+                    noteListAdapter.update(unPinList);
+                    Log.d("tuan", "onQueryTextChange: " + unPinList.size());
+                    return false;
+                }
+            });
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    private ArrayList<Note> searchNote(String newText) {
+        ArrayList<Note> list = (ArrayList<Note>) roomNoteDAO.getAllNote(User.USER.getUid());
+        if (!newText.equals("")) {
+            for (Note note : list) {
+                if (!tempList.contains(note) && note.getTitle().toLowerCase().contains(newText.toLowerCase()) || note.getContent().toLowerCase().contains(newText.toLowerCase())) {
+                    tempList.add(note);
+                }
+            }
+        } else {
+            getPinNote();
+            getUnpinNote();
+        }
+
+        return tempList;
+    }
+
+    private void checkEmpty() {
+        if (tvMes1 != null) {
+            if (pinList.isEmpty() && unPinList.isEmpty()) {
+                tvMes1.setVisibility(View.VISIBLE);
+            } else {
+                tvMes1.setVisibility(View.INVISIBLE);
+            }
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();

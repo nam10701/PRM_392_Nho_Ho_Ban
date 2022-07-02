@@ -120,11 +120,23 @@ public class NulldateFragment extends Fragment {
     }
 
     private void checkEmpty(){
-        if(pinList.isEmpty()&&unPinList.isEmpty()){
-            tvMes0.setVisibility(View.VISIBLE);
-        }else{
-            tvMes0.setVisibility(View.INVISIBLE);
+        if (tvMes0 != null) {
+            if (pinList.isEmpty() && unPinList.isEmpty()) {
+                tvMes0.setVisibility(View.VISIBLE);
+            } else {
+                tvMes0.setVisibility(View.INVISIBLE);
+            }
         }
+    }
+
+    public NoteListAdapter getPinAdapter(){
+
+        return pinListAdapter;
+    }
+
+    public NoteListAdapter getNoteAdapter(){
+
+        return pinListAdapter;
     }
     @Override
     public void onResume() {

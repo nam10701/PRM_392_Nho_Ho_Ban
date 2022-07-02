@@ -121,13 +121,24 @@ public class FragmentTodayNote extends Fragment {
 
 
     private void checkEmpty(){
-        if(pinList.isEmpty()&&unPinList.isEmpty()){
-            tvMes2.setVisibility(View.VISIBLE);
-        }else{
-            tvMes2.setVisibility(View.INVISIBLE);
+        if (tvMes2 != null) {
+            if (pinList.isEmpty() && unPinList.isEmpty()) {
+                tvMes2.setVisibility(View.VISIBLE);
+            } else {
+                tvMes2.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
+    public NoteListAdapter getPinAdapter(){
+
+        return pinListAdapter;
+    }
+
+    public NoteListAdapter getNoteAdapter(){
+
+        return pinListAdapter;
+    }
     @Override
     public void onResume() {
         super.onResume();
