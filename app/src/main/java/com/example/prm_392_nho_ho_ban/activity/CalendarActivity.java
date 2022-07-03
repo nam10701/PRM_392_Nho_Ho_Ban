@@ -54,6 +54,8 @@ public class CalendarActivity extends OptionsMenuActivity {
     private NoteDAO noteDAO = new NoteDAO();
     private ArrayList<Note> monthNoteList;
     private Menu noteMenu;
+    private boolean dateSelect = false;
+    private ArrayList<Note> selectNoteList = new ArrayList<>();
     CalendarDay prevDay = null;
     private SharedPreferences sharedPreferences;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
@@ -116,6 +118,8 @@ public class CalendarActivity extends OptionsMenuActivity {
         }
         if (selected) {
             ArrayList<Note> noteLit = (ArrayList<Note>) roomNoteDAO.getAllNoteByDay(new Timestamp(firstDay), new Timestamp(lastDay), User.USER.getUid(), true);
+            selectNoteList = noteLit;
+            dateSelect = true;
             noteListAdapter.update(noteLit);
             if (prevDay != null && prevDay != date) {
                 calendar.setDateSelected(prevDay, false);
@@ -123,6 +127,7 @@ public class CalendarActivity extends OptionsMenuActivity {
             prevDay = date;
         } else {
             noteListAdapter.update(monthNoteList);
+            dateSelect = false;
         }
     }
 
@@ -174,7 +179,11 @@ public class CalendarActivity extends OptionsMenuActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dayOfMonth();
+        if (dateSelect) {
+            noteListAdapter.update(selectNoteList);
+        } else {
+            dayOfMonth();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -245,6 +254,7 @@ public class CalendarActivity extends OptionsMenuActivity {
 
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
