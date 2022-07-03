@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nhớ Hộ Bạn!</string>
+    <string name="app_name">Remember Me</string>
     <string name="label_lich">Calendar</string>
     <string name="label_ghi_chu">Notes</string>
     <string name="label_hen">Promises</string>
