@@ -58,6 +58,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         String content = mCurrent.getContent();
         if(mCurrent.isPin()){
             holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_pin_note_display));
+        } else {
+            holder.itemView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_note_display));
         }
         holder.createDate = mCurrent.getDateCreate().getSeconds()*1000;
         if(mCurrent.getDateRemind()!=null){

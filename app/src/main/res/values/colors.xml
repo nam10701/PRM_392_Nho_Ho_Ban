@@ -21,5 +21,7 @@
     <color name="Dark_Blue">#03045E</color>
     <color name="Transparent">#00FFFFFF</color>
     <color name="Green">#00D100</color>
+    <color name="Red">#FF1100</color>
+    <color name="Pink">#E91E63</color>
 
 </resources>

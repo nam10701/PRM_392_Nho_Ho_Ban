@@ -68,12 +68,16 @@ public class OptionsMenuActivity extends AppCompatActivity {
             case R.id.itemCalendar:
                 onClickCalendar();
                 return true;
+            case R.id.itemSetting:
+                onClickSetting();
+                return true;
         }
         return true;
     }
 
     private void onClickAccount() {
         startActivity(new Intent(getApplicationContext(), AccountActivity.class));
+        this.finish();
     }
 
     private void onClickHome() {
@@ -88,6 +92,10 @@ public class OptionsMenuActivity extends AppCompatActivity {
         startActivity(new Intent(this, CalendarActivity.class));
     }
 
+    private void onClickSetting(){
+        startActivity(new Intent(this, SettingActivity.class));
+        this.finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

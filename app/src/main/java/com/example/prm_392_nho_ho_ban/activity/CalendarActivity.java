@@ -3,6 +3,7 @@ package com.example.prm_392_nho_ho_ban.activity;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -16,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +55,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     private ArrayList<Note> monthNoteList;
     private Menu noteMenu;
     CalendarDay prevDay = null;
+    private SharedPreferences sharedPreferences;
     RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
 
     private void bindingView() throws ParseException {
@@ -221,11 +224,32 @@ public class CalendarActivity extends OptionsMenuActivity {
         }
     }
 
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
 
+        }
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         setContentView(R.layout.activity_calendar);// get the reference of CalendarView
         try {
             bindingView();

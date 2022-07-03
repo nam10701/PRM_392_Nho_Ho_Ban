@@ -2,7 +2,14 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,9 +35,11 @@ public class AccountActivity extends AppCompatActivity {
     private Button btnAddAccount;
     private LoginFragment loginFragment;
     private FragmentManager fragmentManager;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         setContentView(R.layout.activity_account);
         bindingUI();
         bindingAction();
@@ -65,6 +74,28 @@ public class AccountActivity extends AppCompatActivity {
     private void authorize() {
         if (User.USER == null) {
             startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
+
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
+
         }
     }
 }

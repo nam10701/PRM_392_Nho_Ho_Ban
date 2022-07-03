@@ -8,6 +8,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
@@ -49,7 +51,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private EditText edtTitle;
     private EditText edtaNote;
     private Button btnSave;
-
+    private SharedPreferences sharedPreferences;
     private TextView txtId;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -339,10 +341,31 @@ public class EditNoteActivity extends AppCompatActivity {
         } else finish();
 
     }
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
 
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         setContentView(R.layout.activity_edit_note);
         bindingView();
         bindingAction();

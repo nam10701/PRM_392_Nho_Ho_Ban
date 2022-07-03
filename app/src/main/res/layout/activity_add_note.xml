@@ -76,6 +76,7 @@
             android:id="@+id/btnSaveNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="?colorPrimary"
             android:text="Save" />
 
     </LinearLayout>

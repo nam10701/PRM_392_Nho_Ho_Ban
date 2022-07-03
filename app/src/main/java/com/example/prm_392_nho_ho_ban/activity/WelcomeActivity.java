@@ -5,13 +5,20 @@ import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -37,6 +44,7 @@ import java.util.Date;
 
 public class WelcomeActivity extends OptionsMenuActivity {
 
+    private static final int SETTING_CODE = 113;
     public static ArrayList<Note> allNoteList = new ArrayList<>();
     @SuppressLint("SimpleDateFormat")
     private NavigationView nvDrawer;
@@ -47,7 +55,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     private ViewPager2 viewPager2;
     private static VPAdapter vpAdapter;
     private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
-
+    private SharedPreferences sharedPreferences;
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void bindingUI() throws ParseException {
         nvDrawer = findViewById(R.id.nvView);
@@ -121,6 +129,7 @@ public class WelcomeActivity extends OptionsMenuActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         authorize();
         createBroadcast();
         setContentView(R.layout.welcome_activity);
@@ -150,7 +159,16 @@ public class WelcomeActivity extends OptionsMenuActivity {
         super.onStart();
     }
 
-    private void createBroadcast() {
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SETTING_CODE){
+            this.recreate();
+        }
+    }
+
+    private void createBroadcast(){
         InternetStateReceiver internetStateReceiver = new InternetStateReceiver();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerReceiver(internetStateReceiver, new IntentFilter(BLUETOOTH_SERVICE));
@@ -160,6 +178,26 @@ public class WelcomeActivity extends OptionsMenuActivity {
         }
     }
 
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
 
+        }
+    }
 }
 
