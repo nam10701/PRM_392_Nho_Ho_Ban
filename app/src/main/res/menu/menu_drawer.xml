@@ -13,6 +13,11 @@
             android:icon="@drawable/calendar_24"
             >
         </item>
+        <item android:title="Bin"
+            android:id="@+id/itemBin"
+            android:icon="@drawable/ic_bin"
+            >
+        </item>
 
     </group>
     <item android:title="@string/label_system">

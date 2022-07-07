@@ -68,6 +68,8 @@ public class EditNoteActivity extends AppCompatActivity {
 
     private boolean setAlarm;
 
+    private boolean noteIsActive;
+
     FragmentSetNotify fragmentSetNotify;
     FragmentManager fragmentManager;
 
@@ -101,6 +103,7 @@ public class EditNoteActivity extends AppCompatActivity {
         boolean pin = receiveIntent.getExtras().getBoolean("pin");
         Timestamp createTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("create")));
         long remindTimeMillis = receiveIntent.getExtras().getLong("remind");
+        boolean isActive = receiveIntent.getExtras().getBoolean("active");
         if(remindTimeMillis!=0){
         remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
         }
@@ -110,6 +113,7 @@ public class EditNoteActivity extends AppCompatActivity {
         notePin = pin;
         createDate = createTime;
         remindDate = remindTime;
+        noteIsActive = isActive;
 
     }
 
@@ -270,7 +274,8 @@ public class EditNoteActivity extends AppCompatActivity {
                 onNotifySelect();
                 break;
             case R.id.menuDeleteNote:
-                deleteNote();
+//                deleteNote();
+                moveToBin();
                 break;
         }
         return true;
@@ -312,6 +317,36 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
             }, id, notePin);
         }
+    }
+    
+    private void moveToBin() {
+        String id = txtId.getText().toString().trim();
+        Note updateNoteToBin = new Note(id ,edtTitle.getText().toString() ,edtaNote.getText().toString(),
+                createDate, setAlarm, remindDate, User.USER.getUid(), notePin, false);
+        updateNoteToBinCallBack(updateNoteToBin, id);
+    }
+
+    private void updateNoteToBinCallBack(Note updateNoteToBin, String id) {
+        NoteDAO nDAO = new NoteDAO();
+        roomNoteDAO.update(updateNoteToBin);
+        WelcomeActivity.updateFragment();
+        if (INTERNET_STATE) {
+            nDAO.updateNote(new NoteDAO.FirebaseCallBack() {
+                @Override
+                public void onCallBack(ArrayList<Note> noteList) {
+                }
+                @Override
+                public void onCallBack() {
+                    WelcomeActivity.updateFragment();
+                    finish();
+                }
+
+                @Override
+                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+
+                }
+            },updateNoteToBin, id);
+        } else finish();
     }
 
     private void deleteNote() {

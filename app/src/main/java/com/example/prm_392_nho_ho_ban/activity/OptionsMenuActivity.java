@@ -70,16 +70,21 @@ public class OptionsMenuActivity extends AppCompatActivity {
                 return true;
             case R.id.itemSetting:
                 onClickSetting();
+            case R.id.itemBin:
+                onClickBin();
                 return true;
         }
         return true;
     }
 
     private void onClickAccount() {
+
         startActivity(new Intent(getApplicationContext(), AccountActivity.class));
         this.finish();
     }
-
+        private void onClickBin() {
+            startActivity(new Intent(getApplicationContext(), NoteBinActivity.class));
+        }
     private void onClickHome() {
         startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
     }
