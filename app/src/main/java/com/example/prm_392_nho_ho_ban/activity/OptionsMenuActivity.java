@@ -70,6 +70,7 @@ public class OptionsMenuActivity extends AppCompatActivity {
                 return true;
             case R.id.itemSetting:
                 onClickSetting();
+                return true;
             case R.id.itemBin:
                 onClickBin();
                 return true;

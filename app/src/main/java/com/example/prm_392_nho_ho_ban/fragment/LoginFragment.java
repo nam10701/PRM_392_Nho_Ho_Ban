@@ -5,6 +5,7 @@ import static com.example.prm_392_nho_ho_ban.activity.LoginActivity.VALID_EMAIL_
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.RegisterActivity;
@@ -44,6 +46,7 @@ public class LoginFragment extends DialogFragment {
     private Button btnRegister;
     private RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
 
+    private SharedPreferences sharedPreferences;
 
     public LoginFragment() {
         super(R.layout.fragment_login);
@@ -57,7 +60,6 @@ public class LoginFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

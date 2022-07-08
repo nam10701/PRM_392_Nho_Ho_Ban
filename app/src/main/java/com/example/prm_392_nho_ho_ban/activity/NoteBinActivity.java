@@ -4,6 +4,7 @@ import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.android.material.navigation.NavigationView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -34,7 +36,7 @@ public class NoteBinActivity extends OptionsMenuActivity {
     private NavigationView nvDrawer;
     private Toolbar toolbar;
 
-    private TextView tvMes;
+    private SharedPreferences sharedPreferences;
 
     private void bindingUI() {
         nvDrawer = findViewById(R.id.nvView);
@@ -42,10 +44,10 @@ public class NoteBinActivity extends OptionsMenuActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
+        getSupportActionBar().setTitle("Bin");
         setupDrawerContent(nvDrawer);
 
         noteRecyclerView = findViewById(R.id.BinRecyclerView);
-        tvMes = findViewById(R.id.tvBinMes);
         getBinList();
 
         LinearLayoutManager verticalLayoutManager
@@ -63,24 +65,35 @@ public class NoteBinActivity extends OptionsMenuActivity {
     protected void onResume() {
         super.onResume();
         getBinList();
-        if(noteListAdapter!=null) {
-            noteListAdapter.update(noteBinList);
-        }
-        checkEmpty();
-    }
-
-    private void checkEmpty() {
-        if(noteBinList.isEmpty()){
-            tvMes.setVisibility(View.VISIBLE);
-        }else{
-            tvMes.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         setContentView(R.layout.activity_note_bin);
         bindingUI();
+    }
+
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
+
+        }
     }
 }

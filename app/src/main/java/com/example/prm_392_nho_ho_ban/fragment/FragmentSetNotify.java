@@ -50,7 +50,16 @@ public class FragmentSetNotify extends DialogFragment {
         noteRemindTime = view.findViewById(R.id.noteRemindTime);
         remindConfirm = view.findViewById(R.id.btnConfirm);
         setAlarm = view.findViewById(R.id.swAlarm);
+//
+//        noteRemindDate.setText(getTodayDate());
     }
+//
+//    private String getTodayDate() {
+//        int year = calendar.get(Calendar.YEAR);
+//        int month = calendar.get(Calendar.MONTH);
+//        int day = calendar.get(Calendar.DAY_OF_MONTH);
+//        return day+"/"+(month+1)+"/"+year;
+//    }
 
     public interface OnBtnSaveClickListener {
         void onClick(String date, String time, boolean alarm);

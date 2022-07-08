@@ -4,6 +4,8 @@ import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -44,6 +47,8 @@ public class ViewNoteBin extends AppCompatActivity {
     private boolean noteIsActive;
 
     private RoomNoteDAO roomNoteDAO = dbRoom.createNoteDAO();
+
+    private SharedPreferences sharedPreferences;
 
     private void bindingView() {
         txtTitle = findViewById(R.id.txtTitle);
@@ -146,8 +151,31 @@ public class ViewNoteBin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setThemeOfApp();
         setContentView(R.layout.activity_view_note_bin);
         bindingView();
         bindingAction();
+    }
+
+    public void setThemeOfApp() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        switch (sharedPreferences.getString("color_option", "DEFAULT")) {
+            case "DEFAULT":
+                setTheme(R.style.Theme_PRM_392_Nho_Ho_Ban);
+                break;
+            case "BLACK":
+                setTheme(R.style.BlackTheme);
+                break;
+            case "RED":
+                setTheme(R.style.RedTheme);
+                break;
+            case "GREEN":
+                setTheme(R.style.GreenTheme);
+                break;
+            case "PINK":
+                setTheme(R.style.PinkTheme);
+                break;
+
+        }
     }
 }

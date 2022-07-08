@@ -349,33 +349,33 @@ public class EditNoteActivity extends AppCompatActivity {
         } else finish();
     }
 
-    private void deleteNote() {
-        String id = txtId.getText().toString().trim();
-        deleteNoteCallBack(id);
-    }
-
-    private void deleteNoteCallBack(String id) {
-        NoteDAO nDAO = new NoteDAO();
-        roomNoteDAO.delete(roomNoteDAO.getSelectedNote(User.USER.getUid(), id));
-        WelcomeActivity.updateFragment();
-        if (INTERNET_STATE) {
-            nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
-                @Override
-                public void onCallBack(ArrayList<Note> noteList) {
-                }
-                @Override
-                public void onCallBack() {
-                    finish();
-                }
-
-                @Override
-                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
-                }
-            }, id);
-        } else finish();
-
-    }
+//    private void deleteNote() {
+//        String id = txtId.getText().toString().trim();
+//        deleteNoteCallBack(id);
+//    }
+//
+//    private void deleteNoteCallBack(String id) {
+//        NoteDAO nDAO = new NoteDAO();
+//        roomNoteDAO.delete(roomNoteDAO.getSelectedNote(User.USER.getUid(), id));
+//        WelcomeActivity.updateFragment();
+//        if (INTERNET_STATE) {
+//            nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
+//                @Override
+//                public void onCallBack(ArrayList<Note> noteList) {
+//                }
+//                @Override
+//                public void onCallBack() {
+//                    finish();
+//                }
+//
+//                @Override
+//                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
+//
+//                }
+//            }, id);
+//        } else finish();
+//
+//    }
     public void setThemeOfApp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         switch (sharedPreferences.getString("color_option", "DEFAULT")) {
