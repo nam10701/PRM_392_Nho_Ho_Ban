@@ -2,20 +2,16 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,24 +20,31 @@ import com.example.prm_392_nho_ho_ban.adapter.AccountListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.RoomUserDAO;
 import com.example.prm_392_nho_ho_ban.fragment.LoginFragment;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-public class AccountActivity extends AppCompatActivity {
+public class AccountActivity extends OptionsMenuActivity {
     private RecyclerView accountRecyclerView;
     private AccountListAdapter accountListAdapter;
     private ArrayList<User> userList;
     private final RoomUserDAO roomUserDAO = dbRoom.createUserDAO();
     private Button btnAddAccount;
+    private NavigationView nvDrawer;
     private LoginFragment loginFragment;
     private FragmentManager fragmentManager;
     private SharedPreferences sharedPreferences;
+    private TextView tvEmailDisplay;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setThemeOfApp();
         setContentView(R.layout.activity_account);
         bindingUI();
+        sideNav();
         bindingAction();
         authorize();
     }
@@ -55,6 +58,7 @@ public class AccountActivity extends AppCompatActivity {
         });
     }
     private void bindingUI() {
+        toolbar = findViewById(R.id.toolbar);
         fragmentManager = getSupportFragmentManager();
         userList = (ArrayList<User>) roomUserDAO.getAllUser();
         btnAddAccount = findViewById(R.id.btnAddAccount);
@@ -64,6 +68,8 @@ public class AccountActivity extends AppCompatActivity {
         accountRecyclerView.setLayoutManager(verticalLayoutManager);
         accountListAdapter = new AccountListAdapter(this,userList);
         accountRecyclerView.setAdapter(accountListAdapter);
+        nvDrawer = findViewById(R.id.nvView);
+        tvEmailDisplay = nvDrawer.getHeaderView(0).findViewById(R.id.tvEmailDisplay);
     }
 
     @Override
@@ -96,6 +102,23 @@ public class AccountActivity extends AppCompatActivity {
                 setTheme(R.style.PinkTheme);
                 break;
 
+        }
+    }
+    private void sideNav() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_table_rows_24);
+        getSupportActionBar().setTitle("Change Account");
+        setupDrawerContent(nvDrawer);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            tvEmailDisplay.setText(user.getEmail());
         }
     }
 }
