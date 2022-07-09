@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ public class FragmentSetNotify extends DialogFragment {
     private String remindTime;
     private boolean checkAlarm;
 
+    private boolean noteAlarmPreState;
+
     private int nHour, nMinute;
 
     private Calendar calendar = Calendar.getInstance();
@@ -45,21 +48,36 @@ public class FragmentSetNotify extends DialogFragment {
     private int lastSelectedHour = -1;
     private int lastSelectedMinute = -1;
 
-    private void bindingView(View view) {
+    private void bindingView(View view) throws ParseException {
         noteRemindDate = view.findViewById(R.id.noteRemindDate);
         noteRemindTime = view.findViewById(R.id.noteRemindTime);
         remindConfirm = view.findViewById(R.id.btnConfirm);
         setAlarm = view.findViewById(R.id.swAlarm);
-//
-//        noteRemindDate.setText(getTodayDate());
+        noteAlarmPreState = this.getArguments().getBoolean("isNotify");
+        if(noteAlarmPreState == true) {
+            setAlarm.setChecked(true);
+            noteRemindDate.setText(getSelectedDate());
+            noteRemindTime.setText(getSelectedTime());
+        }
     }
-//
-//    private String getTodayDate() {
-//        int year = calendar.get(Calendar.YEAR);
-//        int month = calendar.get(Calendar.MONTH);
-//        int day = calendar.get(Calendar.DAY_OF_MONTH);
-//        return day+"/"+(month+1)+"/"+year;
-//    }
+
+    private String getSelectedDate() {
+        Date date = new Date(this.getArguments().getLong("dateTimePick"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dataDate = sdf.format(date);
+        return dataDate;
+    }
+
+    private String getSelectedTime() throws ParseException {
+        String finalTime = null;
+        Date date = new Date(this.getArguments().getLong("dateTimePick"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String toTime = sdf.format(date);
+        Date dateFormatString = sdf.parse(toTime);
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+        finalTime = timeFormatter.format(dateFormatString);
+        return finalTime;
+    }
 
     public interface OnBtnSaveClickListener {
         void onClick(String date, String time, boolean alarm);
@@ -95,6 +113,7 @@ public class FragmentSetNotify extends DialogFragment {
             }
         },nYear,nMonth,nDay);
         datePickerDialog.show();
+        Log.i("TungDT", "Alarm state" + noteAlarmPreState);
     }
 
     private void onTimeSelect(View view) {
@@ -163,7 +182,11 @@ public class FragmentSetNotify extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set_notify, container, false);
-        bindingView(view);
+        try {
+            bindingView(view);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         bindingAction();
         return view;
     }

@@ -73,15 +73,6 @@ public class NoteDAO {
         });
     }
 
-    public void pinNote(FirebaseCallBack firebaseCallBack, String id, Boolean pin) {
-        db.collection("note").document(id).update("pin", pin)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        firebaseCallBack.onCallBack();
-                    }
-                });
-    }
 
     public interface FirebaseCallBack {
         void onCallBack(ArrayList<Note> noteList);

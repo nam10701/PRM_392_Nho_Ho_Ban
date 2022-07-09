@@ -117,10 +117,6 @@ public class AddNoteActivity extends AppCompatActivity {
             setAlarm = alarm;
             remindTimeSet = ts;
         }
-        else  {
-            remindTimeSet = null;
-            setAlarm = false;
-        };
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -248,6 +244,9 @@ public class AddNoteActivity extends AppCompatActivity {
 
     private void onNotifySelect() {
         fragmentSetNotify = new FragmentSetNotify();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isNotify", false);
+        fragmentSetNotify.setArguments(bundle);
         fragmentSetNotify.show(fragmentManager, "NotifyFragment");
     }
 

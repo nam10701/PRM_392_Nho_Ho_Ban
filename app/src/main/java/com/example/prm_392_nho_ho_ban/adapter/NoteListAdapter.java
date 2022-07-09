@@ -72,6 +72,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
 
         holder.active = mCurrent.isActive();
 
+        holder.alarm = mCurrent.isAlarm();
+
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);
         if(mCurrent.getDateRemind()!=null){
@@ -99,6 +101,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
         protected long createDate;
         protected long remindDate;
         protected boolean active;
+        protected boolean alarm;
 
         public WordViewHolder(@NonNull View itemView, NoteListAdapter adapter) {
             super(itemView);
@@ -120,6 +123,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.WordVi
                 i.putExtra("create", createDate);
                 i.putExtra("remind", remindDate);
                 i.putExtra("active", active);
+                i.putExtra("alarm", alarm);
                 v.getContext().startActivity(i);
 
         }

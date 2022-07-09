@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
@@ -66,6 +67,8 @@ public class EditNoteActivity extends AppCompatActivity {
     private String timeRemindPick;
     private String dateRemindPick;
 
+    private long dateTimeRemind;
+
     private boolean setAlarm;
 
     private boolean noteIsActive;
@@ -104,8 +107,10 @@ public class EditNoteActivity extends AppCompatActivity {
         Timestamp createTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("create")));
         long remindTimeMillis = receiveIntent.getExtras().getLong("remind");
         boolean isActive = receiveIntent.getExtras().getBoolean("active");
+        boolean isAlarm = receiveIntent.getExtras().getBoolean("alarm");
         if(remindTimeMillis!=0){
         remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
+        dateTimeRemind = remindTimeMillis;
         }
         edtTitle.setText(title);
         edtaNote.setText(content);
@@ -114,7 +119,7 @@ public class EditNoteActivity extends AppCompatActivity {
         createDate = createTime;
         remindDate = remindTime;
         noteIsActive = isActive;
-
+        setAlarm = isAlarm;
     }
 
     @Override
@@ -143,10 +148,10 @@ public class EditNoteActivity extends AppCompatActivity {
             remindDate = ts;
             setAlarm = alarm;
         }
-        else  {
-            remindDate = null;
-            setAlarm = false;
-        }
+//        else  {
+//            remindDate = null;
+//            setAlarm = false;
+//        }
         //        edtaNote.setText(dateRemindPick);
     }
 
@@ -257,6 +262,13 @@ public class EditNoteActivity extends AppCompatActivity {
 
             noteMenu.getItem(0).setIcon(R.drawable.ic_pin_note);
         }
+
+        if(String.valueOf(setAlarm).equals("true")) {
+            noteMenu.getItem(1).setIcon(R.drawable.ic_notification_active);
+        }
+        else {
+            noteMenu.getItem(1).setIcon(R.drawable.ic_notifications_note);
+        }
         return true;
     }
 
@@ -274,7 +286,6 @@ public class EditNoteActivity extends AppCompatActivity {
                 onNotifySelect();
                 break;
             case R.id.menuDeleteNote:
-//                deleteNote();
                 moveToBin();
                 break;
         }
@@ -283,6 +294,11 @@ public class EditNoteActivity extends AppCompatActivity {
 
     private void onNotifySelect() {
         fragmentSetNotify = new FragmentSetNotify();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putLong("dateTimePick", dateTimeRemind);
+        bundle.putBoolean("isNotify", setAlarm);
+        fragmentSetNotify.setArguments(bundle);
         fragmentSetNotify.show(fragmentManager, "NotifyFragment");
     }
 
@@ -291,31 +307,10 @@ public class EditNoteActivity extends AppCompatActivity {
         if(String.valueOf(notePin).equals("true")) {
             noteMenu.getItem(0).setIcon(R.drawable.ic_pin_note);
             notePin = false;
-            pinNoteCallBack(id,notePin);
         }
         else if(String.valueOf(notePin).equals("false")) {
             noteMenu.getItem(0).setIcon(R.drawable.ic_unpin_note);
             notePin = true;
-            pinNoteCallBack(id,notePin);
-        }
-    }
-
-    private void pinNoteCallBack(String id, boolean notePin) {
-        NoteDAO nDAO = new NoteDAO();
-        if (INTERNET_STATE) {
-            nDAO.pinNote(new NoteDAO.FirebaseCallBack() {
-                @Override
-                public void onCallBack(ArrayList<Note> noteList) {
-                }
-                @Override
-                public void onCallBack() {
-                }
-
-                @Override
-                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-
-                }
-            }, id, notePin);
         }
     }
     
@@ -349,33 +344,6 @@ public class EditNoteActivity extends AppCompatActivity {
         } else finish();
     }
 
-//    private void deleteNote() {
-//        String id = txtId.getText().toString().trim();
-//        deleteNoteCallBack(id);
-//    }
-//
-//    private void deleteNoteCallBack(String id) {
-//        NoteDAO nDAO = new NoteDAO();
-//        roomNoteDAO.delete(roomNoteDAO.getSelectedNote(User.USER.getUid(), id));
-//        WelcomeActivity.updateFragment();
-//        if (INTERNET_STATE) {
-//            nDAO.deleteNote(new NoteDAO.FirebaseCallBack() {
-//                @Override
-//                public void onCallBack(ArrayList<Note> noteList) {
-//                }
-//                @Override
-//                public void onCallBack() {
-//                    finish();
-//                }
-//
-//                @Override
-//                public void onCallBack(ArrayList<Note> noteList, ArrayList<Note> noteUnpinList) {
-//
-//                }
-//            }, id);
-//        } else finish();
-//
-//    }
     public void setThemeOfApp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         switch (sharedPreferences.getString("color_option", "DEFAULT")) {
