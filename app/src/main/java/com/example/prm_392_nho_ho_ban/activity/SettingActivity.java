@@ -1,16 +1,17 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.TextView;
 
 
@@ -23,7 +24,7 @@ public class SettingActivity extends OptionsMenuActivity implements SharedPrefer
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private TextView tvEmailDisplay;
-    private SharedPreferences sharedPreferences;
+    private static SharedPreferences sharedPreferences;
 
     private void bindingView() {
         toolbar = findViewById(R.id.toolbar);
@@ -75,11 +76,71 @@ public class SettingActivity extends OptionsMenuActivity implements SharedPrefer
         }
     }
 
+
+
     public static class SettingFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
+
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+
+            if (preference.getKey().equals("Ringtone")) {
+
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
+
+                String existingValue = getRingtonePreferenceValue(); // TODO
+                if (existingValue != null) {
+                    Log.i("aaaaa", "onPreferenceTreeClickddddd: ");
+                    if (existingValue.length() == 0) {
+                        // Select "Silent"
+                        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+                    } else {
+                        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(existingValue));
+                    }
+                } else {
+                    // No ringtone has been selected, set to the default
+                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
+                }
+
+                startActivityForResult(intent, 1);
+                return true;
+            } else {
+                return super.onPreferenceTreeClick(preference);
+            }
+        }
+    }        @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && data != null) {
+            Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (ringtone != null) {
+                setRingtonePreferenceValue(ringtone.toString()); // TODO
+            } else {
+                // "Silent" was selected
+                setRingtonePreferenceValue(""); // TODO
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    public void setRingtonePreferenceValue(String ringtone)
+    {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("KEY_RINGTONE_PREFERENCE", ringtone);
+        editor.commit();
+    }
+
+    public static String getRingtonePreferenceValue()
+    {
+        Log.i("aaaaaa", "getRingtonePreferenceValue: " + sharedPreferences.getString("KEY_RINGTONE_PREFERENCE",""));
+        return sharedPreferences.getString("KEY_RINGTONE_PREFERENCE", null);
     }
 
     public void setThemeOfApp() {

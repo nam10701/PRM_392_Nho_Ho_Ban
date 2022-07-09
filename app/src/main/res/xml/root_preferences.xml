@@ -11,4 +11,9 @@
             app:useSimpleSummaryProvider="true"
             />
     </PreferenceCategory>
+    <Preference
+        android:key="Ringtone"
+        android:summary="Choose your ringtone"
+        android:title="Ringtone Preference"/>
+
 </PreferenceScreen>
