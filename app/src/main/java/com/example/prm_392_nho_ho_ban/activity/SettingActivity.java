@@ -1,6 +1,7 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -103,4 +104,5 @@ public class SettingActivity extends OptionsMenuActivity implements SharedPrefer
         }
 
     }
+
 }

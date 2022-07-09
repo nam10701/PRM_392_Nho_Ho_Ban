@@ -23,8 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM_392_Nho_Ho_Ban">
         <activity
+            android:name=".InfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.SettingActivity"
-        android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".activity.ViewNoteBin"
             android:exported="false" />

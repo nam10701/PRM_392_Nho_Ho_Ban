@@ -74,6 +74,9 @@ public class OptionsMenuActivity extends AppCompatActivity {
             case R.id.itemBin:
                 onClickBin();
                 return true;
+            case R.id.itemInformation:
+                onClickInfo();
+                return true;
         }
         return true;
     }
@@ -83,9 +86,11 @@ public class OptionsMenuActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), AccountActivity.class));
         this.finish();
     }
-        private void onClickBin() {
-            startActivity(new Intent(getApplicationContext(), NoteBinActivity.class));
-        }
+
+    private void onClickBin() {
+        startActivity(new Intent(getApplicationContext(), NoteBinActivity.class));
+    }
+
     private void onClickHome() {
         startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
     }
@@ -98,10 +103,14 @@ public class OptionsMenuActivity extends AppCompatActivity {
         startActivity(new Intent(this, CalendarActivity.class));
     }
 
-    private void onClickSetting(){
+    private void onClickSetting() {
         startActivity(new Intent(this, SettingActivity.class));
-        this.finish();
     }
+
+    private void onClickInfo() {
+        startActivity(new Intent(this, InfoActivity.class));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
