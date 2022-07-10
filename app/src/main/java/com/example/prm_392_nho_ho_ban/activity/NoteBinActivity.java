@@ -2,7 +2,9 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,18 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.adapter.BinListAdapter;
-import com.example.prm_392_nho_ho_ban.adapter.NoteListAdapter;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 import com.example.prm_392_nho_ho_ban.bean.User;
 import com.example.prm_392_nho_ho_ban.dao.NoteDAO;
 import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.android.material.navigation.NavigationView;
-
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 

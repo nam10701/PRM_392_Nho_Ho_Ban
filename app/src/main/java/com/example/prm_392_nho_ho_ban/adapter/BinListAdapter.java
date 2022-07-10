@@ -13,8 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm_392_nho_ho_ban.R;
-import com.example.prm_392_nho_ho_ban.activity.EditNoteActivity;
-import com.example.prm_392_nho_ho_ban.activity.NoteBinActivity;
 import com.example.prm_392_nho_ho_ban.activity.ViewNoteBin;
 import com.example.prm_392_nho_ho_ban.bean.Note;
 

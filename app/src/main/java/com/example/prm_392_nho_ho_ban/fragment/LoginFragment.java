@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.example.prm_392_nho_ho_ban.activity.RegisterActivity;

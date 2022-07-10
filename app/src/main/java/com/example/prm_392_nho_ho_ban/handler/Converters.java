@@ -2,8 +2,6 @@ package com.example.prm_392_nho_ho_ban.handler;
 
 import androidx.room.TypeConverter;
 
-import java.sql.Time;
-
 import com.google.firebase.Timestamp;
 
 import java.util.Date;

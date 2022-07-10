@@ -10,7 +10,7 @@
     <string name="label_truoc_day">History</string>
     <string name="label_thung_rac">Bin</string>
     <string name="label_cai_dat">Setting</string>
-    <string name="label_thong_tin">Information</string>
+    <string name="label_thong_tin">App Info</string>
     <string name="label_dang_nhap">Login</string>
     <string name="label_dang_ki">Register</string>
     <string name="label_forgot_password">Forgot password?</string>

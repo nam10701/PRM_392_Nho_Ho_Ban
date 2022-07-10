@@ -3,6 +3,13 @@ package com.example.prm_392_nho_ho_ban.activity;
 import static com.example.prm_392_nho_ho_ban.MyApplication.INTERNET_STATE;
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -14,13 +21,6 @@ import com.example.prm_392_nho_ho_ban.dao.RoomNoteDAO;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Date;

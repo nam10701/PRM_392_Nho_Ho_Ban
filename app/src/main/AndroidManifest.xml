@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM_392_Nho_Ho_Ban">
         <activity
-            android:name=".InfoActivity"
+            android:name=".activity.InfoActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"

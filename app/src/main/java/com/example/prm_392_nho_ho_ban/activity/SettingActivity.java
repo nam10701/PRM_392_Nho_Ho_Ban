@@ -1,10 +1,5 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
-import androidx.appcompat.widget.Toolbar;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
@@ -14,6 +9,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
 import com.google.android.material.navigation.NavigationView;
