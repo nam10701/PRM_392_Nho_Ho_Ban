@@ -70,6 +70,8 @@ public class BinListAdapter extends RecyclerView.Adapter<BinListAdapter.WordView
 
         holder.active = mCurrent.isActive();
 
+        holder.alarm = mCurrent.isAlarm();
+
         holder.tvNoteTitle.setText(title);
         holder.tvNoteContent.setText(content);
         if(mCurrent.getDateRemind()!=null){
@@ -95,6 +97,7 @@ public class BinListAdapter extends RecyclerView.Adapter<BinListAdapter.WordView
         protected long createDate;
         protected long remindDate;
         protected boolean active;
+        protected boolean alarm;
 
         public WordViewHolder(@NonNull View itemView, BinListAdapter adapter) {
             super(itemView);
@@ -116,6 +119,7 @@ public class BinListAdapter extends RecyclerView.Adapter<BinListAdapter.WordView
             i.putExtra("create", createDate);
             i.putExtra("remind", remindDate);
             i.putExtra("active", active);
+            i.putExtra("alarm", alarm);
             v.getContext().startActivity(i);
         }
     }

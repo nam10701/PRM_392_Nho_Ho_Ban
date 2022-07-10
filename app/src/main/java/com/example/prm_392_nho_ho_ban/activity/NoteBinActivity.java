@@ -65,6 +65,7 @@ public class NoteBinActivity extends OptionsMenuActivity {
     protected void onResume() {
         super.onResume();
         getBinList();
+        noteListAdapter.update(noteBinList);
     }
 
     @Override

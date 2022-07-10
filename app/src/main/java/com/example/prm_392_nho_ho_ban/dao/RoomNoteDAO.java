@@ -50,5 +50,8 @@ public interface RoomNoteDAO {
 
     @Query("SELECT * FROM note WHERE uId = :uId AND active = :isActive")
     List<Note> getNoteBin (String uId, boolean isActive);
+
+    @Query("SELECT * FROM note WHERE uId = :uId ORDER BY dateCreate DESC LIMIT 1")
+    Note getLastestNoteVer2(String uId);
 }
 

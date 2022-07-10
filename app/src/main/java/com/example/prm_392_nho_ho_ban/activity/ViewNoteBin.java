@@ -76,6 +76,7 @@ public class ViewNoteBin extends AppCompatActivity {
         Timestamp createTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("create")));
         long remindTimeMillis = receiveIntent.getExtras().getLong("remind");
         boolean isActive = receiveIntent.getExtras().getBoolean("active");
+        boolean isAlarm = receiveIntent.getExtras().getBoolean("alarm");
         if(remindTimeMillis!=0){
             remindTime = new Timestamp(new Date(receiveIntent.getExtras().getLong("remind")));
         }
@@ -87,6 +88,7 @@ public class ViewNoteBin extends AppCompatActivity {
         createDate = createTime;
         remindDate = remindTime;
         noteIsActive = isActive;
+        setAlarm = isAlarm;
     }
 
     private void onRestoreBtnClick(View view) {

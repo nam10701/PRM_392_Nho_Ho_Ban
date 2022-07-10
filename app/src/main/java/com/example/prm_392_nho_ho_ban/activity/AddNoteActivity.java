@@ -121,7 +121,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNote(View view, String title, String content) {
-        Note latestNote = roomNoteDAO.getLatestNote(User.USER.getUid(),true);
+        Note latestNote = roomNoteDAO.getLastestNoteVer2(User.USER.getUid());
         Note note;
         if(latestNote!=null){
             String num = latestNote.getId().split("_")[0];
