@@ -65,7 +65,11 @@ public class ViewNoteBin extends AppCompatActivity {
 
         intitialIntent();
     }
-
+    private void authorize() {
+        if (User.USER == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
     private void intitialIntent(){
         Timestamp remindTime = null;
         Intent receiveIntent = getIntent();
@@ -153,6 +157,7 @@ public class ViewNoteBin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_view_note_bin);
         bindingView();

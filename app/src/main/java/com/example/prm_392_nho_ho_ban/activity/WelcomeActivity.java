@@ -137,12 +137,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
         bindingAction();
     }
 
-    private void authorize() {
-        if (User.USER == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {
@@ -192,7 +186,6 @@ public class WelcomeActivity extends OptionsMenuActivity {
             case "PINK":
                 setTheme(R.style.PinkTheme);
                 break;
-
         }
     }
 }

@@ -1,16 +1,19 @@
 package com.example.prm_392_nho_ho_ban.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.bean.User;
 
 public class InfoActivity extends OptionsMenuActivity {
     private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_info);
     }

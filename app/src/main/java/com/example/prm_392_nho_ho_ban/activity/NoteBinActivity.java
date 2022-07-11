@@ -2,6 +2,7 @@ package com.example.prm_392_nho_ho_ban.activity;
 
 import static com.example.prm_392_nho_ho_ban.MyApplication.dbRoom;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -66,6 +67,7 @@ public class NoteBinActivity extends OptionsMenuActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_note_bin);
         bindingUI();

@@ -133,6 +133,11 @@ public class AddNoteActivity extends AppCompatActivity {
         createNoteCallBack(note);
     }
 
+    private void authorize() {
+        if (User.USER == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNoteCallBack(Note note) {
         NoteDAO nDAO = new NoteDAO();
@@ -274,6 +279,7 @@ public class AddNoteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_add_note);
         bindingView();

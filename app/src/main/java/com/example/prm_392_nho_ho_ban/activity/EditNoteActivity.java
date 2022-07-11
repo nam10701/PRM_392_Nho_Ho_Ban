@@ -173,7 +173,11 @@ public class EditNoteActivity extends AppCompatActivity {
         updateNoteDataCallBack(updateNote, id);
 
     }
-
+    private void authorize() {
+        if (User.USER == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
     private void updateNoteDataCallBack(Note updateNote, String id) {
         NoteDAO nDAO = new NoteDAO();
         roomNoteDAO.update(updateNote);
@@ -368,6 +372,7 @@ public class EditNoteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_edit_note);
         bindingView();

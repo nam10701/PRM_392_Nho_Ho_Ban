@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.prm_392_nho_ho_ban.R;
+import com.example.prm_392_nho_ho_ban.bean.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -55,7 +56,11 @@ public class OptionsMenuActivity extends AppCompatActivity {
         return true;
 
     }
-
+    protected void authorize() {
+        if (User.USER == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
     @SuppressLint("NonConstantResourceId")
     public boolean selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {

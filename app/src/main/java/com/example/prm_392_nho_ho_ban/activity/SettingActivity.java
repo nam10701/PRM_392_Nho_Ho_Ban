@@ -53,6 +53,7 @@ public class SettingActivity extends OptionsMenuActivity implements SharedPrefer
     protected void onCreate(Bundle savedInstanceState) {
         PreferenceManager.getDefaultSharedPreferences(getBaseContext()).registerOnSharedPreferenceChangeListener(this);
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_setting);
         bindingView();

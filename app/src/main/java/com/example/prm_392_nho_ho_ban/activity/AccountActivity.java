@@ -41,12 +41,13 @@ public class AccountActivity extends OptionsMenuActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_account);
         bindingUI();
         sideNav();
         bindingAction();
-        authorize();
+
     }
     private void bindingAction(){
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
@@ -77,11 +78,7 @@ public class AccountActivity extends OptionsMenuActivity {
         super.onResume();
 
     }
-    private void authorize() {
-        if (User.USER == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-    }
+
 
     public void setThemeOfApp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());

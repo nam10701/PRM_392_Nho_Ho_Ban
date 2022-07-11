@@ -258,6 +258,7 @@ public class CalendarActivity extends OptionsMenuActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authorize();
         setThemeOfApp();
         setContentView(R.layout.activity_calendar);// get the reference of CalendarView
         try {
