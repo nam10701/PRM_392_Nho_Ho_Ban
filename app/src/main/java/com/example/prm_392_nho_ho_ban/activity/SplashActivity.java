@@ -22,10 +22,17 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                finish();
                 startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             }
         }, 3000);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public void setThemeOfApp() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         switch (sharedPreferences.getString("color_option", "DEFAULT")) {
